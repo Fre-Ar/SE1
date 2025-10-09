@@ -39,10 +39,16 @@
           "labels": [],
           "checkboxes": [],
           "comments": []
-        },
+        }
+      ]
+    },
+    {
+      "id": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
+      "title": "In Progress",
+      "cards": [
         {
           "id": "9d118785-1944-4075-97fc-6808b9ade841",
-          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
           "title": "define stakeholder roles",
           "description": "",
           "labels": [],
@@ -50,11 +56,6 @@
           "comments": []
         }
       ]
-    },
-    {
-      "id": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
-      "title": "In Progress",
-      "cards": []
     },
     {
       "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
