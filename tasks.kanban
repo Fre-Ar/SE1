@@ -3,7 +3,53 @@
     {
       "id": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
       "title": "To do",
-      "cards": []
+      "cards": [
+        {
+          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Decide on process model",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "8f2e98b5-6d08-4852-aae0-8f5c9b6dd43a",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Create UML Diagramm for the implementation",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "create user stories",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "83185e39-f62c-4343-91c4-a23ef79346ef",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "specifify requirements",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "9d118785-1944-4075-97fc-6808b9ade841",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "define stakeholder roles",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
     },
     {
       "id": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
