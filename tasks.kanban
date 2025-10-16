@@ -5,18 +5,18 @@
       "title": "To do",
       "cards": [
         {
-          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
+          "id": "7c881f2d-07e3-4307-b1ce-7b29cc1ff11a",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Decide on process model",
+          "title": "Idenfify Stakeholders",
           "description": "",
           "labels": [],
           "checkboxes": [],
           "comments": []
         },
         {
-          "id": "8f2e98b5-6d08-4852-aae0-8f5c9b6dd43a",
+          "id": "9d118785-1944-4075-97fc-6808b9ade841",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Create UML Diagramm for the implementation",
+          "title": "Define Stakeholder Roles",
           "description": "",
           "labels": [],
           "checkboxes": [],
@@ -25,7 +25,34 @@
         {
           "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "create user stories",
+          "title": "Create User Stories",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "8dee6697-3018-4fa7-9057-de6cd533d142",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Create Use-Case Diagram ",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "8f2e98b5-6d08-4852-aae0-8f5c9b6dd43a",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Create UML Class Diagram ",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "a25eda70-307a-47f4-b58d-62d8c7b26da5",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Create UML Sequence Diagram ",
           "description": "",
           "labels": [],
           "checkboxes": [],
@@ -34,7 +61,16 @@
         {
           "id": "83185e39-f62c-4343-91c4-a23ef79346ef",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "specifify requirements",
+          "title": "Specifify Requirements",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Decide on Process Model",
           "description": "",
           "labels": [],
           "checkboxes": [],
@@ -45,17 +81,7 @@
     {
       "id": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
       "title": "In Progress",
-      "cards": [
-        {
-          "id": "9d118785-1944-4075-97fc-6808b9ade841",
-          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
-          "title": "define stakeholder roles",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
-        }
-      ]
+      "cards": []
     },
     {
       "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
@@ -65,7 +91,17 @@
   ],
   "archive": {
     "lists": [],
-    "cards": []
+    "cards": [
+      {
+        "id": "06e9f15c-3327-482c-9531-6fb1e4f52706",
+        "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+        "title": "Create User Stories",
+        "description": "",
+        "labels": [],
+        "checkboxes": [],
+        "comments": []
+      }
+    ]
   },
   "settings": {
     "labels": []
