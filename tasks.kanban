@@ -79,7 +79,28 @@
           "title": "Idenfify Stakeholders",
           "description": "",
           "labels": [],
-          "checkboxes": [],
+          "checkboxes": [
+            {
+              "id": "2494b13f-7801-4c74-b104-e8115d658163",
+              "title": "Primary",
+              "checked": true
+            },
+            {
+              "id": "ad888414-655c-4120-847a-0c1dad0cd82c",
+              "title": "Secondary",
+              "checked": true
+            },
+            {
+              "id": "ed7fad6a-f816-438a-8d84-3ad1e53807ee",
+              "title": "External",
+              "checked": false
+            },
+            {
+              "id": "bfc157f8-f837-41a2-b2d1-a58e66eb52b8",
+              "title": "Hidden",
+              "checked": false
+            }
+          ],
           "comments": []
         }
       ]
