@@ -1,10 +1,24 @@
+
+
+# Stakeholders
+Visitors: non-logged-in users
+  - Role: Requirement providers
+Contributors: logged-in users
+  - Role: Requirement providers
+Moderators
+  - Role: Requirement providers, Maintainers, Validators
+Admin: Both Admins and IT staff
+  - Role: Requirement providers, Maintainers, Validators
+Website Owners: Us
+  - Role: Decision-makers, Validators
+History Experts
+  - Role: Requirement providers, Domain experts
+Legal Authoraties
+  - Role: Requirement providers, Validators
+
+# Use cases
 - as a <role>, I want <goal> so that <reason>.
 > Each story is `small, actionable, testable`, easy to prioritize, can be illustrated with a diagram.
-
-Visitor: non-logged-in user
-Contributor: logged-in user
-Moderator
-Admin: Both Admins and IT staff
 
 - As a visitor, I want to browse through the contents so that I discover new content.
 - As a visitor, I want to search by query so that I can find specific content.
@@ -20,4 +34,19 @@ Admin: Both Admins and IT staff
 - As an admin, I want to manage account access so that bots can be banned and access to moderators can be managed. §secondary: moderator and contributor§
 - As an admin, I want to block certain IPs so that I can prevent network-based attacks.
 
+## Primary
+- Visitors
+- Contributors
+- Moderators
+- Admins
 ## Secondary
+- See above
+
+## External
+- Historians, Libraries, etc, want the content on the platform to be accurate.
+- Legal Authorities want local law to apply (GDPR, copyright).
+
+## Hidden
+- Admins
+
+

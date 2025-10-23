@@ -5,19 +5,19 @@
       "title": "To do",
       "cards": [
         {
-          "id": "9d118785-1944-4075-97fc-6808b9ade841",
+          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Define Stakeholder Roles",
-          "description": "",
+          "title": "Decide on Process Model",
+          "description": "WTF IS THIS???",
           "labels": [],
           "checkboxes": [],
           "comments": []
         },
         {
-          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
+          "id": "d82839b8-f67c-4106-9c3a-ca0090adb49c",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Create User Stories",
-          "description": "",
+          "title": "Create Domain Models",
+          "description": "WTF IS THIS???",
           "labels": [],
           "checkboxes": [],
           "comments": []
@@ -57,15 +57,6 @@
           "labels": [],
           "checkboxes": [],
           "comments": []
-        },
-        {
-          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
-          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Decide on Process Model",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
         }
       ]
     },
@@ -74,8 +65,23 @@
       "title": "In Progress",
       "cards": [
         {
-          "id": "7c881f2d-07e3-4307-b1ce-7b29cc1ff11a",
+          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
           "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
+          "title": "Create User Stories",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
+    },
+    {
+      "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+      "title": "Done",
+      "cards": [
+        {
+          "id": "7c881f2d-07e3-4307-b1ce-7b29cc1ff11a",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
           "title": "Idenfify Stakeholders",
           "description": "",
           "labels": [],
@@ -93,22 +99,26 @@
             {
               "id": "ed7fad6a-f816-438a-8d84-3ad1e53807ee",
               "title": "External",
-              "checked": false
+              "checked": true
             },
             {
               "id": "bfc157f8-f837-41a2-b2d1-a58e66eb52b8",
               "title": "Hidden",
-              "checked": false
+              "checked": true
             }
           ],
           "comments": []
+        },
+        {
+          "id": "9d118785-1944-4075-97fc-6808b9ade841",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Define Stakeholder Roles",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
         }
       ]
-    },
-    {
-      "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-      "title": "Done",
-      "cards": []
     }
   ],
   "archive": {
