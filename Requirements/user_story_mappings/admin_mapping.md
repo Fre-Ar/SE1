@@ -5,11 +5,12 @@
 |---|---|---|---|
 
 ## Tasks
-- Implement GDPR requirements
-- Manage user access levels
-- Monitor and block malicious IPs
-- Maintain system security
-- Manage moderator permissions
+- Implement and maintain GDPR requirements
+- Manage user access levels and permissions
+- Monitor and block malicious IP addresses
+- Maintain system security and updates
+- Manage moderator roles and permissions
+- Configure system settings
 
 ## User Stories
 - As an admin, I want to abide by GDPR so that the website doesn't get taken down
@@ -18,10 +19,15 @@
 
 ## MVP Release
 - Basic user access management
+    - add roles in user entries in DB
 - Essential GDPR compliance features
+    - ask for consent
 - IP blocking functionality
+- Moderator role management
+
 
 ## Future Releases
-- Advanced security monitoring
+- Advanced security monitoring dashboard
 - Comprehensive compliance tools
-- Automated threat detection
+- Automated threat detection system
+- Advanced analytics and reporting

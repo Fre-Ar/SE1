@@ -5,11 +5,12 @@
 |---|---|---|---|
 
 ## Tasks
-- Review reported content
-- Remove inappropriate material
-- Manage user accounts
-- Review audit logs
-- Resolve contributor disputes
+- Review reported and flagged content
+- Remove inappropriate pages, comments, and media
+- Manage user accounts and permissions
+- Monitor audit logs and user activity
+- Resolve contributor disputes and appeals
+- Communicate moderation decisions
 
 ## User Stories
 - As a moderator, I want a toolset so that I can moderate content
@@ -17,11 +18,21 @@
 - As a moderator, I want audit logs so that I hold users accountable and resolve disputes
 
 ## MVP Release
-- Basic content removal tools
+- Basic moderation dashboard
+    - add button for "moderator mode" (MM)
+    - if in MM show button on posts/user accounts
+    - clicking button-> moderation actions 
+- Content removal tools
+    - add moderation context action: "removal" if in MM
 - User account management
-- Simple audit log viewing
+    - add moderation context actions:"removal"/"banning"/"disable posting"
+- Simple audit log viewer
+    - add button to history tab forall post
+    - log every action taken on that post in the log
+    - only show log in MM
 
 ## Future Releases
-- Advanced moderation dashboard
-- Automated content flagging
-- Detailed analytics and reporting
+- Advanced moderation analytics
+- Automated content flagging system
+- Bulk action capabilities
+- Detailed reporting and metrics
