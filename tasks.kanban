@@ -65,33 +65,12 @@
       "title": "In Progress",
       "cards": [
         {
-          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
+          "id": "9c3f03f1-34ed-435e-81a2-1272837c76ee",
           "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
-          "title": "Create User Stories",
+          "title": "add clanker to dc",
           "description": "",
           "labels": [],
-          "checkboxes": [
-            {
-              "id": "b206bb2a-a763-497a-a277-5d147dc6b535",
-              "title": "Visitor",
-              "checked": false
-            },
-            {
-              "id": "cccfe458-f945-42bf-bb7d-5a05c981ad2d",
-              "title": "Contributor",
-              "checked": false
-            },
-            {
-              "id": "bdb2ef76-112d-441b-b236-97211414163b",
-              "title": "Moderator",
-              "checked": false
-            },
-            {
-              "id": "913b9500-cbf7-450a-97ad-326fd8d4ca10",
-              "title": "Admin",
-              "checked": false
-            }
-          ],
+          "checkboxes": [],
           "comments": []
         }
       ]
@@ -100,6 +79,36 @@
       "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
       "title": "Done",
       "cards": [
+        {
+          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Create User Stories",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "b206bb2a-a763-497a-a277-5d147dc6b535",
+              "title": "Visitor",
+              "checked": true
+            },
+            {
+              "id": "cccfe458-f945-42bf-bb7d-5a05c981ad2d",
+              "title": "Contributor",
+              "checked": true
+            },
+            {
+              "id": "bdb2ef76-112d-441b-b236-97211414163b",
+              "title": "Moderator",
+              "checked": true
+            },
+            {
+              "id": "913b9500-cbf7-450a-97ad-326fd8d4ca10",
+              "title": "Admin",
+              "checked": true
+            }
+          ],
+          "comments": []
+        },
         {
           "id": "7c881f2d-07e3-4307-b1ce-7b29cc1ff11a",
           "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
