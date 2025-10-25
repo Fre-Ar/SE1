@@ -70,7 +70,28 @@
           "title": "Create User Stories",
           "description": "",
           "labels": [],
-          "checkboxes": [],
+          "checkboxes": [
+            {
+              "id": "b206bb2a-a763-497a-a277-5d147dc6b535",
+              "title": "Visitor",
+              "checked": false
+            },
+            {
+              "id": "cccfe458-f945-42bf-bb7d-5a05c981ad2d",
+              "title": "Contributor",
+              "checked": false
+            },
+            {
+              "id": "bdb2ef76-112d-441b-b236-97211414163b",
+              "title": "Moderator",
+              "checked": false
+            },
+            {
+              "id": "913b9500-cbf7-450a-97ad-326fd8d4ca10",
+              "title": "Admin",
+              "checked": false
+            }
+          ],
           "comments": []
         }
       ]
