@@ -1,33 +1,57 @@
 # Admin User Story Mapping
 
 ## Activities
-| Legal Compliance | Security Management | Access Control | System Maintenance |
-|---|---|---|---|
+| Legal Compliance | Security Management | Access Control |
+|---|---|---|
 
-## Tasks
-- Implement and maintain GDPR requirements
-- Manage user access levels and permissions
-- Monitor and block malicious IP addresses
-- Maintain system security and updates
-- Manage moderator roles and permissions
-- Configure system settings
+## MVP
+- Maintain GDPR Compliance  
+    - Implement consent collection  
+        - Display consent prompt  
+        - Store consent record  
+    - Manage data requests  
+        - Export user data  
+        - Delete user data  
+    - Update privacy policy  
+
+- Manage Security  
+    - Block malicious IPs  
+        - Identify suspicious activity  
+        - Add IP to blocklist  
+        - Unblock if necessary  
+    - Apply system updates  
+        - Review update logs  
+        - Schedule downtime  
+        - Confirm update success  
+
+- Manage User Access  
+    - Assign roles  
+        - Add moderator role  
+        - Revoke moderator role  
+    - Control permissions  
+        - Adjust access per role  
+        - Review audit logs  
+
+## R1
+- Maintain GDPR Compliance  
+    - Automate consent tracking  
+        - Auto-update consent status  
+        - Generate compliance reports  
+
+- Manage Security  
+    - View security dashboard  
+        - Display blocked IPs  
+        - Show active sessions  
+    - Threat detection  
+        - Detect brute-force attacks  
+        - Auto-block attackers  
+
+- Manage User Access  
+    - Bulk role management  
+        - Assign roles in batch  
+        - Import/export user permissions  
 
 ## Use Cases
-- As an admin, I want to abide by GDPR so that the website doesn't get taken down
-- As an admin, I want to manage account access so that bots can be banned and access to moderators can be managed
-- As an admin, I want to block certain IPs so that I can prevent network-based attacks
-
-## MVP Release
-- Basic user access management
-    - add roles in user entries in DB
-- Essential GDPR compliance features
-    - ask for consent
-- IP blocking functionality
-- Moderator role management
-
-
-## Future Releases
-- Advanced security monitoring dashboard
-- Comprehensive compliance tools
-- Automated threat detection system
-- Advanced analytics and reporting
+- As an admin, I want to manage user access so that moderators and users have correct permissions.  
+- As an admin, I want to block malicious IPs so that I can prevent attacks and keep the platform secure.  
+- As an admin, I want to maintain GDPR compliance so that the platform operates legally.  
