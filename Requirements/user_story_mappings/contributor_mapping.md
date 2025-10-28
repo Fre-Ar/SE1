@@ -7,9 +7,10 @@
 
 # User Stories
 ## MVP
-- Login to account
-  - Enter username and password
-  - Click the 'Login' button
+- Access account
+  - Login to account
+    - Enter username and password
+    - Click the 'Login' button
 
 - Publish content
     - Create draft
@@ -101,3 +102,10 @@
     - Track status
         - Escalate
         - Appeal
+
+## Use Cases
+- As a contributor, I want to publish new content so that this content is discoverable.
+- As a contributor, I want to edit existing content so that it improves the content.
+- As a contributor, I want a clear set of moderation rules so that I know what I'm allowed to post. §secondary: visitior§
+- As a contributor, I want to discuss with other contributors so that coordinate or ask questions.
+- As a contributor, I want to initiate disputes so that moderators can be called upon. §secondary: moderator§
