@@ -1,8 +1,9 @@
 # Visitor User Story Mapping
 
-## Activities
-| Content Browsing | Information Seeking |
-|---|---|
+## Version
+- Activity
+    - Task
+        - User Story (Action)
 
 ## MVP
 - Browse contents
