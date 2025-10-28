@@ -12,7 +12,7 @@
 - Manage moderator roles and permissions
 - Configure system settings
 
-## User Stories
+## Use Cases
 - As an admin, I want to abide by GDPR so that the website doesn't get taken down
 - As an admin, I want to manage account access so that bots can be banned and access to moderators can be managed
 - As an admin, I want to block certain IPs so that I can prevent network-based attacks

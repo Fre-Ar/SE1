@@ -12,7 +12,7 @@
 - Report content issues
 - Request moderator assistance
 
-## User Stories
+## Use Cases
 - As a contributor, I want to publish new content so that this content is discoverable
 - As a contributor, I want to edit existing content so that it improves the content
 - As a contributor, I want a clear set of moderation rules so that I know what I'm allowed to post

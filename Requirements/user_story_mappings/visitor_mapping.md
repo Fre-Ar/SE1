@@ -1,33 +1,46 @@
 # Visitor User Story Mapping
 
 ## Activities
-| Content Browsing | Content Discovery | Information Seeking |
-|---|---|---|
+| Content Browsing | Information Seeking |
+|---|---|
 
-## Tasks
-- Navigate through content categories
-- View content details and metadata
-- Use search functionality with keywords
-- Filter and sort search results
-- Browse related content suggestions
+## MVP
+- Browse contents
+    - Access catalogue 
+        - Open home
+        - See listing
+        - Load more
+    - View page
+        - Open story
+        - View media
+        - View metadata
+        - Back to list
+    - Continue discovery 
+        - Related items
+        - Next / Prev
+        - Personalized recommendations
 
-## User Stories
+- Search by query
+    - Enter keywords
+        - Focus Search bar
+        - Type keywords
+        - Submit
+    - Filter & sort
+        - Open filters
+        - Pick filters (era / theme / location / etc)
+        - Clear filters
+        - Sort (newest / views)
+## R1
+- Browse contents
+    - View page
+        - View page discussions
+- Search by query
+    - Enter keywords
+        - "Did you mean...?"
+    - Filter & sort
+        - Search by Categories
+
+
+## Use Cases
 - As a visitor, I want to browse through contents so that I discover new content
 - As a visitor, I want to search by query so that I can find specific content
-
-## MVP Release
-- Basic content navigation
-    - select filter by period/theme
-    - send query to database
-    - show results
-- Simple search functionality
-    - enter text in search box
-    - send query to database
-    - show results
-- Content display pages
-
-## Future Releases
-- Advanced filtering options
-- Personalized recommendations
-- Content rating and reviews
-- Social sharing features

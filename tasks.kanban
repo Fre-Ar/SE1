@@ -93,15 +93,6 @@
             }
           ],
           "comments": []
-        },
-        {
-          "id": "9c3f03f1-34ed-435e-81a2-1272837c76ee",
-          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
-          "title": "add clanker to dc",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
         }
       ]
     },
@@ -109,6 +100,15 @@
       "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
       "title": "Done",
       "cards": [
+        {
+          "id": "9c3f03f1-34ed-435e-81a2-1272837c76ee",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "add clanker to discord",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
         {
           "id": "7c881f2d-07e3-4307-b1ce-7b29cc1ff11a",
           "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",

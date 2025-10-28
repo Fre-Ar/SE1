@@ -12,7 +12,7 @@
 - Resolve contributor disputes and appeals
 - Communicate moderation decisions
 
-## User Stories
+## Use Cases
 - As a moderator, I want a toolset so that I can moderate content
 - As a moderator, I want to remove inappropriate content (pages, comments, accounts) so that the website remains friendly
 - As a moderator, I want audit logs so that I hold users accountable and resolve disputes
