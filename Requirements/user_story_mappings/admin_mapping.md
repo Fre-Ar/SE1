@@ -12,7 +12,9 @@
     - Manage data requests  
         - Export user data  
         - Delete user data  
-    - Update privacy policy  
+    - Update privacy policy
+        - change privacy policy page
+        - send email to all contributors  
 
 - Manage Security  
     - Block malicious IPs  
