@@ -21,10 +21,6 @@
         - Identify suspicious activity  
         - Add IP to blocklist  
         - Unblock if necessary  
-    - Apply system updates  
-        - Review update logs  
-        - Schedule downtime  
-        - Confirm update success  
 
 - Manage User Access  
     - Assign roles  
@@ -35,23 +31,31 @@
         - Review audit logs  
 
 ## R1
-- Maintain GDPR Compliance  
-    - Automate consent tracking  
-        - Auto-update consent status  
-        - Generate compliance reports  
 
 - Manage Security  
     - View security dashboard  
         - Display blocked IPs  
         - Show active sessions  
-    - Threat detection  
-        - Detect brute-force attacks  
-        - Auto-block attackers  
 
 - Manage User Access  
     - Bulk role management  
         - Assign roles in batch  
         - Import/export user permissions  
+
+## R2
+- Maintain GDPR Compliance  
+    - Automate consent tracking  
+        - Auto-update consent status  
+        - Generate compliance reports  
+
+- Manage Security 
+    - Apply system updates  
+        - Review update logs  
+        - Schedule downtime  
+        - Confirm update success
+    - Threat detection  
+        - Detect brute-force attacks  
+        - Auto-block attackers  
 
 ## Use Cases
 - As an admin, I want to manage user access so that moderators and users have correct permissions.  
