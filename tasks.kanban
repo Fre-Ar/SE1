@@ -14,15 +14,6 @@
           "comments": []
         },
         {
-          "id": "8f2e98b5-6d08-4852-aae0-8f5c9b6dd43a",
-          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Create UML Class Diagram ",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
-        },
-        {
           "id": "a25eda70-307a-47f4-b58d-62d8c7b26da5",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
           "title": "Create UML Sequence Diagram ",
@@ -54,17 +45,7 @@
     {
       "id": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
       "title": "In Progress",
-      "cards": [
-        {
-          "id": "8dee6697-3018-4fa7-9057-de6cd533d142",
-          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
-          "title": "Create Use-Case Diagram ",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
-        }
-      ]
+      "cards": []
     },
     {
       "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
@@ -113,6 +94,24 @@
           "id": "9d118785-1944-4075-97fc-6808b9ade841",
           "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
           "title": "Define Stakeholder Roles",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "8dee6697-3018-4fa7-9057-de6cd533d142",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Create Use-Case Diagram ",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "8f2e98b5-6d08-4852-aae0-8f5c9b6dd43a",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Create UML Class Diagram ",
           "description": "",
           "labels": [],
           "checkboxes": [],
