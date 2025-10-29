@@ -5,28 +5,10 @@
       "title": "To do",
       "cards": [
         {
-          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
-          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Decide on Process Model",
-          "description": "WTF IS THIS???",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
-        },
-        {
           "id": "d82839b8-f67c-4106-9c3a-ca0090adb49c",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
           "title": "Create Domain Models",
           "description": "WTF IS THIS???",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
-        },
-        {
-          "id": "8dee6697-3018-4fa7-9057-de6cd533d142",
-          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Create Use-Case Diagram ",
-          "description": "",
           "labels": [],
           "checkboxes": [],
           "comments": []
@@ -57,6 +39,15 @@
           "labels": [],
           "checkboxes": [],
           "comments": []
+        },
+        {
+          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Decide on Process Model",
+          "description": "WTF IS THIS???",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
         }
       ]
     },
@@ -65,33 +56,12 @@
       "title": "In Progress",
       "cards": [
         {
-          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
+          "id": "8dee6697-3018-4fa7-9057-de6cd533d142",
           "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
-          "title": "Create User Stories",
+          "title": "Create Use-Case Diagram ",
           "description": "",
           "labels": [],
-          "checkboxes": [
-            {
-              "id": "b206bb2a-a763-497a-a277-5d147dc6b535",
-              "title": "Visitor",
-              "checked": true
-            },
-            {
-              "id": "cccfe458-f945-42bf-bb7d-5a05c981ad2d",
-              "title": "Contributor",
-              "checked": true
-            },
-            {
-              "id": "bdb2ef76-112d-441b-b236-97211414163b",
-              "title": "Moderator",
-              "checked": true
-            },
-            {
-              "id": "913b9500-cbf7-450a-97ad-326fd8d4ca10",
-              "title": "Admin",
-              "checked": true
-            }
-          ],
+          "checkboxes": [],
           "comments": []
         }
       ]
@@ -146,6 +116,36 @@
           "description": "",
           "labels": [],
           "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Create User Stories",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "b206bb2a-a763-497a-a277-5d147dc6b535",
+              "title": "Visitor",
+              "checked": true
+            },
+            {
+              "id": "cccfe458-f945-42bf-bb7d-5a05c981ad2d",
+              "title": "Contributor",
+              "checked": true
+            },
+            {
+              "id": "bdb2ef76-112d-441b-b236-97211414163b",
+              "title": "Moderator",
+              "checked": true
+            },
+            {
+              "id": "913b9500-cbf7-450a-97ad-326fd8d4ca10",
+              "title": "Admin",
+              "checked": true
+            }
+          ],
           "comments": []
         }
       ]
