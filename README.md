@@ -57,14 +57,7 @@ Additional features:
 ---
 ## 🧰 Tech Stack
 
-| Layer | Technology |
-|--------|-------------|
-| Frontend | React + TailwindCSS |
-| Backend | Python (FastAPI) |
-| Database | PostgreSQL |
-| Auth | JWT-based authentication |
-| Deployment | Docker + Nginx + GitHub Actions |
-
+**TODO**
 ---
 ## ⚙️ Setup & Installation
 
