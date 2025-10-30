@@ -6,16 +6,21 @@ Visitors can explore curated stories by era or location, while registered contri
 ---
 
 ## 📋 Table of Contents
-- [About](#-about)
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Tech Stack](#-tech-stack)
-- [Setup & Installation](#-setup--installation)
-- [Usage](#-usage)
-- [Database Schema](#-database-schema)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact](#-contact)
+- [🏛️ Local History Documentation Site](#️-local-history-documentation-site)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [💡 About](#-about)
+  - [✨ Features](#-features)
+  - [🧱 Architecture](#-architecture)
+  - [🧰 Tech Stack](#-tech-stack)
+  - [**TODO**](#todo)
+  - [⚙️ Setup \& Installation](#️-setup--installation)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [🚀 Usage](#-usage)
+  - [🗄️ Database Schema (Simplified)](#️-database-schema-simplified)
+  - [🤝 Contributing](#-contributing)
+  - [Notes for future](#notes-for-future)
+  - [📫 Contact](#-contact)
 
 ---
 
@@ -98,6 +103,8 @@ Before submitting, please:
 - When development starts, we'll tag the latest commit, and create branches for each. We'll guard main with the need to accept merge requests.
 
 ## 📫 Contact
+- Add Flatag to this repo.
 
 **Project Maintainers**  
 **TODO**
+
