@@ -16,11 +16,37 @@
         {
           "id": "a25eda70-307a-47f4-b58d-62d8c7b26da5",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Create UML Sequence Diagram ",
+          "title": "Create UML Sequence Diagrams",
           "description": "",
           "labels": [],
-          "checkboxes": [],
-          "comments": []
+          "checkboxes": [
+            {
+              "id": "08ce8c60-60e8-4151-ad87-168c415cf5f7",
+              "title": "contributor: publish content",
+              "checked": false
+            },
+            {
+              "id": "c32eccc7-1627-4163-b5e1-41b12c69bf4c",
+              "title": "contributor: edit content",
+              "checked": false
+            },
+            {
+              "id": "e4d9846c-7362-4ba5-9508-41b0289bf652",
+              "title": "visitor: search by query",
+              "checked": false
+            },
+            {
+              "id": "0b5c3755-dee6-48f8-8c00-40a35ce83b0a",
+              "title": "user: log in",
+              "checked": false
+            }
+          ],
+          "comments": [
+            {
+              "id": "92cfd0be-2c33-4ff0-8516-82d12a6f40e0",
+              "comment": "Only core functionalities require sequence diagrams"
+            }
+          ]
         },
         {
           "id": "83185e39-f62c-4343-91c4-a23ef79346ef",
@@ -36,6 +62,15 @@
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
           "title": "Decide on Process Model",
           "description": "WTF IS THIS???",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "c9afe58d-582b-46a2-a687-2e2514dccfb0",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Write short description of the topic (README)",
+          "description": "",
           "labels": [],
           "checkboxes": [],
           "comments": []
