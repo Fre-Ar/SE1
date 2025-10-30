@@ -65,22 +65,69 @@
           "labels": [],
           "checkboxes": [],
           "comments": []
-        },
-        {
-          "id": "c9afe58d-582b-46a2-a687-2e2514dccfb0",
-          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Write short description of the topic (README)",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
         }
       ]
     },
     {
       "id": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
       "title": "In Progress",
-      "cards": []
+      "cards": [
+        {
+          "id": "c9afe58d-582b-46a2-a687-2e2514dccfb0",
+          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
+          "title": "Maintain README",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "09cdd9ae-e533-421f-b89e-d3d84873328e",
+              "title": "update ToC",
+              "checked": false
+            },
+            {
+              "id": "fa7075f9-3caa-4eea-9786-e97fdf9e4024",
+              "title": "update Features",
+              "checked": false
+            },
+            {
+              "id": "592c9c85-77fd-414d-9020-75bb14ce9f23",
+              "title": "update Architecture",
+              "checked": false
+            },
+            {
+              "id": "61c53ed6-b411-4a95-9118-e16e28eb35b7",
+              "title": "update Tech Stack",
+              "checked": false
+            },
+            {
+              "id": "0abe6496-d9ed-436e-b8ea-2787269998d6",
+              "title": "update Setup & Installation",
+              "checked": false
+            },
+            {
+              "id": "dd469640-1342-4e59-8ac6-cad3ccc55f1a",
+              "title": "update Usage",
+              "checked": false
+            },
+            {
+              "id": "ec9c8ec1-a082-4c6a-96d4-befc9f065d05",
+              "title": "update Database Schema",
+              "checked": false
+            },
+            {
+              "id": "3c2bd560-7b1d-4227-82c5-26534bd657fd",
+              "title": "update contributing",
+              "checked": false
+            },
+            {
+              "id": "d40afbad-e631-4eac-a22e-55c32cde4c0f",
+              "title": "update TODO",
+              "checked": false
+            }
+          ],
+          "comments": []
+        }
+      ]
     },
     {
       "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
