@@ -137,7 +137,7 @@
             {
               "id": "7576ae6c-fc78-4d9f-a3b7-51db7be2770f",
               "title": "moderator: remove inappropriate content",
-              "checked": false
+              "checked": true
             },
             {
               "id": "0a08057b-2cdf-40d0-8fb0-fecd20bb979a",
@@ -147,7 +147,7 @@
             {
               "id": "57436579-1730-480e-a0dd-572dc2c68d06",
               "title": "moderator: moderate content",
-              "checked": false
+              "checked": true
             },
             {
               "id": "75bb7f7e-e933-4d70-86e6-2b744096e523",
