@@ -126,7 +126,7 @@ Before submitting, please:
 - When development starts, we'll tag the latest commit, and create branches for each. We'll guard main with the need to accept merge requests.
 
 ## 📫 Contact
-- Add Flatag to this repo.
+
 
 
 
