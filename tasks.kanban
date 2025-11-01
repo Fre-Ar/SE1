@@ -100,32 +100,72 @@
           "labels": [],
           "checkboxes": [
             {
-              "id": "08ce8c60-60e8-4151-ad87-168c415cf5f7",
-              "title": "contributor: publish content",
-              "checked": false
-            },
-            {
-              "id": "c32eccc7-1627-4163-b5e1-41b12c69bf4c",
-              "title": "contributor: edit content",
-              "checked": false
-            },
-            {
-              "id": "e4d9846c-7362-4ba5-9508-41b0289bf652",
+              "id": "55d5fab6-0727-4ffb-9330-e699ab67017f",
               "title": "visitor: search by query",
               "checked": false
             },
             {
-              "id": "0b5c3755-dee6-48f8-8c00-40a35ce83b0a",
-              "title": "user: log in",
+              "id": "478e24e5-06c9-4fa7-bb37-05d95a0e839d",
+              "title": "visitor: browse contents",
+              "checked": false
+            },
+            {
+              "id": "911bb11b-6155-49c5-8da4-feb30a1d01b8",
+              "title": "contributor: view moderation rules",
+              "checked": false
+            },
+            {
+              "id": "4a149dd5-8cf1-4c60-87ed-3fe3c2afa554",
+              "title": "contributor: initiate dispute",
+              "checked": false
+            },
+            {
+              "id": "849b3a25-de04-4e13-8de7-a1a54cbd83ef",
+              "title": "contributor: publish new content",
+              "checked": false
+            },
+            {
+              "id": "109b3f8c-05ef-4f85-951f-c089fec29455",
+              "title": "contributor: edit content",
+              "checked": false
+            },
+            {
+              "id": "7b663bfd-150e-4bb0-89c1-ebb7860b4e0c",
+              "title": "contributor: discuss",
+              "checked": false
+            },
+            {
+              "id": "7576ae6c-fc78-4d9f-a3b7-51db7be2770f",
+              "title": "moderator: remove inappropriate content",
+              "checked": false
+            },
+            {
+              "id": "0a08057b-2cdf-40d0-8fb0-fecd20bb979a",
+              "title": "moderator: access audit log",
+              "checked": true
+            },
+            {
+              "id": "57436579-1730-480e-a0dd-572dc2c68d06",
+              "title": "moderator: moderate content",
+              "checked": false
+            },
+            {
+              "id": "75bb7f7e-e933-4d70-86e6-2b744096e523",
+              "title": "admin: manage GDPR compliance",
+              "checked": false
+            },
+            {
+              "id": "b7fb2a48-1972-4614-82c4-68f0913172ce",
+              "title": "admin: block IP",
+              "checked": false
+            },
+            {
+              "id": "be7e416b-6e16-40d3-8efb-7c2f4af81cd1",
+              "title": "admin: manage account access",
               "checked": false
             }
           ],
-          "comments": [
-            {
-              "id": "92cfd0be-2c33-4ff0-8516-82d12a6f40e0",
-              "comment": "Only core functionalities require sequence diagrams"
-            }
-          ]
+          "comments": []
         }
       ]
     },
