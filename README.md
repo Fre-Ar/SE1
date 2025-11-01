@@ -4,7 +4,12 @@ A community-driven platform for collecting and sharing local historical stories,
 Visitors can explore curated stories by era or location, while registered contributors can submit and moderate content to preserve regional heritage.
 
 ---
-
+**Project Developers**  
+- Armando Eduardo Freitas Gonçalves
+- Kylian Kinnen
+- Barak Landsman 
+- Grzegorz Piotrowski
+- Vasile 
 ## 📋 Table of Contents
 - [🏛️ Local History Documentation Site](#️-local-history-documentation-site)
   - [📋 Table of Contents](#-table-of-contents)
@@ -105,6 +110,5 @@ Before submitting, please:
 ## 📫 Contact
 - Add Flatag to this repo.
 
-**Project Maintainers**  
-**TODO**
+
 
