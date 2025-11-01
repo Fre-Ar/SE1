@@ -102,7 +102,7 @@
             {
               "id": "55d5fab6-0727-4ffb-9330-e699ab67017f",
               "title": "visitor: search by query",
-              "checked": false
+              "checked": true
             },
             {
               "id": "478e24e5-06c9-4fa7-bb37-05d95a0e839d",
@@ -112,27 +112,27 @@
             {
               "id": "911bb11b-6155-49c5-8da4-feb30a1d01b8",
               "title": "contributor: view moderation rules",
-              "checked": false
+              "checked": true
             },
             {
               "id": "4a149dd5-8cf1-4c60-87ed-3fe3c2afa554",
               "title": "contributor: initiate dispute",
-              "checked": false
+              "checked": true
             },
             {
               "id": "849b3a25-de04-4e13-8de7-a1a54cbd83ef",
               "title": "contributor: publish new content",
-              "checked": false
+              "checked": true
             },
             {
               "id": "109b3f8c-05ef-4f85-951f-c089fec29455",
               "title": "contributor: edit content",
-              "checked": false
+              "checked": true
             },
             {
               "id": "7b663bfd-150e-4bb0-89c1-ebb7860b4e0c",
               "title": "contributor: discuss",
-              "checked": false
+              "checked": true
             },
             {
               "id": "7576ae6c-fc78-4d9f-a3b7-51db7be2770f",
@@ -152,17 +152,17 @@
             {
               "id": "75bb7f7e-e933-4d70-86e6-2b744096e523",
               "title": "admin: manage GDPR compliance",
-              "checked": false
+              "checked": true
             },
             {
               "id": "b7fb2a48-1972-4614-82c4-68f0913172ce",
               "title": "admin: block IP",
-              "checked": false
+              "checked": true
             },
             {
               "id": "be7e416b-6e16-40d3-8efb-7c2f4af81cd1",
               "title": "admin: manage account access",
-              "checked": false
+              "checked": true
             }
           ],
           "comments": []
