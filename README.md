@@ -10,14 +10,16 @@ Visitors can explore curated stories by era or location, while registered contri
 - Barak Landsman 
 - Grzegorz Piotrowski
 - Vasile 
+
 ## 📋 Table of Contents
 - [🏛️ Local History Documentation Site](#️-local-history-documentation-site)
   - [📋 Table of Contents](#-table-of-contents)
   - [💡 About](#-about)
-  - [Repo Setup](#-repo-setup)
+  - [Repo Setup](#repo-setup)
   - [✨ Features](#-features)
   - [🧱 Architecture](#-architecture)
   - [🧰 Tech Stack](#-tech-stack)
+  - [**TODO**](#todo)
   - [⚙️ Setup \& Installation](#️-setup--installation)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
@@ -28,7 +30,6 @@ Visitors can explore curated stories by era or location, while registered contri
   - [📫 Contact](#-contact)
 
 ---
-
 
 
 ## 💡 About
@@ -46,19 +47,19 @@ This project aims to balance openness with accuracy and respect for local herita
 ## Repo Setup
 ```
 SE1/
-├─ archive/                      # Old drafts, deprecated docs, and superseded assets (read-only).
-├─ lecture_notes/                # Course notes & references used to ground decisions (non-deliverable).
-├─ Requirements/                 # Requirements engineering artifacts (IEEE 29148/1012 aligned).
-│  ├─ sequence_diagrams/         # UML sequence diagrams (PlantUML/draw.io). One file per UC realization.
-│  ├─ templates/                 # Reusable templates (SRS sections, use-case spec, test case, review checklists).
+├─ archive/                      # Old drafts and deprecated docs (read-only).
+├─ lecture_notes/                # Course notes (non-deliverable).
+├─ Requirements/                 # Deliverable 1.
+│  ├─ sequence_diagrams/         # UML sequence diagrams. One file per use case.
+│  ├─ templates/                 # Reusable templates (for sequence diagrams).
 │  ├─ use_case_diagrams/         # Actor-viewpoint UML use-case diagrams (one per primary actor).
-│  └─ user_story_mappings/       # User Story → Use Case → Sequence Diagram traceability matrices.
-├─ requirements.md               # System Requirements (SRS-lite): scope, FR/NFR, constraints, assumptions.
-├─ use_cases.md                  # Textual use-case specs (ID, actors, pre/post, main/alt flows).
-├─ CONTRIBUTING.md               # Team workflow: branching, commit style, reviews, and quality gates.
-├─ README.md                     # You are here. Overview, structure, how to build/preview artifacts.
-├─ tasks.kanban                  # Backlog board export (MVP/R1), with status and owners.
-└─ topic.md                      # Project topic brief: vision, stakeholders, success criteria.
+│  └─ user_story_mappings/       # Use Case -> User Story (MVP, R1, optionally R2)
+├─ requirements.md               # Project Requirements.
+├─ use_cases.md                  # Textual descriptions of use-cases
+├─ CONTRIBUTING.md               # Contributing guidelines
+├─ README.md                     # You are here. Overview, structure, how to build (WIP).
+├─ tasks.kanban                  # Backlog board.
+└─ topic.md                      # Project topic description.
 ```
 ---
 ## ✨ Features
