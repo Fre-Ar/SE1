@@ -5,21 +5,188 @@
       "title": "To do",
       "cards": [
         {
-          "id": "83185e39-f62c-4343-91c4-a23ef79346ef",
+          "id": "74959a77-e7bd-4c4b-8790-067b973bde53",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Specifify Requirements",
+          "title": "Database",
           "description": "",
           "labels": [],
-          "checkboxes": [],
+          "checkboxes": [
+            {
+              "id": "37f8f973-4802-447b-a66d-a26b1131e55d",
+              "title": "Schema (tables, columns)",
+              "checked": false
+            },
+            {
+              "id": "08bedcf5-d51a-49c2-94e1-769d3a89e377",
+              "title": "Hosting",
+              "checked": false
+            }
+          ],
           "comments": []
         },
         {
-          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
+          "id": "32061aa9-a2f1-49ee-8d71-0bf94111520c",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Decide on Process Model",
-          "description": "WTF IS THIS???",
+          "title": "Page Display",
+          "description": "",
           "labels": [],
-          "checkboxes": [],
+          "checkboxes": [
+            {
+              "id": "d73c1a8b-c282-4d6b-aa5b-90543388555b",
+              "title": "main contents display",
+              "checked": false
+            },
+            {
+              "id": "ea1ce831-e69f-4d72-a54a-0d0af6ec4dcd",
+              "title": "discussion page",
+              "checked": false
+            },
+            {
+              "id": "c3197774-580a-4239-84b4-1a27fe3ff07a",
+              "title": "version change page",
+              "checked": false
+            },
+            {
+              "id": "b25f4dd5-d8f2-45c6-8d65-d055fc85f928",
+              "title": "metadata, sources, extras, etc",
+              "checked": false
+            }
+          ],
+          "comments": []
+        },
+        {
+          "id": "c99f25bb-011d-40fb-ae30-47a51f5b6088",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Authentication",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "87203e93-40ff-4869-abbe-88a15ad43f19",
+              "title": "login",
+              "checked": false
+            },
+            {
+              "id": "67238ede-bc34-45cc-b3ac-afba1d80b1c6",
+              "title": "register new account",
+              "checked": false
+            },
+            {
+              "id": "61f3fb9c-e044-4f9d-ac80-85a85330565e",
+              "title": "role access",
+              "checked": false
+            }
+          ],
+          "comments": []
+        },
+        {
+          "id": "e71aa74c-c591-44d7-a5c7-4857e2fdfb65",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Home Page UI",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "630dd00f-ff7d-48b2-a10d-d8336af47447",
+              "title": "search (bar, inputs, tags, results)",
+              "checked": false
+            },
+            {
+              "id": "0166d79f-0a3f-4ba6-819c-8fcfe5eb070b",
+              "title": "login/register ui",
+              "checked": false
+            },
+            {
+              "id": "7f73e22a-b740-4e9c-af53-ff94b752de83",
+              "title": "account settings (notifications, change username, change pwd)",
+              "checked": false
+            }
+          ],
+          "comments": []
+        },
+        {
+          "id": "9d7b33a5-2254-4f46-809e-6d3bb5bdfc2a",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Page Creation/Editing",
+          "description": "This task specifically pertains to the interactive modules that allow you to add or change the existing content in a page.",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "2c5fcf65-64d9-426a-bffb-68be0b6ca320",
+              "title": "text formatting",
+              "checked": false
+            },
+            {
+              "id": "ae628212-86ff-4911-9203-c93a0947a866",
+              "title": "layout",
+              "checked": false
+            },
+            {
+              "id": "8be5cb49-cd50-4f45-9302-29f5848ee05b",
+              "title": "attachments",
+              "checked": false
+            },
+            {
+              "id": "77779413-94b0-4aa2-9b46-917cbe1bb68a",
+              "title": "metadata",
+              "checked": false
+            }
+          ],
+          "comments": []
+        },
+        {
+          "id": "a8a5588e-3fa0-434a-8506-f6c75350cc68",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Backend API",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "5d23cc4a-6a5d-4f16-99be-1c152c068f24",
+              "title": "attachements",
+              "checked": false
+            },
+            {
+              "id": "f3ee5123-87a9-4453-8273-43bbb0e03a5b",
+              "title": "page redirecting",
+              "checked": false
+            },
+            {
+              "id": "0e04d4f0-2371-4f86-8709-2ac1777929e9",
+              "title": "page searching (filtering)",
+              "checked": false
+            },
+            {
+              "id": "3de6f137-0a7a-4fb6-8e5a-a2b704cfdc6f",
+              "title": "page creation/editing",
+              "checked": false
+            },
+            {
+              "id": "4a2ebfc8-ca87-403d-86d6-4c0d9c28e354",
+              "title": "moderation (disputes, block user from posting, pause specific page editing)",
+              "checked": false
+            },
+            {
+              "id": "9a9b2cf6-db37-446a-b23f-9c17c4627262",
+              "title": "admin functions (block IPs, delete accounts)",
+              "checked": false
+            },
+            {
+              "id": "449bdb12-9c33-4ca9-aa57-f0f01cc935a5",
+              "title": "audit logs",
+              "checked": false
+            },
+            {
+              "id": "ed27153c-c0e4-4ad5-a48c-0f7a19d00906",
+              "title": "discussions (posting, searching, removing)",
+              "checked": false
+            },
+            {
+              "id": "104c61c5-fc10-4e85-be98-8be439661b6f",
+              "title": "role access features (block certain actions, allow others)",
+              "checked": false
+            }
+          ],
           "comments": []
         }
       ]
@@ -29,17 +196,67 @@
       "title": "In Progress",
       "cards": [
         {
-          "id": "d82839b8-f67c-4106-9c3a-ca0090adb49c",
+          "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
           "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
-          "title": "Create Domain Models",
+          "title": "Decide on Process Model",
           "description": "WTF IS THIS???",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
+    },
+    {
+      "id": "e82e2aaf-9cbe-48a5-a9ee-b7f8bda19bce",
+      "title": "In Review",
+      "cards": []
+    },
+    {
+      "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+      "title": "Done",
+      "cards": [
+        {
+          "id": "9c3f03f1-34ed-435e-81a2-1272837c76ee",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "add clanker to discord",
+          "description": "",
           "labels": [],
           "checkboxes": [],
           "comments": []
         },
         {
+          "id": "7c881f2d-07e3-4307-b1ce-7b29cc1ff11a",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Idenfify Stakeholders",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "2494b13f-7801-4c74-b104-e8115d658163",
+              "title": "Primary",
+              "checked": true
+            },
+            {
+              "id": "ad888414-655c-4120-847a-0c1dad0cd82c",
+              "title": "Secondary",
+              "checked": true
+            },
+            {
+              "id": "ed7fad6a-f816-438a-8d84-3ad1e53807ee",
+              "title": "External",
+              "checked": true
+            },
+            {
+              "id": "bfc157f8-f837-41a2-b2d1-a58e66eb52b8",
+              "title": "Hidden",
+              "checked": true
+            }
+          ],
+          "comments": []
+        },
+        {
           "id": "c9afe58d-582b-46a2-a687-2e2514dccfb0",
-          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
           "title": "Maintain README",
           "description": "",
           "labels": [],
@@ -93,8 +310,65 @@
           "comments": []
         },
         {
+          "id": "9d118785-1944-4075-97fc-6808b9ade841",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Define Stakeholder Roles",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "8dee6697-3018-4fa7-9057-de6cd533d142",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Create Use-Case Diagram ",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "8f2e98b5-6d08-4852-aae0-8f5c9b6dd43a",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Create UML Class Diagram ",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
+          "title": "Create User Stories",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "b206bb2a-a763-497a-a277-5d147dc6b535",
+              "title": "Visitor",
+              "checked": true
+            },
+            {
+              "id": "cccfe458-f945-42bf-bb7d-5a05c981ad2d",
+              "title": "Contributor",
+              "checked": true
+            },
+            {
+              "id": "bdb2ef76-112d-441b-b236-97211414163b",
+              "title": "Moderator",
+              "checked": true
+            },
+            {
+              "id": "913b9500-cbf7-450a-97ad-326fd8d4ca10",
+              "title": "Admin",
+              "checked": true
+            }
+          ],
+          "comments": []
+        },
+        {
           "id": "a25eda70-307a-47f4-b58d-62d8c7b26da5",
-          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
+          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
           "title": "Create UML Sequence Diagrams",
           "description": "",
           "labels": [],
@@ -166,112 +440,23 @@
             }
           ],
           "comments": []
-        }
-      ]
-    },
-    {
-      "id": "e82e2aaf-9cbe-48a5-a9ee-b7f8bda19bce",
-      "title": "In Review",
-      "cards": []
-    },
-    {
-      "id": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-      "title": "Done",
-      "cards": [
+        },
         {
-          "id": "9c3f03f1-34ed-435e-81a2-1272837c76ee",
+          "id": "d82839b8-f67c-4106-9c3a-ca0090adb49c",
           "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-          "title": "add clanker to discord",
-          "description": "",
+          "title": "Create Domain Models",
+          "description": "WTF IS THIS???",
           "labels": [],
           "checkboxes": [],
           "comments": []
         },
         {
-          "id": "7c881f2d-07e3-4307-b1ce-7b29cc1ff11a",
+          "id": "83185e39-f62c-4343-91c4-a23ef79346ef",
           "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-          "title": "Idenfify Stakeholders",
-          "description": "",
-          "labels": [],
-          "checkboxes": [
-            {
-              "id": "2494b13f-7801-4c74-b104-e8115d658163",
-              "title": "Primary",
-              "checked": true
-            },
-            {
-              "id": "ad888414-655c-4120-847a-0c1dad0cd82c",
-              "title": "Secondary",
-              "checked": true
-            },
-            {
-              "id": "ed7fad6a-f816-438a-8d84-3ad1e53807ee",
-              "title": "External",
-              "checked": true
-            },
-            {
-              "id": "bfc157f8-f837-41a2-b2d1-a58e66eb52b8",
-              "title": "Hidden",
-              "checked": true
-            }
-          ],
-          "comments": []
-        },
-        {
-          "id": "9d118785-1944-4075-97fc-6808b9ade841",
-          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-          "title": "Define Stakeholder Roles",
+          "title": "Specifify Requirements",
           "description": "",
           "labels": [],
           "checkboxes": [],
-          "comments": []
-        },
-        {
-          "id": "8dee6697-3018-4fa7-9057-de6cd533d142",
-          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-          "title": "Create Use-Case Diagram ",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
-        },
-        {
-          "id": "8f2e98b5-6d08-4852-aae0-8f5c9b6dd43a",
-          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-          "title": "Create UML Class Diagram ",
-          "description": "",
-          "labels": [],
-          "checkboxes": [],
-          "comments": []
-        },
-        {
-          "id": "61a73b62-a118-4680-bba6-0721d0f92cfc",
-          "listId": "d3a65abc-68a4-435f-8c96-b650dd13e42c",
-          "title": "Create User Stories",
-          "description": "",
-          "labels": [],
-          "checkboxes": [
-            {
-              "id": "b206bb2a-a763-497a-a277-5d147dc6b535",
-              "title": "Visitor",
-              "checked": true
-            },
-            {
-              "id": "cccfe458-f945-42bf-bb7d-5a05c981ad2d",
-              "title": "Contributor",
-              "checked": true
-            },
-            {
-              "id": "bdb2ef76-112d-441b-b236-97211414163b",
-              "title": "Moderator",
-              "checked": true
-            },
-            {
-              "id": "913b9500-cbf7-450a-97ad-326fd8d4ca10",
-              "title": "Admin",
-              "checked": true
-            }
-          ],
           "comments": []
         }
       ]
