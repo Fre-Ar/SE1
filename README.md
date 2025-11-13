@@ -23,6 +23,8 @@ Visitors can explore curated stories by era or location, while registered contri
   - [⚙️ Setup \& Installation](#️-setup--installation)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
+      - [Install Node.js, Next.js and React](#install-nodejs-nextjs-and-react)
+      - [Create new project (temp)](#create-new-project-temp)
   - [🚀 Usage](#-usage)
   - [🗄️ Database Schema (Simplified)](#️-database-schema-simplified)
   - [🤝 Contributing](#-contributing)
@@ -97,6 +99,40 @@ TODO
 # Clone repository
 git clone https://github.com/Fre-Ar/SE1.git
 ```
+
+#### Install Node.js, Next.js and React
+Install Node.js as per this guide (run the commands in terminal): https://nodejs.org/en/download
+
+Verify the installation by running: 
+```bash
+node -v
+npm -v
+```
+
+Cd to the project folder.
+Run 
+```bash
+cd letzhist
+```
+
+Install all 
+```bash
+npm install
+```
+
+#### Create new project (temp)
+Run```bash
+npx create-next-app@latest letzhist  \
+  --typescript \
+  --eslint \
+  --tailwind \
+  --src-dir \
+  --app \
+  --use-npm
+```
+
+Click enter on everything else.
+
 ---
 ## 🚀 Usage
 
