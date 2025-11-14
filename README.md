@@ -143,7 +143,8 @@ npm install
 
 
 #### Create new project (temp)
-Run```bash
+Run
+```bash
 npx create-next-app@latest letzhist  \
   --typescript \
   --eslint \
