@@ -167,13 +167,11 @@ cd letzhist
 To start the DB run:
 ```bash
 docker compose -f db/docker-compose.yml up -d
-
 ```
 
 To stop the DB run:
 ```
 docker compose -f db/docker-compose.yml down
-
 ```
 ---
 ## 🚀 Usage
