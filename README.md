@@ -49,19 +49,25 @@ This project aims to balance openness with accuracy and respect for local herita
 ## Repo Setup
 ```
 SE1/
-├─ archive/                      # Old drafts and deprecated docs (read-only).
-├─ lecture_notes/                # Course notes (non-deliverable).
-├─ Requirements/                 # Deliverable 1.
-│  ├─ sequence_diagrams/         # UML sequence diagrams. One file per use case.
-│  ├─ templates/                 # Reusable templates (for sequence diagrams).
-│  ├─ use_case_diagrams/         # Actor-viewpoint UML use-case diagrams (one per primary actor).
-│  └─ user_story_mappings/       # Use Case -> User Story (MVP, R1, optionally R2)
-├─ requirements.md               # Project Requirements.
-├─ use_cases.md                  # Textual descriptions of use-cases
-├─ CONTRIBUTING.md               # Contributing guidelines
-├─ README.md                     # You are here. Overview, structure, how to build (WIP).
-├─ tasks.kanban                  # Backlog board.
-└─ topic.md                      # Project topic description.
+├─ archive/
+├─ lecture_notes/
+├─ Requirements/
+│  ├─ sequence_diagrams/
+│  ├─ templates/
+│  ├─ use_case_diagrams/
+│  └─ user_story_mappings/
+├─ letzhist/
+│  ├─ db/
+│  ├─ db_data/
+│  ├─ public/
+│  └─ src/
+├─ requirements.md
+├─ use_cases.md
+├─ CONTRIBUTING.md
+├─ README.md
+├─ tasks.kanban
+└─ topic.md
+
 ```
 ---
 ## ✨ Features
@@ -92,8 +98,22 @@ Additional features:
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
-TODO
+- Git (>= 2.20)  
+  - Verify: `git --version`
 
+- Node.js (LTS, e.g. 18+) and npm  
+  - Verify: `node -v` and `npm -v`
+
+- Docker (required)  
+  - Install: https://docs.docker.com/get-docker/  
+  - Verify: `docker --version` and `docker run hello-world`
+
+- Docker Compose (v2+) or Docker Compose plugin  
+  - Verify: `docker compose version` (or `docker-compose --version`)
+
+- A code editor (recommended: VS Code) with useful extensions (Prettier, ESLint, Tailwind CSS Intellisense)
+
+- Optional but helpful: Yarn or pnpm if you prefer alternative package managers
 ### Installation
 ```bash
 # Clone repository
@@ -120,6 +140,8 @@ Install all
 npm install
 ```
 
+
+
 #### Create new project (temp)
 Run
 ```bash
@@ -134,6 +156,25 @@ npx create-next-app@latest letzhist  \
 
 Click enter on everything else.
 
+
+### Run Database locally
+
+Navigate to ROOT directory:
+```bash
+cd letzhist
+```
+
+To start the DB run:
+```bash
+docker compose -f db/docker-compose.yml up -d
+
+```
+
+To stop the DB run:
+```
+docker compose -f db/docker-compose.yml down
+
+```
 ---
 ## 🚀 Usage
 
