@@ -2,7 +2,7 @@
 export type PageSection = {
   id: string;
   title?: string;
-  markdown: string; // renamed from content → markdown
+  markdown: string;
 };
 
 
