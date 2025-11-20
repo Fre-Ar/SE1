@@ -9,3 +9,5 @@ npx create-next-app@latest letzhist  \
   --app \
   --use-npm
 ```
+
+Click enter on everything else

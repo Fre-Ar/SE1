@@ -24,7 +24,6 @@ Visitors can explore curated stories by era or location, while registered contri
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
       - [Install Node.js, Next.js and React](#install-nodejs-nextjs-and-react)
-      - [Create new project (DO NOT RUN THIS)](#create-new-project-do-not-run-this)
     - [Run Database locally](#run-database-locally)
   - [🚀 Usage](#-usage)
   - [🗄️ Database Schema (Simplified)](#️-database-schema-simplified)
@@ -140,22 +139,6 @@ Install all
 ```bash
 npm install
 ```
-
-
-
-#### Create new project (DO NOT RUN THIS)
-Run
-```bash
-npx create-next-app@latest letzhist  \
-  --typescript \
-  --eslint \
-  --tailwind \
-  --src-dir \
-  --app \
-  --use-npm
-```
-
-Click enter on everything else.
 
 
 ### Run Database locally
