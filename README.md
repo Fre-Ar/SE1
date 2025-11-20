@@ -24,7 +24,8 @@ Visitors can explore curated stories by era or location, while registered contri
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
       - [Install Node.js, Next.js and React](#install-nodejs-nextjs-and-react)
-      - [Create new project (temp)](#create-new-project-temp)
+      - [Create new project (DO NOT RUN THIS)](#create-new-project-do-not-run-this)
+    - [Run Database locally](#run-database-locally)
   - [🚀 Usage](#-usage)
   - [🗄️ Database Schema (Simplified)](#️-database-schema-simplified)
   - [🤝 Contributing](#-contributing)
@@ -142,7 +143,7 @@ npm install
 
 
 
-#### Create new project (temp)
+#### Create new project (DO NOT RUN THIS)
 Run
 ```bash
 npx create-next-app@latest letzhist  \
@@ -175,8 +176,8 @@ docker compose -f db/docker-compose.yml down
 ```
 ---
 ## 🚀 Usage
-
-**TODO**
+- cd to `letzhist`
+- Run `npm run dev`
 
 ---
 

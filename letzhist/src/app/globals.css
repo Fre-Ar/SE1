@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
+@theme {
+  --color-uni-blue:  #00a9db;
+  --color-uni-red:   #dc021b;
+  --color-uni-light: #8d8d8d;
+  --color-uni-grey:  #5c5c5c;
+  --color-uni-black: #3b3b3b;
+  --color-uni-selec: #00a9db;
+  --color-uni-pink:  #ec808c;
+  
+
+  --color-letz-bg: #e4eaf2; /* background color*/
+  --color-letz-mg: #edf1f5; /* background for inputs */
+  --color-letz-fg: #fbfbfb; /* background for header */
+  --color-letz-hover: #edf1f5; /* background for hovered inputs */
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --input-text-color: var(--foreground);
+  --input-background-color: var(--background);
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/*}
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --input-text-color: var(--foreground);
+    --input-background-color: var(--background);
   }
-}
+  @theme {
+    --color-letz-bg: #0c1722; 
+    --color-letz-mg: #151f2e; 
+    --color-letz-fg: #152232; 
+    --color-letz-hover: #0f1927; 
+  }
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
