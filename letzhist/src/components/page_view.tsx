@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import Header from '@/components/header';
 import {PageData, DiscussionComment} from '@/components/data_types';
 
@@ -125,17 +128,29 @@ export const PageView: React.FC<PageViewProps> = ({ page }) => {
 
 const ArticleTab: React.FC<{ page: PageData }> = ({ page }) => {
   return (
-    <article className="prose prose-sm max-w-none prose-slate">
-      {page.sections.map((section) => (
-        <section key={section.id} className="mb-6">
-          {section.title && (
-            <h2 className="mb-1 text-lg font-semibold text-slate-900">
-              {section.title}
-            </h2>
+    <article className="prose prose-slate max-w-none">
+      {/* Optional lead image floated like Wikipedia */}
+      {page.leadImage && (
+        <figure className="float-right ml-4 mb-2 w-52 border border-slate-200 bg-slate-50 p-2">
+          <img
+            src={page.leadImage.url}
+            alt={page.leadImage.alt}
+            className="mx-auto mb-1 h-auto w-full object-cover"
+          />
+          {page.leadImage.caption && (
+            <figcaption className="text-xs text-slate-500">
+              {page.leadImage.caption}
+            </figcaption>
           )}
-          <p className="text-sm leading-relaxed text-slate-800 whitespace-pre-line">
-            {section.content}
-          </p>
+        </figure>
+      )}
+
+      {page.sections.map((section) => (
+        <section key={section.id} className="mb-8">
+          {section.title && <h2>{section.title}</h2>}
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {section.markdown}
+          </ReactMarkdown>
         </section>
       ))}
     </article>

@@ -10,22 +10,46 @@ const mockPage: PageData = {
   lastEdited: "2025-11-18",
   lastEditedBy: "ArmandoF",
   tags: ["Architecture", "19th century", "Town life"],
+  leadImage: {
+    url: "/images/lux-old-town.jpg",    
+    alt: "View of the Old Town Square",
+    caption: "The Old Town Square seen from the south side, ca. 1920.",
+  },
   sections: [
     {
       id: "intro",
       title: "Overview",
-      content:
-        "The Old Town Square has been the heart of the city’s social and economic life since the late 18th century. " +
-        "Surrounded by townhouses, cafés, and the former guild hall, it remains a central meeting point for locals and visitors.",
+      markdown: `
+The **Old Town Square** has been the heart of the city’s social and economic life since the late 18th century.
+
+It is surrounded by townhouses, cafés, and the former guild hall.
+
+For more context, see also the article on [City Market Street](/pages/city-market-street).
+      `.trim(),
     },
     {
       id: "history",
       title: "Historical background",
-      content:
-        "Originally a simple marketplace, the square evolved into a formal civic space after the great fire of 1823. " +
-        "Reconstruction efforts introduced neoclassical facades and a more regular layout, while market stalls were moved to the adjacent streets.\n\n" +
-        "During the 20th century, the square hosted public events, demonstrations, and seasonal fairs. Several buildings were damaged during the war " +
-        "but later restored, often using historic photographs as references.",
+      markdown: `
+## Early market
+
+Originally a simple marketplace, the square evolved into a formal civic space after the great fire of **1823**.
+
+![Market stalls in 1905](/images/market-1905.jpg)
+
+During the 20th century, the square hosted:
+
+- Seasonal fairs
+- Political demonstrations
+- Military parades
+
+You can also find related documents in the _Municipal Archive_, especially the **Fire of 1823 report**.
+
+For a full list of archival sources, see:
+
+1. _“Reconstruction of the Old Town”_ (1927)
+2. _“Urban Life and Local Markets”_ (1954)
+      `.trim(),
     },
   ],
   discussion: [
