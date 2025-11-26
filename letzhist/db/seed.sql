@@ -73,22 +73,3 @@ VALUES
 (1, 3, NOW()),
 (2, 3, NOW());
 
-
-
--- =========================================================
--- 8) Fix circular references
--- =========================================================
-
--- Link users.edits_pk_sk → edits.id_pk
-UPDATE users SET edits_pk_sk = 1 WHERE id_pk = 3;
-UPDATE users SET edits_pk_sk = 2 WHERE id_pk = 1;
-UPDATE users SET edits_pk_sk = 3 WHERE id_pk = 2;
-
--- Link dispute.disputing_pk_sk → disputing.id_pk
-UPDATE dispute SET disputing_pk_sk = 1 WHERE id_pk = 1;
-UPDATE dispute SET disputing_pk_sk = 3 WHERE id_pk = 2;
-
--- Link users.disputing_pk_sk → disputing.id_pk (optional but supported)
-UPDATE users SET disputing_pk_sk = 2 WHERE id_pk = 1;
-UPDATE users SET disputing_pk_sk = 1 WHERE id_pk = 2;
-UPDATE users SET disputing_pk_sk = 3 WHERE id_pk = 3;

@@ -29,15 +29,13 @@ CREATE TABLE content (
 -- 2) USERS --------------------------------------------------------------
 CREATE TABLE users (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  username VARCHAR(100) NOT NULL UNIQUE,
+  username VARCHAR(25) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   password_salt VARCHAR(255) NOT NULL,
   role ENUM('contributor','moderator','admin') DEFAULT 'contributor',
   created_at TIMESTAMP NOT NULL,
-  last_login TIMESTAMP NULL,
-  edits_pk_sk INT DEFAULT NULL,
-  disputing_pk_sk INT DEFAULT NULL
+  last_login TIMESTAMP NULL
 );
 
 -- 3) COMMENT ------------------------------------------------------------
@@ -55,7 +53,6 @@ CREATE TABLE comment (
 CREATE TABLE dispute (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
   content_fk INT NOT NULL,
-  disputing_pk_sk INT DEFAULT NULL,
   reason TEXT NOT NULL,
   currentStatus ENUM('open','under_review','resolved','dismissed') DEFAULT 'open',
   created_at TIMESTAMP NOT NULL,
@@ -88,18 +85,10 @@ CREATE TABLE edits (
 CREATE TABLE disputing (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
   dispute_fk INT NOT NULL,
-  user_fk INT NOT NULL,
+  user1_fk INT NOT NULL,
+  user2_fk INT NOT NULL,
   action_timestamp TIMESTAMP NOT NULL,
   FOREIGN KEY (dispute_fk) REFERENCES dispute(id_pk) ON DELETE CASCADE,
-  FOREIGN KEY (user_fk) REFERENCES users(id_pk) ON DELETE CASCADE
+  FOREIGN KEY (user1_fk) REFERENCES users(id_pk) ON DELETE CASCADE,
+  FOREIGN KEY (user2_fk) REFERENCES users(id_pk) ON DELETE CASCADE
 );
-
-ALTER TABLE users
-  ADD CONSTRAINT fk_users_edits
-    FOREIGN KEY (edits_pk_sk) REFERENCES edits(id_pk) ON DELETE SET NULL,
-  ADD CONSTRAINT fk_users_disputing
-    FOREIGN KEY (disputing_pk_sk) REFERENCES disputing(id_pk) ON DELETE SET NULL;
-
-ALTER TABLE dispute
-  ADD CONSTRAINT fk_dispute_disputing
-    FOREIGN KEY (disputing_pk_sk) REFERENCES disputing(id_pk) ON DELETE CASCADE;
