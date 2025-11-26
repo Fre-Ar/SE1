@@ -15,6 +15,8 @@ export type DiscussionComment = {
 
 
 export type PageData = {
+  id: string;
+  slug: string; // url path, ex: 'old-town-square', so the url will be www.[website]/stories/[slug]
   title: string;
   subtitle?: string;
   lastEdited: string;

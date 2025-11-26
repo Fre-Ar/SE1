@@ -5,6 +5,8 @@ import {PageData} from "@/components/data_types";
 
 
 const mockPage: PageData = {
+  id: "12345",
+  slug: "old-town-square",
   title: "Old Town Square",
   subtitle: "Central plaza of the historic district",
   lastEdited: "2025-11-18",
