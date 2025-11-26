@@ -29,6 +29,20 @@ export default function Header() {
             <button className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline">
               New page
             </button>
+
+            <Link
+            href="/login"
+            className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+            >
+            Log in
+            </Link>
+
+                        <Link
+              href="/register"
+              className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+              >
+              Register
+            </Link>
           </div>
         </div>
       </header>
