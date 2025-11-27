@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/src/lib/db";
+import { db } from "@/lib/db";
 import crypto from "crypto";
 
 
