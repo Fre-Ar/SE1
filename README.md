@@ -9,7 +9,7 @@ Visitors can explore curated stories by era or location, while registered contri
 - Kylian Kinnen
 - Barak Landsman 
 - Grzegorz Piotrowski
-- Vasile 
+- Vasile Miron
 
 ## 📋 Table of Contents
 - [🏛️ Local History Documentation Site](#️-local-history-documentation-site)

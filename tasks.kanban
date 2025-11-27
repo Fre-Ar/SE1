@@ -5,26 +5,6 @@
       "title": "To do",
       "cards": [
         {
-          "id": "74959a77-e7bd-4c4b-8790-067b973bde53",
-          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
-          "title": "Database",
-          "description": "",
-          "labels": [],
-          "checkboxes": [
-            {
-              "id": "37f8f973-4802-447b-a66d-a26b1131e55d",
-              "title": "Schema (tables, columns)",
-              "checked": false
-            },
-            {
-              "id": "08bedcf5-d51a-49c2-94e1-769d3a89e377",
-              "title": "Hosting",
-              "checked": false
-            }
-          ],
-          "comments": []
-        },
-        {
           "id": "32061aa9-a2f1-49ee-8d71-0bf94111520c",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
           "title": "Page Display",
@@ -93,7 +73,7 @@
             },
             {
               "id": "0166d79f-0a3f-4ba6-819c-8fcfe5eb070b",
-              "title": "login/register ui",
+              "title": "ui to send api request to login/register",
               "checked": false
             },
             {
@@ -187,6 +167,24 @@
               "checked": false
             }
           ],
+          "comments": []
+        },
+        {
+          "id": "74436428-82da-4466-8c52-dd26bc648ddc",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Database Schema",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        },
+        {
+          "id": "0913d1e9-8a09-4de3-9b4c-51857aa30a60",
+          "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+          "title": "Database File, Hosting, etc",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
           "comments": []
         }
       ]
@@ -472,6 +470,26 @@
         "description": "",
         "labels": [],
         "checkboxes": [],
+        "comments": []
+      },
+      {
+        "id": "74959a77-e7bd-4c4b-8790-067b973bde53",
+        "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
+        "title": "Database",
+        "description": "",
+        "labels": [],
+        "checkboxes": [
+          {
+            "id": "37f8f973-4802-447b-a66d-a26b1131e55d",
+            "title": "Schema (tables, columns)",
+            "checked": false
+          },
+          {
+            "id": "08bedcf5-d51a-49c2-94e1-769d3a89e377",
+            "title": "Hosting",
+            "checked": false
+          }
+        ],
         "comments": []
       }
     ]
