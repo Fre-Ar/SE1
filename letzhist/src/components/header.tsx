@@ -1,7 +1,44 @@
+'use client';
+
 import Link from 'next/link';
 import { FiSearch } from "react-icons/fi";
+import { useState, useEffect } from 'react';
 
 export default function Header() {
+  const [user, setUser] = useState<{ username: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        } else {
+          localStorage.removeItem('authToken');
+        }
+      } catch (err) {
+        console.error('Auth check failed:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   return (
       <header className="border-b bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
@@ -30,19 +67,32 @@ export default function Header() {
               New page
             </button>
 
-            <Link
-            href="/login"
-            className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
-            >
-            Log in
-            </Link>
+            {!loading && user ? (
+              <>
+                <Link
+                  href="/profile"
+                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+                >
+                  {user.username}
+                </Link>
+              </>
+            ) : !loading ? (
+              <>
+                <Link
+                  href="/login"
+                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+                >
+                  Log in
+                </Link>
 
-                        <Link
-              href="/register"
-              className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
-              >
-              Register
-            </Link>
+                <Link
+                  href="/register"
+                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+                >
+                  Register
+                </Link>
+              </>
+            ) : null}
           </div>
         </div>
       </header>
