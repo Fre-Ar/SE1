@@ -14,6 +14,7 @@ export default function SearchPage() {
   );
   const [results, setResults] = useState<StoryListItem[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
+  const [sort, setSort] = useState<string>('newest');
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
 
@@ -24,6 +25,7 @@ export default function SearchPage() {
       const params = new URLSearchParams();
       if (query) params.append('query', query);
       if (selectedTags.length > 0) params.append('tags', selectedTags.join(','));
+      if (sort) params.append('sort', sort);
 
       const response = await fetch(`/api/stories?${params.toString()}`);
       const data: PaginatedResponse<StoryListItem> = await response.json();
@@ -43,7 +45,7 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }, [query, selectedTags]);
+  }, [query, selectedTags, sort]);
 
   // Fetch results when component mounts or filters change
   useEffect(() => {
@@ -68,18 +70,44 @@ export default function SearchPage() {
         <div className="mx-auto max-w-4xl">
           {/* Search Input */}
           <div className="mb-8">
-            <input
-              type="text"
-              placeholder="Search pages..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  fetchResults();
-                }
-              }}
-              className="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Search pages..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    fetchResults();
+                  }
+                }}
+                className="flex-1 border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={() => fetchResults()}
+                className="bg-uni-blue text-white px-4 py-2 rounded font-medium"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
+          {/* Sort control */}
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div />
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-600">Sort:</label>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="border rounded px-2 py-1"
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="title_asc">Title A–Z</option>
+                <option value="title_desc">Title Z–A</option>
+              </select>
+            </div>
           </div>
 
           {/* Tag Filters */}
