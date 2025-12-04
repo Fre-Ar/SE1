@@ -60,6 +60,7 @@
           "comments": []
         },
         {
+<<<<<<< Updated upstream
           "id": "e71aa74c-c591-44d7-a5c7-4857e2fdfb65",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
           "title": "Home Page UI",
@@ -85,6 +86,8 @@
           "comments": []
         },
         {
+=======
+>>>>>>> Stashed changes
           "id": "9d7b33a5-2254-4f46-809e-6d3bb5bdfc2a",
           "listId": "d0bf2712-a589-43d2-9e2b-7327c0adfc50",
           "title": "Page Creation/Editing",
@@ -193,6 +196,31 @@
       "id": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
       "title": "In Progress",
       "cards": [
+        {
+          "id": "e71aa74c-c591-44d7-a5c7-4857e2fdfb65",
+          "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
+          "title": "Home Page UI",
+          "description": "",
+          "labels": [],
+          "checkboxes": [
+            {
+              "id": "630dd00f-ff7d-48b2-a10d-d8336af47447",
+              "title": "search (bar, inputs, tags, results)",
+              "checked": false
+            },
+            {
+              "id": "0166d79f-0a3f-4ba6-819c-8fcfe5eb070b",
+              "title": "login/register ui",
+              "checked": false
+            },
+            {
+              "id": "7f73e22a-b740-4e9c-af53-ff94b752de83",
+              "title": "account settings (notifications, change username, change pwd)",
+              "checked": false
+            }
+          ],
+          "comments": []
+        },
         {
           "id": "fe247f4c-7218-4de1-a4a0-1d7bbfc6ab90",
           "listId": "8ea643e3-951f-450c-83ae-edb6d0e6ed41",
