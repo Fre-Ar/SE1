@@ -1,94 +1,63 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import crypto from "crypto";
-import process from "process";
-
+import bcrypt from "bcryptjs";
+import jwt, { Secret } from "jsonwebtoken";
 
 /**
  * POST /api/auth/login
  *
- * Authenticates a user with email and password using the same
- * PBKDF2 scheme as /api/auth/register.
- *
- * Returns a simple signed token plus a basic user profile.
+ * Authenticates a user with email and password.
+ * Returns user data and a JWT token on success.
  */
 export async function POST(req: Request) {
-  try {
-    const { email, password } = await req.json();
+	try {
+		const { email, password } = await req.json();
 
-    // Basic validation
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password are required." },
-        { status: 400 }
-      );
-    }
+		if (!email || !password) {
+			return NextResponse.json({ error: "Missing email or password" }, { status: 400 });
+		}
 
-    // Look up user by email
-    const [rows] = await db.query(
-      `
-      SELECT id_pk, username, email, password_hash, password_salt, role
-      FROM users
-      WHERE email = ?
-      `,
-      [email]
-    );
+		// Fetch user by email
+		const [rows] = await db.query(
+			"SELECT id, username, password_hash, role FROM users WHERE email = ? LIMIT 1",
+			[email]
+		);
 
-    const users = rows as any[];
+		const users = rows as any[];
+		if (users.length === 0) {
+			return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+		}
 
-    if (users.length === 0) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
+		const user = users[0];
 
-    const user = users[0];
+		// Compare password
+		const match = await bcrypt.compare(password, user.password_hash);
+		if (!match) {
+			return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+		}
 
-    // Recompute the hash using the stored salt and compare
-    const computedHash = crypto
-      .pbkdf2Sync(password, user.password_salt, 10000, 64, "sha512")
-      .toString("hex");
+		// Ensure JWT secret is set
+		const JWT_SECRET = process.env.JWT_SECRET as Secret | undefined;
+		if (!JWT_SECRET) {
+			console.error("JWT_SECRET not set");
+			return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+		}
 
-    if (computedHash !== user.password_hash) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
+		const token = (jwt as any).sign(
+			{ sub: user.id, username: user.username, role: user.role },
+			String(JWT_SECRET),
+			{ expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+		);
 
-    // Optional: update last_login timestamp
-    await db.query(
-      "UPDATE users SET last_login = NOW() WHERE id_pk = ?",
-      [user.id_pk]
-    );
-
-    // Minimal HMAC-signed token: "<userId>:<timestamp>:<signature>"
-    
-    const secret = process.env.AUTH_SECRET || "dev-secret";
-    const payload = `${user.id_pk}:${Date.now()}`;
-    const signature = crypto
-      .createHmac("sha256", secret)
-      .update(payload)
-      .digest("hex");
-
-    const token = `${payload}:${signature}`;
-
-    // Shape matches the AuthResponse type (user + token)
-    return NextResponse.json({
-      user: {
-        id: String(user.id_pk),
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-      token,
-    });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { error: "Internal server error." },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json(
+			{
+				user: { id: user.id, username: user.username, role: user.role },
+				token,
+			},
+			{ status: 200 }
+		);
+	} catch (err) {
+		console.error("Login error:", err);
+		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+	}
 }
