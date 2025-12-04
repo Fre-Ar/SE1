@@ -48,7 +48,7 @@ export interface EditHistory {
   content_fk: number;
   user_fk: number;
   actionPerformed: EditAction;
-  details: string | null;
+  details: any;
   timestamp: Date;
 }
 
