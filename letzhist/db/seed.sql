@@ -12,11 +12,11 @@ VALUES
 -- =========================================================
 -- 2) Seed USERS
 -- =========================================================
-INSERT INTO users (username, email, password_hash, password_salt, role, created_at, last_login)
+INSERT INTO users (username, email, password_hash, role, created_at, last_login)
 VALUES
-('alice', 'alice@example.com', 'hashA', 'saltA', 'contributor', NOW(), NOW()),
-('bob', 'bob@example.com', 'hashB', 'saltB', 'moderator', NOW(), NULL),
-('carol', 'carol@example.com', 'hashC', 'saltC', 'admin', NOW(), NOW());
+('alice', 'alice@example.com', 'hashA', 'contributor', NOW(), NOW()),
+('bob', 'bob@example.com', 'hashB', 'moderator', NOW(), NULL),
+('carol', 'carol@example.com', 'hashC', 'admin', NOW(), NOW());
 
 
 

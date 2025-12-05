@@ -39,20 +39,19 @@ export async function POST(req: Request) {
         }
 
     // Insert user
-    const id = uuidv4();
     const role = "contributor";
-    const insertSql = "INSERT INTO users (id_pk, username, email, password_hash, role) VALUES (?, ?, ?, ?, ?)";
-    await db.query(insertSql, [id, username, email, password_hash, role]);
+    const insertSql = "INSERT INTO users ( username, email, password_hash, role) VALUES (?, ?, ?, ?)";
+    await db.query(insertSql, [username, email, password_hash, role]);
 
     // Create token
     const token = (jwt as any).sign(
-          { sub: id, username, role },
+          { sub: username, role },
           String(JWT_SECRET),
           { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
         );
     // Response
     return NextResponse.json({
-      user: { id, username, role },
+      user: { username, role },
       token,
     }, { status: 201 });
   } catch (err: any) {
