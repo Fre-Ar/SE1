@@ -1,44 +1,32 @@
+// letzhist/app/components/header.tsx
+
 'use client';
 
 import Link from 'next/link';
 import { FiSearch } from "react-icons/fi";
-import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Header() {
-  const [user, setUser] = useState<{ username: string } | null>(null);
-  const [loading, setLoading] = useState(true);
+// Define the props structure
+interface HeaderProps {
+    user: { username: string } | null;
+}
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          setLoading(false);
-          return;
+// Header now accepts user as a prop
+export default function Header({ user }: HeaderProps) {
+    const router = useRouter(); 
+
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+            });
+            router.refresh(); // Refresh the data to update the header
+            router.push('/login');
+        } catch (error) {
+            console.error('Logout failed:', error);
+            alert('Logout failed due to an error.');
         }
-
-        const res = await fetch('/api/auth/me', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          localStorage.removeItem('authToken');
-        }
-      } catch (err) {
-        console.error('Auth check failed:', err);
-      } finally {
-        setLoading(false);
-      }
     };
-
-    checkAuth();
-  }, []);
-
   return (
       <header className="border-b bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
@@ -67,16 +55,23 @@ export default function Header() {
               New page
             </button>
 
-            {!loading && user ? (
+            {/* LOGIC IS SIMPLIFIED: Check if user object exists */}
+            {user ? (
               <>
-                <Link
-                  href="/profile"
-                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+                <span
+              className="text-sm font-semibold text-slate-700"
+              >
+              {user.username} {/* Display the username */}
+              </span>
+                
+                <button
+                  onClick={handleLogout} // <-- Re-added the Logout button
+                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-red-600 hover:bg-red-50 sm:inline"
                 >
-                  {user.username}
-                </Link>
+                  Logout
+                </button>
               </>
-            ) : !loading ? (
+            ) : (
               <>
                 <Link
                   href="/login"
@@ -92,10 +87,9 @@ export default function Header() {
                   Register
                 </Link>
               </>
-            ) : null}
+            )}
           </div>
         </div>
       </header>
   );
-  
 };
