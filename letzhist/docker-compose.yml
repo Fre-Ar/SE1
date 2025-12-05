@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   mysql:
     image: mysql:8.0
@@ -7,7 +5,8 @@ services:
     restart: always
 
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      # Using the settings that match your db.ts defaults
+      MYSQL_ROOT_PASSWORD: password 
       MYSQL_DATABASE: letz_hist_db
       MYSQL_USER: letzuser
       MYSQL_PASSWORD: letzpass
@@ -16,9 +15,12 @@ services:
       - "3306:3306"
 
     volumes:
-      # Persist DB in project directory
-      - ./db_data:/var/lib/mysql
+      - db_data_volume:/var/lib/mysql
 
-      # Auto-run schema + seed files on FIRST startup
+      # Keep your init scripts
       - ./db/init.sql:/docker-entrypoint-initdb.d/1-init.sql
       - ./db/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+
+# ✅ NEW SECTION: Define the volume
+volumes:
+  db_data_volume:

@@ -16,13 +16,13 @@ export async function POST(req: Request) {
 		if (!email || !password) {
 			return NextResponse.json({ error: "Missing email or password" }, { status: 400 });
 		}
-
+		console.log(db);
 		// Fetch user by email
 		const [rows] = await db.query(
 			"SELECT id, username, password_hash, role FROM users WHERE email = ? LIMIT 1",
 			[email]
 		);
-
+		console.log(rows);
 		const users = rows as any[];
 		if (users.length === 0) {
 			return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });

@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
     // Check uniqueness
-    const [rows] = await db.query("SELECT id, username, email FROM users WHERE email = ? OR username = ? LIMIT 1", [email, username]);
+    const [rows] = await db.query("SELECT id_pk, username, email FROM users WHERE email = ? OR username = ? LIMIT 1", [email, username]);
     // rows could be RowDataPacket[] or similar
     if ((rows as any[]).length > 0) {
       const existing = (rows as any[])[0];
