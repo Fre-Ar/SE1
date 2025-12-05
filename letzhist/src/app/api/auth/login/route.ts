@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 		console.log(db);
 		// Fetch user by email
 		const [rows] = await db.query(
-			"SELECT id, username, password_hash, role FROM users WHERE email = ? LIMIT 1",
+			"SELECT id_pk, username, password_hash, role FROM users WHERE email = ? LIMIT 1",
 			[email]
 		);
 		console.log(rows);

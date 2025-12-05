@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     // Insert user
     const id = uuidv4();
     const role = "contributor";
-    const insertSql = "INSERT INTO users (id, username, email, password_hash, role) VALUES (?, ?, ?, ?, ?)";
+    const insertSql = "INSERT INTO users (id_pk, username, email, password_hash, role) VALUES (?, ?, ?, ?, ?)";
     await db.query(insertSql, [id, username, email, password_hash, role]);
 
     // Create token
