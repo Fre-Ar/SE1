@@ -32,9 +32,8 @@ CREATE TABLE users (
   username VARCHAR(25) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  password_salt VARCHAR(255) NOT NULL,
   role ENUM('contributor','moderator','admin') DEFAULT 'contributor',
-  created_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP NULL
 );
 

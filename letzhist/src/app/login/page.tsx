@@ -1,23 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const res = await fetch("/api/auth/login", {
       method: "POST",
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
+      redirect: 'manual',
     });
 
-    if (res.ok) {
-      alert("Logged in!");
-    } else {
-      alert("Invalid credentials");
+    if (res.status === 302|| res.status === 0) {
+        // Successful login! The server sent a redirect response.
+        // We must now manually tell the client to navigate.
+        router.push('/');
+        return;
+    }
+    if (res.status === 401) {
+        alert("Invalid credentials");
+    }else {
+        // Handles 400 (Bad Request), 500 (Server Error), etc.
+        alert("Login failed due to a server error. Status: " + res.status);
     }
   }
 

@@ -43,3 +43,5 @@ next-env.d.ts
 #db
 db_data/
 /db_data
+.process.env*
+/mysql_data/*

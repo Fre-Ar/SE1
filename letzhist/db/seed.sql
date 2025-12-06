@@ -12,11 +12,11 @@ VALUES
 -- =========================================================
 -- 2) Seed USERS
 -- =========================================================
-INSERT INTO users (username, email, password_hash, password_salt, role, created_at, last_login)
+INSERT INTO users (username, email, password_hash, role, created_at, last_login)
 VALUES
-('alice', 'alice@example.com', 'hashA', 'saltA', 'contributor', NOW(), NOW()),
-('bob', 'bob@example.com', 'hashB', 'saltB', 'moderator', NOW(), NULL),
-('carol', 'carol@example.com', 'hashC', 'saltC', 'admin', NOW(), NOW());
+('alice', 'alice@example.com', 'hashA', 'contributor', NOW(), NOW()),
+('bob', 'bob@example.com', 'hashB', 'moderator', NOW(), NULL),
+('carol', 'carol@example.com', 'hashC', 'admin', NOW(), NOW());
 
 
 
@@ -31,14 +31,13 @@ VALUES
 (3, 3, 'Important topic, well explained.', NOW());
 
 
-
 -- =========================================================
 -- 4) Seed DISPUTES (initial insertion)
 -- =========================================================
-INSERT INTO dispute (content_fk, disputing_pk_sk, reason, currentStatus, created_at)
+INSERT INTO dispute (content_fk, reason, currentStatus, created_at)
 VALUES
-(1, NULL, 'Contains factual inaccuracies.', 'open', NOW()),
-(3, NULL, 'Potential bias in wording.', 'under_review', NOW());
+(1, 'Contains factual inaccuracies.', 'open', NOW()),
+(3, 'Potential bias in wording.', 'under_review', NOW());
 
 
 
