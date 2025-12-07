@@ -36,7 +36,7 @@ export interface Dispute {
   id_pk: number;
   content_fk: number;
   reason: string;
-  currentStatus: DsiputeStatus;
+  currentStatus: DisputeStatus;
   createdAt: Date;
   updatedAt: Date | null;
 }
