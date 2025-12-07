@@ -1,5 +1,5 @@
-import type { Content } from "../types"
-import { db } from "../pool"
+import type { Content } from "../types";
+import { db } from "../pool";
 
 
 export interface CreateContentInput {
