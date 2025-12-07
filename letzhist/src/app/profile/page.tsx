@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '../../components/header';
 import type { UserProfile } from '../../components/data_types';
 
 export default function ProfilePage() {
@@ -24,25 +23,17 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          router.push('/login');
-          return;
-        }
-
         const res = await fetch('/api/auth/me', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: 'include',
         });
 
         if (!res.ok) {
           if (res.status === 401) {
-            localStorage.removeItem('authToken');
             router.push('/login');
             return;
           }
-          throw new Error('Failed to fetch profile');
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to fetch profile');
         }
 
         const data = await res.json();
@@ -69,13 +60,12 @@ export default function ProfilePage() {
     }
 
     try {
-      const token = localStorage.getItem('authToken');
       const res = await fetch('/api/auth/update-email', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({ email: newEmail }),
       });
 
@@ -119,13 +109,9 @@ export default function ProfilePage() {
     }
 
     try {
-      const token = localStorage.getItem('authToken');
       const res = await fetch('/api/auth/update-password', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
         body: JSON.stringify({
           currentPassword,
           newPassword,
@@ -149,17 +135,13 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('authToken');
       await fetch('/api/auth/logout', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      localStorage.removeItem('authToken');
       router.push('/');
     }
   };
@@ -167,7 +149,6 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="grow flex items-center justify-center">
           <p>Loading profile...</p>
         </main>
@@ -178,7 +159,6 @@ export default function ProfilePage() {
   if (error || !user) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="grow flex items-center justify-center">
           <div className="text-center">
             <p className="text-red-600 font-semibold">{error || 'Failed to load profile'}</p>
@@ -190,10 +170,8 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header />
       <main className="grow px-4 py-8">
         <div className="mx-auto max-w-2xl">
-          {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-800">Profile</h1>
             <button

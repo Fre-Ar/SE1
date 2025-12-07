@@ -19,9 +19,11 @@ export default function Header({ user }: HeaderProps) {
         try {
             await fetch('/api/auth/logout', {
                 method: 'POST',
+                credentials: 'include',
             });
-            router.refresh(); // Refresh the data to update the header
-            router.push('/login');
+            // Redirect to home page - the cookie will be cleared
+            router.push('/');
+            router.refresh();
         } catch (error) {
             console.error('Logout failed:', error);
             alert('Logout failed due to an error.');

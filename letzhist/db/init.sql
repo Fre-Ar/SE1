@@ -22,6 +22,7 @@ CREATE TABLE content (
   place VARCHAR(255) NOT NULL,
   era VARCHAR(100) NOT NULL,
   theme VARCHAR(100) NOT NULL,
+  is_removed BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NULL
 );
@@ -33,6 +34,9 @@ CREATE TABLE users (
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('contributor','moderator','admin') DEFAULT 'contributor',
+  is_banned BOOLEAN DEFAULT FALSE,
+  is_muted BOOLEAN DEFAULT FALSE,
+  muted_until TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP NULL
 );
@@ -90,4 +94,17 @@ CREATE TABLE disputing (
   FOREIGN KEY (dispute_fk) REFERENCES dispute(id_pk) ON DELETE CASCADE,
   FOREIGN KEY (user1_fk) REFERENCES users(id_pk) ON DELETE CASCADE,
   FOREIGN KEY (user2_fk) REFERENCES users(id_pk) ON DELETE CASCADE
+);
+
+-- 8) AUDIT LOG ----------------------------------------------------------
+CREATE TABLE audit_log (
+  id_pk INT AUTO_INCREMENT PRIMARY KEY,
+  actor_fk INT NOT NULL,
+  action VARCHAR(50) NOT NULL,
+  target_type ENUM('user','content','story') NOT NULL,
+  target_id INT,
+  target_name VARCHAR(255),
+  reason TEXT,
+  timestamp TIMESTAMP DEFAULT NOW(),
+  FOREIGN KEY (actor_fk) REFERENCES users(id_pk) ON DELETE SET NULL
 );

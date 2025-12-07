@@ -3,10 +3,9 @@ import { db } from "@/lib/db";
 import jwt, { Secret } from "jsonwebtoken";
 
 /**
- * POST /api/moderation/users/[id]/ban
+ * POST /api/admin/users/[id]/promote
  *
- * Bans a user. Only moderators and admins can perform this action.
- * Requires: reason (optional)
+ * Promotes a user to moderator. Only admins can perform this action.
  */
 export async function POST(
   req: NextRequest,
@@ -48,31 +47,28 @@ export async function POST(
       );
     }
 
-    // Check moderator or admin role
+    // Check admin role
     const [actorRows] = await db.query(
       "SELECT role FROM users WHERE id_pk = ? LIMIT 1",
       [decoded.sub]
     );
 
     const actors = actorRows as any[];
-    if (
-      actors.length === 0 ||
-      (actors[0].role !== "moderator" && actors[0].role !== "admin")
-    ) {
+    if (actors.length === 0 || actors[0].role !== "admin") {
       return NextResponse.json(
-        { error: "Forbidden - only moderators and admins can ban users" },
+        { error: "Forbidden - only admins can promote users" },
         { status: 403 }
       );
     }
 
-    // Get the user to ban
+    // Get the user to promote
     const targetId = parseInt(params.id, 10);
     if (isNaN(targetId)) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
     }
 
     const [targetRows] = await db.query(
-      "SELECT id_pk, username, is_banned FROM users WHERE id_pk = ? LIMIT 1",
+      "SELECT id_pk, username, role FROM users WHERE id_pk = ? LIMIT 1",
       [targetId]
     );
 
@@ -83,38 +79,34 @@ export async function POST(
 
     const targetUser = targets[0];
 
-    if (targetUser.is_banned) {
+    if (targetUser.role === "moderator" || targetUser.role === "admin") {
       return NextResponse.json(
-        { error: "User is already banned" },
+        { error: "User is already a moderator or admin" },
         { status: 400 }
       );
     }
 
-    // Parse request body
-    const body = await req.json();
-    const { reason } = body;
-
-    // Ban the user
-    await db.query("UPDATE users SET is_banned = TRUE WHERE id_pk = ?", [
+    // Promote the user to moderator
+    await db.query("UPDATE users SET role = 'moderator' WHERE id_pk = ?", [
       targetId,
     ]);
 
     // Log the action
     await db.query(
-      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
-      [decoded.sub, "ban_user", "user", targetId, targetUser.username, reason || null]
+      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name) VALUES (?, ?, ?, ?, ?)",
+      [decoded.sub, "promote_user", "user", targetId, targetUser.username]
     );
 
     return NextResponse.json({
-      message: `User ${targetUser.username} has been banned`,
+      message: `User ${targetUser.username} has been promoted to moderator`,
       user: {
         id: targetUser.id_pk,
         username: targetUser.username,
-        is_banned: true,
+        role: "moderator",
       },
     });
   } catch (err) {
-    console.error("Error banning user:", err);
+    console.error("Error promoting user:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

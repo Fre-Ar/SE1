@@ -3,9 +3,9 @@ import { db } from "@/lib/db";
 import jwt, { Secret } from "jsonwebtoken";
 
 /**
- * GET /api/moderation/logs?limit=50&page=1
+ * GET /api/moderation/users?limit=20&page=1
  *
- * Returns audit logs for moderators and admins.
+ * Returns a list of users for management by moderators and admins.
  * Only moderators and admins can access this endpoint.
  */
 export async function GET(req: NextRequest) {
@@ -57,17 +57,17 @@ export async function GET(req: NextRequest) {
       (actors[0].role !== "moderator" && actors[0].role !== "admin")
     ) {
       return NextResponse.json(
-        { error: "Forbidden - only moderators and admins can view audit logs" },
+        { error: "Forbidden - only moderators and admins can view user list" },
         { status: 403 }
       );
     }
 
     // Parse pagination params
     const url = new URL(req.url);
-    const limitParam = url.searchParams.get("limit") ?? "50";
+    const limitParam = url.searchParams.get("limit") ?? "20";
     const pageParam = url.searchParams.get("page") ?? "1";
 
-    let limit = parseInt(limitParam, 10) || 50;
+    let limit = parseInt(limitParam, 10) || 20;
     let page = parseInt(pageParam, 10) || 1;
 
     limit = Math.max(1, Math.min(100, limit));
@@ -76,41 +76,39 @@ export async function GET(req: NextRequest) {
     const offset = (page - 1) * limit;
 
     // Get total count
-    const [countRows] = await db.query("SELECT COUNT(*) as total FROM audit_log");
+    const [countRows] = await db.query("SELECT COUNT(*) as total FROM users");
     const totalCount = (countRows as any[])[0]?.total || 0;
 
-    // Get logs
-    const [logs] = await db.query(
+    // Get users
+    const [users] = await db.query(
       `SELECT 
-        al.id_pk,
-        al.actor_fk,
-        u.username as actor_username,
-        al.action,
-        al.target_type,
-        al.target_id,
-        al.target_name,
-        al.reason,
-        al.timestamp
-      FROM audit_log al
-      LEFT JOIN users u ON al.actor_fk = u.id_pk
-      ORDER BY al.timestamp DESC
+        id_pk,
+        username,
+        email,
+        role,
+        is_banned,
+        is_muted,
+        muted_until,
+        created_at
+      FROM users
+      ORDER BY created_at DESC
       LIMIT ? OFFSET ?`,
       [limit, offset]
     );
 
-    const formattedLogs = (logs as any[]).map((log) => ({
-      id: String(log.id_pk),
-      actor: log.actor_username,
-      action: log.action,
-      targetType: log.target_type,
-      targetId: log.target_id,
-      targetName: log.target_name,
-      reason: log.reason,
-      timestamp: log.timestamp ? new Date(log.timestamp).toISOString() : null,
+    const formattedUsers = (users as any[]).map((user) => ({
+      id: String(user.id_pk),
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      isBanned: user.is_banned,
+      isMuted: user.is_muted,
+      mutedUntil: user.muted_until ? new Date(user.muted_until).toISOString() : null,
+      createdAt: user.created_at ? new Date(user.created_at).toISOString() : null,
     }));
 
     return NextResponse.json({
-      data: formattedLogs,
+      data: formattedUsers,
       meta: {
         page,
         limit,
@@ -119,7 +117,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err) {
-    console.error("Error fetching audit logs:", err);
+    console.error("Error fetching users:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

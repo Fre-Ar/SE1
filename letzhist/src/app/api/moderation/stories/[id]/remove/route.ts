@@ -3,9 +3,9 @@ import { db } from "@/lib/db";
 import jwt, { Secret } from "jsonwebtoken";
 
 /**
- * POST /api/moderation/users/[id]/ban
+ * POST /api/moderation/stories/[id]/remove
  *
- * Bans a user. Only moderators and admins can perform this action.
+ * Removes a published story/page. Only moderators and admins can perform this action.
  * Requires: reason (optional)
  */
 export async function POST(
@@ -60,32 +60,32 @@ export async function POST(
       (actors[0].role !== "moderator" && actors[0].role !== "admin")
     ) {
       return NextResponse.json(
-        { error: "Forbidden - only moderators and admins can ban users" },
+        { error: "Forbidden - only moderators and admins can remove stories" },
         { status: 403 }
       );
     }
 
-    // Get the user to ban
-    const targetId = parseInt(params.id, 10);
-    if (isNaN(targetId)) {
-      return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
+    // Get the story to remove
+    const storyId = parseInt(params.id, 10);
+    if (isNaN(storyId)) {
+      return NextResponse.json({ error: "Invalid story ID" }, { status: 400 });
     }
 
-    const [targetRows] = await db.query(
-      "SELECT id_pk, username, is_banned FROM users WHERE id_pk = ? LIMIT 1",
-      [targetId]
+    const [storyRows] = await db.query(
+      "SELECT id_pk, title, is_removed FROM content WHERE id_pk = ? LIMIT 1",
+      [storyId]
     );
 
-    const targets = targetRows as any[];
-    if (targets.length === 0) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const stories = storyRows as any[];
+    if (stories.length === 0) {
+      return NextResponse.json({ error: "Story not found" }, { status: 404 });
     }
 
-    const targetUser = targets[0];
+    const story = stories[0];
 
-    if (targetUser.is_banned) {
+    if (story.is_removed) {
       return NextResponse.json(
-        { error: "User is already banned" },
+        { error: "Story is already removed" },
         { status: 400 }
       );
     }
@@ -94,27 +94,27 @@ export async function POST(
     const body = await req.json();
     const { reason } = body;
 
-    // Ban the user
-    await db.query("UPDATE users SET is_banned = TRUE WHERE id_pk = ?", [
-      targetId,
+    // Remove the story
+    await db.query("UPDATE content SET is_removed = TRUE WHERE id_pk = ?", [
+      storyId,
     ]);
 
     // Log the action
     await db.query(
       "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
-      [decoded.sub, "ban_user", "user", targetId, targetUser.username, reason || null]
+      [decoded.sub, "remove_story", "story", storyId, story.title, reason || null]
     );
 
     return NextResponse.json({
-      message: `User ${targetUser.username} has been banned`,
-      user: {
-        id: targetUser.id_pk,
-        username: targetUser.username,
-        is_banned: true,
+      message: `Story "${story.title}" has been removed`,
+      story: {
+        id: story.id_pk,
+        title: story.title,
+        is_removed: true,
       },
     });
   } catch (err) {
-    console.error("Error banning user:", err);
+    console.error("Error removing story:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
