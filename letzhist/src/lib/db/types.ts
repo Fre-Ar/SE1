@@ -1,18 +1,18 @@
 export type UserRole = "contributor" | "moderator" | "admin";
 
 export interface User {
-  id_pk: number;
+  id: number;
   username: string;
   email: string;
-  password_hash: string;
-  password_salt: string;
+  passwordHash: string;
+  passwordSalt: string;
   role: UserRole;
   createdAt: Date;
   lastLogin: Date;
 }
 
 export interface Content {
-  id_pk: number;
+  id: number;
   title: string;
   body: string;
   place: string;
@@ -23,9 +23,9 @@ export interface Content {
 }
 
 export interface Comment {
-  id_pk: number;
-  content_fk: number;
-  user_fk: number;
+  id: number;
+  contentId: number;
+  userId: number;
   body: string;
   createdAt: Date;
 }
@@ -33,10 +33,10 @@ export interface Comment {
 export type DisputeStatus = "open" | "under_review" | "resolved" | "dismissed";
 
 export interface Dispute {
-  id_pk: number;
-  content_fk: number;
+  id: number;
+  contentId: number;
   reason: string;
-  currentStatus: DisputeStatus;
+  status: DisputeStatus;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -44,24 +44,24 @@ export interface Dispute {
 export type EditAction = "create" | "update" | "delete";
 
 export interface EditHistory {
-  id_pk: number;
-  content_fk: number;
-  user_fk: number;
+  id: number;
+  contentId: number;
+  userId: number;
   actionPerformed: EditAction;
   details: any;
   timestamp: Date;
 }
 
 export interface Edits {
-  id_pk: number;
-  user_fk: number;
-  edit_fk: number;
+  id: number;
+  userId: number;
+  editId: number;
 }
 
 export interface Disputing {
-  id_pk: number;
-  dispute_fk: number;
-  user1_fk: number;
-  user2_fk: number;
+  id: number;
+  disputeId: number;
+  user1Id: number;
+  user2Id: number;
   timestamp: Date;
 }
