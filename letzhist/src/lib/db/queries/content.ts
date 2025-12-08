@@ -56,15 +56,15 @@ export async function createContent(data: CreateContentInput): Promise<Content> 
   const [result]: any = await db.query(query, params);
 
   return {
-    id_pk: result.insertId,
+    id: result.insertId,
     ...data,
     createdAt: new Date(),
     updatedAt: new Date()
   };
 }
 
-export async function getContentById(id_pk: number): Promise<Content | null> {
-  const [rows] = await db.query("SELECT * FROM content WHERE id_pk = ?", [id_pk]);
+export async function getContentById(id: number): Promise<Content | null> {
+  const [rows] = await db.query("SELECT * FROM content WHERE id_pk = ?", [id]);
   const row = (rows as Content[])[0];
   return row ?? null;
 }
@@ -75,12 +75,12 @@ export async function getContentBySlug(slug: string): Promise<Content[] | null> 
   return rows ?? null;
 }
 
-export async function updateContent(id_pk: number, data: UpdateContentInput): Promise<Content | null> {
+export async function updateContent(id: number, data: UpdateContentInput): Promise<Content | null> {
   const fields = Object.keys(data);
   if (fields.length === 0) return getContentById(id_pk);
 
   const setClause = fields.map(f => `$(f) = ?`).join(", ");
-  const params = [...fields.map(f => (data as any)[f]), id_pk];
+  const params = [...fields.map(f => (data as any)[f]), id];
 
   const query = `
     UPDATE content
