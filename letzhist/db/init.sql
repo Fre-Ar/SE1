@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS report;
 DROP TABLE IF EXISTS edit_history;
 DROP TABLE IF EXISTS disputing;
 DROP TABLE IF EXISTS edits;
-
+DROP TABLE IF EXISTS tags;
 -- 1) CONTENT -----------------------------------------------------------
 CREATE TABLE content (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,6 +26,14 @@ CREATE TABLE content (
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NULL
 );
+
+CREATE TABLE tags (
+  id_pk INT AUTO_INCREMENT PRIMARY KEY,
+  content_fk INT NOT NULL,
+  tag VARCHAR(50) NOT NULL,
+  FOREIGN KEY (content_fk) REFERENCES content(id_pk) ON DELETE CASCADE
+);
+
 
 -- 2) USERS --------------------------------------------------------------
 CREATE TABLE users (
