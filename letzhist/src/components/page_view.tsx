@@ -59,8 +59,6 @@ export const PageView: React.FC<PageViewProps> = ({ page }) => {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
-      <Header />
-
       {/* Main layout */}
       <main className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-6 lg:flex-row">
         {/* Main content */}
