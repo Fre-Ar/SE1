@@ -3,7 +3,7 @@ import { db } from "../pool";
 import { getContentBySlug } from "./content"
 
 
-export async function createComment(slug: string, user_id: number, body: string): Promise<Comment | null> {
+export async function createComment(slug: string, user_fk: number, body: string): Promise<Comment | null> {
   const content = await getContentBySlug(slug);
   if (!content) return null;
 

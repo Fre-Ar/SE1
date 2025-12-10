@@ -71,8 +71,8 @@ export async function getContentById(id: number): Promise<Content | null> {
 
 export async function getContentBySlug(slug: string): Promise<Content[] | null> {
   const [rows] = await db.query("SELECT * FROM content WHERE LOWER(REPLACE(title, ' ', '_')) = ?", [slug.toLowerCase()]);
-
-  return rows ?? null;
+  const row = (rows as Content[]);
+  return row ?? null;
 }
 
 export async function updateContent(id: number, data: UpdateContentInput): Promise<Content | null> {

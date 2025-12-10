@@ -20,7 +20,5 @@ services:
       # Keep your init scripts
       - ./db/init.sql:/docker-entrypoint-initdb.d/1-init.sql
       - ./db/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
-
-# ✅ NEW SECTION: Define the volume
 volumes:
   db_data_volume:

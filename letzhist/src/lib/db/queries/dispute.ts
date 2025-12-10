@@ -26,7 +26,7 @@ export async function getAllDisputes(): Promise<Dispute[]> {
 
 export async function getDisputeById(id: number): Promise<Dispute | null> {
   const [rows] = await db.query("SELECT * FROM dispute WHERE id_pk = ?", [id]);
-  const row = (rows as Content[])[0];
+  const row = (rows as Dispute[])[0];
 
   return row ?? null;
 }

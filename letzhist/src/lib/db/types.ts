@@ -1,18 +1,17 @@
 export type UserRole = "contributor" | "moderator" | "admin";
 
 export interface User {
-  id: number;
+  id_pk: number;
   username: string;
   email: string;
   passwordHash: string;
-  passwordSalt: string;
   role: UserRole;
   createdAt: Date;
   lastLogin: Date;
 }
 
 export interface Content {
-  id: number;
+  id_pk: number;
   title: string;
   body: string;
   place: string;
@@ -23,9 +22,9 @@ export interface Content {
 }
 
 export interface Comment {
-  id: number;
-  contentId: number;
-  userId: number;
+  id_pk: number;
+  content_fk: number;
+  user_fk: number;
   body: string;
   createdAt: Date;
 }
