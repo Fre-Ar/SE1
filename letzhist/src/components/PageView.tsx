@@ -3,19 +3,11 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { StoryViewDTO, Comment, UserSummary } from "@/components/data_types";
+import { StoryViewDTO, Comment, UserSummary, RevisionLogEntry } from "@/components/data_types";
 
 // ==========================================
 // TYPES (Ensure these are in your data_types.tsx)
 // ==========================================
-
-// Lightweight shape for the history list
-type RevisionLogEntry = {
-  revisionId: string;
-  date: string;
-  author: UserSummary;
-  changeMessage: string;
-};
 
 type PageViewProps = {
   initialData: StoryViewDTO; // Server Component passes the initial state here
@@ -62,9 +54,9 @@ export const PageView: React.FC<PageViewProps> = ({ initialData }) => {
     // MOCK DATA
     setTimeout(() => {
       setHistory([
-        { revisionId: "rev-3", date: "2025-11-18", author: { id: "u1", username: "ArmandoF" }, changeMessage: "Fixed typos" },
-        { revisionId: "rev-2", date: "2025-11-15", author: { id: "u2", username: "HistoryBuff" }, changeMessage: "Added 19th century section" },
-        { revisionId: "rev-1", date: "2025-11-10", author: { id: "u1", username: "ArmandoF" }, changeMessage: "Initial draft" },
+        { revisionId: "rev-3", parentId: 'rev-2', date: "2025-11-18", author: { id: "u1", username: "ArmandoF" }, changeMessage: "Fixed typos" , isCurrent: true},
+        { revisionId: "rev-2", parentId: 'rev-1', date: "2025-11-15", author: { id: "u2", username: "HistoryBuff" }, changeMessage: "Added 19th century section" ,  isCurrent: false},
+        { revisionId: "rev-1", parentId: null, date: "2025-11-10", author: { id: "u1", username: "ArmandoF" }, changeMessage: "Initial draft", isCurrent: false},
       ]);
       setIsLoadingHistory(false);
     }, 800);
