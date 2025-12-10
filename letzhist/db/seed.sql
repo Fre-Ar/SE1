@@ -12,9 +12,9 @@ INSERT INTO users (username, email, password_hash, role, is_banned, is_muted, cr
 -- 2. STORIES (The Containers)
 -- ==========================================================
 
-INSERT INTO story (slug, created_at) VALUES 
-('grand-ducal-palace', NOW()), -- ID 1
-('casemates-bock',     NOW()); -- ID 2
+INSERT INTO story (slug, created_at, liveTitle) VALUES 
+('grand-ducal-palace', NOW(), 'The Grand Ducal Palace'), -- ID 1
+('casemates-bock',     NOW(), 'The Bock Casemates'); -- ID 2
 
 -- ==========================================================
 -- 3. REVISIONS (The Snapshots)
