@@ -6,7 +6,7 @@
 
 -- Drop tables if they exist (safe reset)
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS content;
+DROP TABLE IF EXISTS storyContent;
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS dispute;
 DROP TABLE IF EXISTS report;
@@ -14,25 +14,16 @@ DROP TABLE IF EXISTS edit_history;
 DROP TABLE IF EXISTS disputing;
 DROP TABLE IF EXISTS edits;
 DROP TABLE IF EXISTS tags;
--- 1) CONTENT -----------------------------------------------------------
-CREATE TABLE content (
-  id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  body TEXT NOT NULL,
-  slug VARCHAR(255) NOT NULL UNIQUE,
-  place VARCHAR(255) NOT NULL,
-  era VARCHAR(100) NOT NULL,
-  theme VARCHAR(100) NOT NULL,
-  is_removed BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NULL
-);
+DROP TABLE IF EXISTS images;
+DROP TABLE IF EXISTS storyRevision;
+
+-- 1) STORYCONTENT -----------------------------------------------------------
 
 CREATE TABLE tags (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  content_fk INT NOT NULL,
+  storyRevision_fk INT NOT NULL,
   tag VARCHAR(50) NOT NULL,
-  FOREIGN KEY (content_fk) REFERENCES content(id_pk) ON DELETE CASCADE
+  FOREIGN KEY (storyRevision_fk) REFERENCES storyRevision(id_pk) ON DELETE CASCADE
 );
 
 
@@ -50,61 +41,74 @@ CREATE TABLE users (
   last_login TIMESTAMP NULL
 );
 
+-- 2) STORYREVISION (The "Commit" - fulfills export type StoryRevision)
+CREATE TABLE storyRevision (
+  id_pk INT AUTO_INCREMENT PRIMARY KEY,
+  
+  title VARCHAR(255) NOT NULL,
+  subtitle VARCHAR(255) NULL,
+  body TEXT NOT NULL,
+  story_fk INT NOT NULL,
+  slug VARCHAR(255) NOT NULL, 
+  leadImage JSON NULL,
+  
+  parentId_fk INT NULL,
+  author_fk INT NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  changeMessage VARCHAR(255) NULL,
+  
+  revStatus ENUM ('draft','published','archived','rejected') DEFAULT 'draft', 
+  
+
+  FOREIGN KEY (parentId_fk) REFERENCES storyRevision(id_pk) ON DELETE SET NULL,
+  FOREIGN KEY (author_fk) REFERENCES users(id_pk) ON DELETE SET NULL 
+  FOREIGN KEY (story_fk) REFERENCES story(id_pk) ON DELETE CASCADE
+);
+
+-- 1) THE STORY CONTAINER (The "Repository" - fulfills export type Story)
+CREATE TABLE story (
+  id_pk INT AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  
+
+  liveTitle VARCHAR(255) NOT NULL,
+);
+
 -- 3) COMMENT ------------------------------------------------------------
 CREATE TABLE comment (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  content_fk INT NOT NULL,
+  story_fk INT NOT NULL,
+  revision_fk INT NOT NULL,
   user_fk INT NOT NULL,
   body TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL,
-  FOREIGN KEY (content_fk) REFERENCES content(id_pk) ON DELETE CASCADE,
+  FOREIGN KEY (revision_fk) REFERENCES storyRevision(id_pk) ON DELETE CASCADE,
+  FOREIGN KEY (story_fk) REFERENCES story(id_pk) ON DELETE CASCADE,
   FOREIGN KEY (user_fk) REFERENCES users(id_pk) ON DELETE CASCADE
 );
 
 -- 4) DISPUTE ------------------------------------------------------------
+-- 4) DISPUTE (REVISED: Using the Generic Relationship Pattern)
 CREATE TABLE dispute (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  content_fk INT NOT NULL,
+
+  target_type ENUM('comment', 'user', 'story', 'revision') NOT NULL,
+  target_id INT NOT NULL,
+  contextRevision_fk INT NULL,
+  category ENUM('accuracy', 'bias', 'citation_missing', 'spam', 'harassment', 'hate_speech', 'violence', 'other') NOT NULL, 
   reason TEXT NOT NULL,
-  currentStatus ENUM('open','under_review','resolved','dismissed') DEFAULT 'open',
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NULL,
-  FOREIGN KEY (content_fk) REFERENCES content(id_pk) ON DELETE CASCADE
+  currentStatus ENUM('open','under_review','resolved','dismissed') DEFAULT 'open', 
+  reporter_fk INT NOT NULL, 
+  created_at TIMESTAMP DEFAULT NOW(),
+  resolvedBy_fk INT NULL, 
+  resolutionNotes TEXT NULL, 
+  resolvedAt TIMESTAMP NULL, 
+  FOREIGN KEY (contextRevision_fk) REFERENCES storyRevision(id_pk) ON DELETE SET NULL,
+  FOREIGN KEY (reporter_fk) REFERENCES users(id_pk) ON DELETE CASCADE,
+  FOREIGN KEY (resolvedBy_fk) REFERENCES users(id_pk) ON DELETE SET NULL
+  -- We CANNOT add a FK for target_id.
 );
-
--- 5) EDIT HISTORY --------------------------------------------------------
-CREATE TABLE edit_history (
-  id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  content_fk INT NOT NULL,
-  user_fk INT NOT NULL,
-  actionPerformed ENUM('create','update','delete') NOT NULL,
-  details JSON NULL,
-  edit_timestamp TIMESTAMP NOT NULL,
-  FOREIGN KEY (content_fk) REFERENCES content(id_pk) ON DELETE CASCADE,
-  FOREIGN KEY (user_fk) REFERENCES users(id_pk) ON DELETE CASCADE
-);
-
--- 6) EDITS --------------------------------------------------------------
-CREATE TABLE edits (
-    id_pk INT AUTO_INCREMENT PRIMARY KEY,
-    user_fk INT NOT NULL,
-    edit_fk INT NOT NULL,
-    FOREIGN KEY (user_fk) REFERENCES users(id_pk) ON DELETE CASCADE,
-    FOREIGN KEY (edit_fk) REFERENCES edit_history(id_pk) ON DELETE CASCADE
-);
-
--- 7) DISPUTING ----------------------------------------------------------
-CREATE TABLE disputing (
-  id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  dispute_fk INT NOT NULL,
-  user1_fk INT NOT NULL,
-  user2_fk INT NOT NULL,
-  action_timestamp TIMESTAMP NOT NULL,
-  FOREIGN KEY (dispute_fk) REFERENCES dispute(id_pk) ON DELETE CASCADE,
-  FOREIGN KEY (user1_fk) REFERENCES users(id_pk) ON DELETE CASCADE,
-  FOREIGN KEY (user2_fk) REFERENCES users(id_pk) ON DELETE CASCADE
-);
-
 -- 8) AUDIT LOG ----------------------------------------------------------
 CREATE TABLE audit_log (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
