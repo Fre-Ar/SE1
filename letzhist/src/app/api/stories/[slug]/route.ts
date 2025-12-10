@@ -39,8 +39,10 @@ interface CommentRow {
 // 1. GET /api/stories/:slug (Load for ReaderView)
 // ==========================================
 
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
-  const { slug } = params;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  console.log('SLUG:', slug);
     
   try {
     // 1. Fetch the Story Container and its CURRENT PUBLISHED Revision
@@ -115,6 +117,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       status: 'visible',
     }));
 
+    //if (storyRow.leadImage) console.log('LEAD IMAGE:', typeof storyRow.leadImage);
+
     // Construct the StoryViewDTO (explicit assertion bypasses the compiler issue)
     const storyView: StoryViewDTO = {
       // StoryContent part
@@ -123,7 +127,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       slug: storyRow.slug,
       body: storyRow.body, 
       tags: storyRow.tags ? storyRow.tags.split(',') : [],
-      leadImage: storyRow.leadImage ? JSON.parse(storyRow.leadImage) : undefined, 
+      leadImage: storyRow.leadImage ? storyRow.leadImage : undefined, 
       
       // StoryViewDTO specific fields
       storyId: storyRow.storyId.toString(),
@@ -201,7 +205,7 @@ export async function POST(req: NextRequest) {
 
     // 4. Return the new DTO (by running the GET logic)
     // We assume the db object can handle a simplified query for the single story fetch
-    return GET(req, { params: { slug: newSlug } });
+    return GET(req, { params: Promise.resolve({ slug: newSlug }) });
 
   } catch (error) {
     console.error('Error creating story:', error);
@@ -214,8 +218,8 @@ export async function POST(req: NextRequest) {
 // 3. PUT /api/stories/:slug (Create New Revision)
 // ==========================================
 
-export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
-  const { slug } = params;
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const payload: SaveStoryPayload = await req.json();
   const {authorId}  = await req.json();
 
@@ -272,7 +276,7 @@ export async function PUT(req: NextRequest, { params }: { params: { slug: string
     }
 
     // 4. Return the new DTO
-    return GET(req, { params: { slug: slug } });
+    return GET(req, { params: Promise.resolve({ slug: slug }) });
 
   } catch (error) {
     console.error(`Error updating story with slug ${slug}:`, error);

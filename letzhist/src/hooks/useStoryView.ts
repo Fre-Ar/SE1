@@ -1,3 +1,5 @@
+"use client";
+
 import { StoryViewDTO } from "@/components/data_types";
 
 export async function useStoryView(slug: string) {
