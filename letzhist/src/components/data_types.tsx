@@ -62,7 +62,7 @@ export type StoryContent = {
   title: string;
   subtitle?: string;
   slug: string; // e.g., 'old-town-hall'
-  bodyMarkdown: string; // The main text content
+  body: string; // The main text content
   tags: string[];
   // Metadata for the lead image (stored here to be versioned!)
   leadImage?: {

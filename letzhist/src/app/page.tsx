@@ -18,10 +18,6 @@ export default function Home() {
             <button className="text-white bg-uni-blue font-bold py-4 px-8 rounded">Access Page View UI</button>
           </Link>
 
-          <Link href="/welcome">
-            <button className="text-white bg-uni-blue font-bold py-4 px-8 rounded">Access Welcome Page</button>
-          </Link>
-
           <div className="mt-8 text-left">
             <h2 className="text-2xl font-semibold mb-4">Recent pages</h2>
 
