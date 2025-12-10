@@ -8,11 +8,12 @@ import { useRouter } from 'next/navigation';
 
 // Define the props structure
 interface HeaderProps {
-    user: { username: string } | null;
+  user: { username: string } | null;
+  showSearch?: boolean;
 }
 
 // Header now accepts user as a prop
-export default function Header({ user }: HeaderProps) {
+export default function Header({ user, showSearch }: HeaderProps) {
     const router = useRouter(); 
 
     const handleLogout = async () => {
@@ -29,6 +30,9 @@ export default function Header({ user }: HeaderProps) {
             alert('Logout failed due to an error.');
         }
     };
+
+  const commonButtonStyles = (hoverColor: string) => `hidden rounded-md border border-slate-300 px-3 py-1 text-sm hover:bg-${hoverColor} sm:inline`;
+
   return (
       <header className="border-b bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
@@ -42,7 +46,7 @@ export default function Header({ user }: HeaderProps) {
 
           <div className="flex items-center gap-3">
 
-            <div className="relative w-40 sm:w-64 text-slate-400">
+            {showSearch && <div className="relative w-40 sm:w-64 text-slate-400">
               <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
                 <FiSearch className="h-4 w-4 " />
               </span>
@@ -51,24 +55,23 @@ export default function Header({ user }: HeaderProps) {
                 placeholder="Search pages..."
                 className="w-full rounded-md border border-slate-300 bg-slate-50 pr-2 py-1 pl-8 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:w-64"
               />
-            </div>
+            </div>}
 
-            <button className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline">
+            <button className={`${commonButtonStyles('slate-50')}  text-slate-700`}>
               New page
             </button>
 
-            {/* LOGIC IS SIMPLIFIED: Check if user object exists */}
             {user ? (
               <>
                 <span
               className="text-sm font-semibold text-slate-700"
               >
-              {user.username} {/* Display the username */}
+              {user.username} 
               </span>
                 
                 <button
-                  onClick={handleLogout} // <-- Re-added the Logout button
-                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-red-600 hover:bg-red-50 sm:inline"
+                  onClick={handleLogout} 
+                  className={`${commonButtonStyles('slate-50')}  text-red-600`}
                 >
                   Logout
                 </button>
@@ -77,14 +80,14 @@ export default function Header({ user }: HeaderProps) {
               <>
                 <Link
                   href="/login"
-                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+                  className={`${commonButtonStyles('slate-50')} text-slate-700`}
                 >
                   Log in
                 </Link>
 
                 <Link
                   href="/register"
-                  className="hidden rounded-md border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 sm:inline"
+                  className={`${commonButtonStyles('slate-50')} text-slate-700`}
                 >
                   Register
                 </Link>

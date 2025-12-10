@@ -2,10 +2,6 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db"; // mysql2/promise pool
 import bcrypt from "bcryptjs";
 import jwt, { Secret } from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
-
-const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
 export async function POST(req: Request) {
   try {
@@ -13,18 +9,18 @@ export async function POST(req: Request) {
 
     // Basic validation
     if (!username || !email || !password) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+      return NextResponse.json({ error: "Missing fields." }, { status: 400 });
     }
     // Check uniqueness
     const [rows] = await db.query("SELECT id_pk, username, email FROM users WHERE email = ? OR username = ? LIMIT 1", [email, username]);
-    // rows could be RowDataPacket[] or similar
+
     if ((rows as any[]).length > 0) {
       const existing = (rows as any[])[0];
       if (existing.email === email) {
-        return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+        return NextResponse.json({ error: "Email already in use." }, { status: 409 });
       }
       if (existing.username === username) {
-        return NextResponse.json({ error: "Username already in use" }, { status: 409 });
+        return NextResponse.json({ error: "Username already in use." }, { status: 409 });
       }
     }
 
@@ -56,6 +52,6 @@ export async function POST(req: Request) {
     }, { status: 201 });
   } catch (err: any) {
     console.error("Register error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

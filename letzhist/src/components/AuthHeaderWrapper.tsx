@@ -1,20 +1,19 @@
-// letzhist/app/components/AuthHeaderWrapper.tsx
-
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import Header from './header'; 
 
-// Define the shape of your token payload
 interface JwtPayload {
-     sub: number; 
+    sub: number; 
     username: string;
     role: string;
     exp: number;
 }
 
-// Keep 'async' here as it's required for dynamic APIs
-export default async function AuthHeaderWrapper() { 
-    // FINAL FIX: Add 'await' to resolve the cookies object properly.
+interface AuthHeaderProps {
+  showSearch?: boolean;
+}
+
+export default async function AuthHeaderWrapper({ showSearch }: AuthHeaderProps) { 
     const cookieStore = await cookies(); 
     const token = cookieStore.get('auth_token')?.value; 
 
@@ -33,5 +32,5 @@ export default async function AuthHeaderWrapper() {
             console.error("Token verification failed in header:", e);
             }
     }
-    return <Header user={user} />;
+    return <Header user={user} showSearch={showSearch}/>;
 }

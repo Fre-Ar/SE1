@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthHeaderWrapper />
+        <AuthHeaderWrapper showSearch={true}/> {/*TODO: MOVE HEADER TO PAGES*/}
         {children}
       </body>
     </html>

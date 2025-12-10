@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage]   = useState("");
+
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -22,13 +24,14 @@ export default function LoginPage() {
         // Successful login! The server sent a redirect response.
         // We must now manually tell the client to navigate.
         router.push('/');
+        router.refresh();
         return;
     }
     if (res.status === 401) {
-        alert("Invalid credentials");
+      setMessage("Invalid credentials.");
     }else {
-        // Handles 400 (Bad Request), 500 (Server Error), etc.
-        alert("Login failed due to a server error. Status: " + res.status);
+      // Handles 400 (Bad Request), 500 (Server Error), etc.
+      setMessage("Login failed due to a server error. Status: " + res.status);
     }
   }
 
@@ -53,9 +56,13 @@ export default function LoginPage() {
           onChange={e => setPassword(e.target.value)}
         />
 
-        <button className="bg-blue-600 text-white rounded px-3 py-2">
+        <button className="bg-uni-blue text-white rounded px-3 py-2">
           Log in
         </button>
+
+        {message && (
+          <p className="text-md text-center text-red-600 mt-2 bg-red-100 rounded py-2">{message}</p>
+        )}
       </form>
     </div>
   );

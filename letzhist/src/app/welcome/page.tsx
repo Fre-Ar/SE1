@@ -38,20 +38,10 @@ export default function Welcome() {
   return (
     <div className="min-h-screen flex flex-col">
       <title>Welcome to LetzHist!</title>
-      <Header />
       <main className="grow flex flex-col items-center px-4 py-8">
         <div className="max-w-3xl w-full text-center">
           <h1 className="text-3xl font-bold mb-2">Welcome to LetzHist</h1>
           <p className="text-slate-600 mb-6">Explore community-written local history pages. Log in to contribute or register to create your first page.</p>
-
-          <div className="flex justify-center gap-6">
-            <Link href="/login">
-              <button className="text-white bg-uni-blue font-bold py-3 px-6 rounded hover:opacity-90 transition">Log In</button>
-            </Link>
-            <Link href="/register">
-              <button className="text-white bg-uni-red font-bold py-3 px-6 rounded hover:opacity-90 transition">Register</button>
-            </Link>
-          </div>
 
           <div className="mt-8 text-left">
             <h2 className="text-2xl font-semibold mb-4">Recent pages</h2>

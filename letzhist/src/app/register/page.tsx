@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -8,6 +9,7 @@ export default function RegisterPage() {
   const [email, setEmail]     = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage]   = useState("");
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,6 +26,7 @@ export default function RegisterPage() {
 
     if (res.ok) {
       setMessage("Account created! You can now log in.");
+      router.push('/login');
     } else {
       setMessage(data.error || "An error occurred.");
     }
@@ -58,17 +61,17 @@ export default function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className="bg-blue-600 text-white rounded px-3 py-2">
+        <button className="bg-uni-blue text-white rounded px-3 py-2">
           Create account
         </button>
 
         {message && (
-          <p className="text-sm text-center text-slate-700 mt-2">{message}</p>
+          <p className="text-md text-center text-red-600 mt-2 bg-red-100 rounded py-2">{message}</p>
         )}
 
         <p className="text-sm text-center">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 underline">
+          <Link href="/login" className="text-uni-blue underline">
             Log in
           </Link>
         </p>

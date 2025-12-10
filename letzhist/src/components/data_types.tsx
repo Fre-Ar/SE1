@@ -89,7 +89,7 @@ export type StoryRevision = {
   changeMessage: string; // The "Commit Message" (e.g., "Fixed typo in date")
   
   // Status of this specific revision
-  status: 'draft' | 'published' | 'archived' | 'rejected';
+  status: 'draft' | 'published';
 };
 
 // 3. THE STORY (The "Repository")
@@ -105,8 +105,10 @@ export type Story = {
   
   // Computed fields (optional, for performance/lists):
   // These mimic the properties of the 'currentRevision' for easy UI access
-  liveTitle: string; 
-  liveSlug: string;
+  title: string; 
+  slug: string;
+  leadImage?: { url: string; alt: string };
+  tags: string[];
 };
 
 // ==========================================
@@ -169,7 +171,7 @@ export type Comment = {
 // 5. DISPUTES & MODERATION
 // ==========================================
 
-export type TargetType = 'comment' | 'user' | 'story' | 'revision';
+export type TargetType = 'comment' | 'user' | 'story';
 
 export type ReportCategory = 
   | 'accuracy' 
