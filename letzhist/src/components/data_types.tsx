@@ -138,6 +138,12 @@ export type RevisionLogEntry = {
   isCurrent: boolean; // True if this is the active version
 };
 
+// --- INPUT PAYLOAD TYPE FOR POST ---
+
+export type NewCommentPayload = {
+  body: string;
+  parentId?: string; // Optional parent ID for threading
+};
 // --- INPUT PAYLOAD TYPE FOR POST/PUT ---
 
 export type SaveStoryPayload = {
