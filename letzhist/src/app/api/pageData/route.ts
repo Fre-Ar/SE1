@@ -26,7 +26,7 @@ export async function GET(req: Request) {
     const tags = searchParams.getAll("tags");
 
     // 1. Initialize Query Parts
-    let query = "SELECT c.id_pk, c.title, c.body, c.place, c.era, c.theme, c.created_at, c.updated_at FROM content c";
+    let query = "SELECT c.id_pk, c.title, c.body, c.slug, c.place, c.era, c.theme, c.created_at, c.updated_at FROM content c";
     const whereConditions: string[] = [];
     const values: Array<string | number> = [];
     let requiresTagsJoin = false;
@@ -70,7 +70,7 @@ export async function GET(req: Request) {
     const [rows] = await db.query(query, values);
     const items = (rows as any[]).map((r) => ({
       id: String(r.id_pk),
-      slug: null,
+      slug: r.slug,
       title: r.title,
       body : r.body,
       place : r.place,
