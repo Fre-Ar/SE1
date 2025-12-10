@@ -5,21 +5,21 @@ type Props = {
   items: Story[];
 };
 
-export default function RecentList({ items }: Props) {
+export default function SearchResultList({ items }: Props) {
   return (
     <div className="w-full">
       <ul className="space-y-3">
         {items.map((item) => (
-          <li key={String(item.id)} className="p-3 bg-white rounded shadow-sm flex items-center gap-4">
+          <li key={String(item.slug)} className="p-3 bg-white rounded shadow-sm flex items-center gap-4">
             {item.leadImage?.url ? (
-              // eslint-disable-next-line @next/next/no-img-element
+            
               <img src={item.leadImage.url} alt={item.leadImage?.alt ?? ''} className="w-20 h-14 object-cover rounded" />
             ) : (
               <div className="w-20 h-14 bg-slate-100 rounded" />
             )}
             <div className="flex-1">
               <Link
-                href={item.slug ? `/stories/${item.slug}` : `/stories/${item.id}`}
+                href={`/stories/${item.slug}`}
                 className="text-uni-blue font-semibold"
               >
                 {item.title ?? 'Untitled'}

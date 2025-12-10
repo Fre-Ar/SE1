@@ -114,7 +114,7 @@
 **`GET /api/stories`**
 
   * **Purpose:** Fetch a lightweight list of stories for the Home Page, Search, or Timeline.
-  * **Query Params:** `?query=market&tag=19th_century&sort=date_desc` (multiple `&tag=[TAG]` may be included)
+  * **Query Params:** `?query=market&tag=19th_century&sort=title_desc` (multiple `&tag=[TAG]` may be included)
   * **Success Response (200 OK):**
     ```typescript
     {

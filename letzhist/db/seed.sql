@@ -1,74 +1,141 @@
--- =========================================================
--- 1) Seed CONTENT
--- =========================================================
-INSERT INTO content (title, body, place, era, theme, created_at, updated_at)
-VALUES
-('The Roman Empire', 'A detailed overview of the Roman Empire...', 'Europe', 'Ancient', 'History', NOW(), NOW()),
-('Industrial Revolution', 'Transformation through machines...', 'United Kingdom', 'Modern', 'Technology', NOW(), NOW()),
-('World War II', 'Global conflict from 1939–1945...', 'Worldwide', '20th Century', 'War', NOW(), NOW());
+-- ==========================================================
+-- 1. USERS
+-- ==========================================================
 
+INSERT INTO users (username, email, password_hash, role, is_banned, is_muted, created_at) VALUES 
+('AdminAlice',    'alice@letzhist.lu', 'hash_secret1', 'admin',       FALSE, FALSE, NOW()),
+('ModBob',        'bob@letzhist.lu',   'hash_secret2', 'moderator',   FALSE, FALSE, NOW()),
+('HistoryBuff',   'buff@uni.lu',       'hash_secret3', 'contributor', FALSE, FALSE, NOW()),
+('NewbieNed',     'ned@uni.lu',        'hash_secret4', 'contributor', FALSE, FALSE, NOW());
 
+-- ==========================================================
+-- 2. STORIES (The Containers)
+-- ==========================================================
 
--- =========================================================
--- 2) Seed USERS
--- =========================================================
-INSERT INTO users (username, email, password_hash, role, created_at, last_login)
-VALUES
-('alice', 'alice@example.com', 'hashA', 'contributor', NOW(), NOW()),
-('bob', 'bob@example.com', 'hashB', 'moderator', NOW(), NULL),
-('carol', 'carol@example.com', 'hashC', 'admin', NOW(), NOW());
+INSERT INTO story (slug, created_at) VALUES 
+('grand-ducal-palace', NOW()), -- ID 1
+('casemates-bock',     NOW()); -- ID 2
 
+-- ==========================================================
+-- 3. REVISIONS (The Snapshots)
+-- ==========================================================
 
+-- STORY 1: The Grand Ducal Palace
+-- Revision 1: Initial creation by HistoryBuff (Published)
+INSERT INTO storyRevision (
+    title, subtitle, body, story_fk, slug, leadImage, 
+    parentId_fk, author_fk, created_at, changeMessage, revStatus
+) VALUES (
+    'The Grand Ducal Palace', 
+    'A residence of the Grand Duke', 
+    'The palace is located in the middle of Luxembourg City. It was built in 1572.', 
+    1, -- story_fk
+    'grand-ducal-palace', 
+    '{"url": "/images/lux_old_town.jpg", "alt": "Palace facade"}', 
+    NULL, -- No parent, first version
+    3,    -- HistoryBuff
+    DATE_SUB(NOW(), INTERVAL 5 DAY), 
+    'Initial article', 
+    'published'
+);
 
--- =========================================================
--- 3) Seed COMMENTS
--- =========================================================
-INSERT INTO comment (content_fk, user_fk, body, created_at)
-VALUES
-(1, 1, 'This is a great summary!', NOW()),
-(1, 2, 'Please add more about Roman engineering.', NOW()),
-(2, 1, 'Very insightful!', NOW()),
-(3, 3, 'Important topic, well explained.', NOW());
+-- Revision 2: NewbieNed adds incorrect info (Published)
+INSERT INTO storyRevision (
+    title, subtitle, body, story_fk, slug, leadImage, 
+    parentId_fk, author_fk, created_at, changeMessage, revStatus
+) VALUES (
+    'The Grand Ducal Palace', 
+    'The main residence', 
+    'The palace is located in the middle of Luxembourg City. It was built in 1995.', -- ERROR HERE
+    1, 
+    'grand-ducal-palace', 
+    '{"url": "/images/lux_old_town.jpg", "alt": "Palace facade"}', 
+    1, -- Parent is Rev 1
+    4, -- NewbieNed
+    DATE_SUB(NOW(), INTERVAL 3 DAY), 
+    'Updated the date', 
+    'published'
+);
 
+-- Revision 3: HistoryBuff fixes the date (Published - Current Live Version)
+INSERT INTO storyRevision (
+    title, subtitle, body, story_fk, slug, leadImage, 
+    parentId_fk, author_fk, created_at, changeMessage, revStatus
+) VALUES (
+    'The Grand Ducal Palace', 
+    'The main residence of the Grand Duke', 
+    'The palace is located in the middle of Luxembourg City. It was built in 1572.', -- FIXED
+    1, 
+    'grand-ducal-palace', 
+    '{"url": "/images/lux_old_town.jpg", "alt": "Palace facade"}', 
+    2, -- Parent is Rev 2
+    3, -- HistoryBuff
+    DATE_SUB(NOW(), INTERVAL 1 DAY), 
+    'Reverted incorrect date', 
+    'published'
+);
 
--- =========================================================
--- 4) Seed DISPUTES (initial insertion)
--- =========================================================
-INSERT INTO dispute (content_fk, reason, currentStatus, created_at)
-VALUES
-(1, 'Contains factual inaccuracies.', 'open', NOW()),
-(3, 'Potential bias in wording.', 'under_review', NOW());
+-- STORY 2: The Casemates
+-- Revision 4: A Draft by HistoryBuff
+INSERT INTO storyRevision (
+    title, subtitle, body, story_fk, slug, leadImage, 
+    parentId_fk, author_fk, created_at, changeMessage, revStatus
+) VALUES (
+    'The Bock Casemates', 
+    'Underground tunnels', 
+    'Draft content about the tunnels...', 
+    2, -- story_fk
+    'casemates-bock', 
+    NULL, 
+    NULL, 
+    3, 
+    NOW(), 
+    'Starting work on Casemates', 
+    'draft'
+);
 
+-- ==========================================================
+-- 4. TAGS
+-- ==========================================================
 
+INSERT INTO tags (storyRevision_fk, tag) VALUES 
+(1, 'architecture'), (1, '16th_century'), -- Tags for Rev 1
+(3, 'architecture'), (3, '16th_century'), (3, 'royalty'); -- Tags for Rev 3
 
--- =========================================================
--- 5) Seed EDIT HISTORY
--- =========================================================
-INSERT INTO edit_history (content_fk, user_fk, actionPerformed, details, edit_timestamp)
-VALUES
-(1, 3, 'update', JSON_OBJECT('field', 'body', 'old', '...', 'new', 'Updated Roman Empire text'), NOW()),
-(2, 1, 'create', JSON_OBJECT('title', 'Industrial Revolution'), NOW()),
-(3, 2, 'update', JSON_OBJECT('field', 'title', 'old', 'WW2', 'new', 'World War II'), NOW());
+-- ==========================================================
+-- 5. COMMENTS
+-- ==========================================================
 
+-- Comment on Revision 2 (The one with the error)
+INSERT INTO comment (story_fk, revision_fk, user_fk, body, created_at) VALUES 
+(1, 2, 3, 'Ned, this date is wrong! It wasn not built in 1995.', DATE_SUB(NOW(), INTERVAL 2 DAY));
 
+-- Comment on Revision 3 (The current one)
+INSERT INTO comment (story_fk, revision_fk, user_fk, body, created_at) VALUES 
+(1, 3, 4, 'Sorry! My mistake. Thanks for fixing.', NOW());
 
--- =========================================================
--- 6) Seed EDITS (link users to edit_history entries)
--- =========================================================
-INSERT INTO edits (user_fk, edit_fk)
-VALUES
-(3, 1),
-(1, 2),
-(2, 3);
+-- ==========================================================
+-- 6. DISPUTES
+-- ==========================================================
 
+-- Someone reported NewbieNed's incorrect revision (Rev 2) for Accuracy
+INSERT INTO dispute (
+    target_type, target_id, contextRevision_fk, category, reason, 
+    currentStatus, reporter_fk, created_at
+) VALUES (
+    'revision', 
+    2, -- Reporting Revision ID 2 
+    2, -- Context was also Revision 2
+    'accuracy', 
+    'The date 1995 is obviously false vandalism.', 
+    'resolved', 
+    3, -- HistoryBuff reported it
+    DATE_SUB(NOW(), INTERVAL 2 DAY)
+);
 
+-- ==========================================================
+-- 7. AUDIT LOG
+-- ==========================================================
 
--- =========================================================
--- 7) Seed DISPUTING ACTIONS
--- =========================================================
-INSERT INTO disputing (dispute_fk, user_fk, action_timestamp)
-VALUES
-(1, 2, NOW()),
-(1, 3, NOW()),
-(2, 3, NOW());
-
+INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES 
+(2, 'story.revert', 'story', 1, 'grand-ducal-palace', 'Reverting vandalism by user NewbieNed', NOW());
