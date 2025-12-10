@@ -35,25 +35,13 @@ interface CommentRow {
   username: string;
 }
 
-// --- HELPER FUNCTION ---
-
-// Placeholder for fetching the currently authenticated user's ID
-function getAuthUserId(): number {
-    // For this demonstration, we'll assume 'HistoryBuff' (ID 3) is the author.
-    return 3; 
-}
-
-
 // ==========================================
 // 1. GET /api/stories/:slug (Load for ReaderView)
 // ==========================================
 
-export async function GET(
-  req: NextRequest, 
-  { params }: { params: { slug: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;
-
+    
   try {
     // 1. Fetch the Story Container and its CURRENT PUBLISHED Revision
     const storySql = `
@@ -166,7 +154,7 @@ export async function GET(
 
 export async function POST(req: NextRequest) {
   const payload: SaveStoryPayload = await req.json();
-  const authorId = getAuthUserId();
+  const {authorId}  = await req.json();
   
   // NOTE: Slug generation logic is simplified here.
   const newSlug = payload.slug || payload.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-*|-*$/g, '');
@@ -226,13 +214,10 @@ export async function POST(req: NextRequest) {
 // 3. PUT /api/stories/:slug (Create New Revision)
 // ==========================================
 
-export async function PUT(
-  req: NextRequest, 
-  { params }: { params: { slug: string } }
-) {
+export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;
   const payload: SaveStoryPayload = await req.json();
-  const authorId = getAuthUserId();
+  const {authorId}  = await req.json();
 
   try {
     // 1. Find existing story container and latest revision to establish parent
