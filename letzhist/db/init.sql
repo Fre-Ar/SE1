@@ -104,10 +104,10 @@ CREATE TABLE dispute (
   -- We CANNOT add a FK for target_id.
 );
 
--- 8) AUDIT LOG ----------------------------------------------------------
+-- 6) AUDIT LOG ----------------------------------------------------------
 CREATE TABLE audit_log (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
-  actor_fk INT NOT NULL,
+  actor_fk INT NULL,
   action VARCHAR(50) NOT NULL,
   target_type ENUM('user','content','story') NOT NULL,
   target_id INT,
