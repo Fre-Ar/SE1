@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 // We only need the types from data_types.tsx
-import { StoryViewDTO, UserSummary, Comment, StoryContent } from '@/components/data_types'; 
+import { StoryViewDTO, UserSummary, Comment, SaveStoryPayload } from '@/components/data_types'; 
 
 // --- INTERNAL INTERFACES FOR DATABASE MAPPING ---
 
@@ -34,25 +34,6 @@ interface CommentRow {
   created_at: Date;
   username: string;
 }
-
-// --- INPUT PAYLOAD TYPE FOR POST/PUT ---
-
-type SaveStoryPayload = {
-  title: string;
-  subtitle?: string;
-  slug?: string; // Used for PUT to ensure slug consistency or generated for POST
-  body: string;
-  tags: string[];
-  leadImage?: {
-    url: string;
-    alt: string;
-    caption?: string;
-  };
-  changeMessage: string; // The commit message for the revision
-  // NOTE: In a real app, authorId would come from session/JWT, not the payload.
-  // Using a placeholder for demonstration purposes.
-  authorId: number; 
-};
 
 // --- HELPER FUNCTION ---
 
