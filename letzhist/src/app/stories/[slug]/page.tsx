@@ -1,17 +1,20 @@
 'use client';
 
 import { use, useEffect, useState } from 'react';
-import { PageView } from '@/components/PageView';
+import { PageView } from '@/components/PageViewController';
 import { StoryViewDTO } from '@/components/data_types';
+import { useAuth } from '@/context/auth-context';
 
-export default function ClientStoryPage({ params }: { params: Promise<{ slug: string }> }) {
-  // 1. Unwrap params using React.use() (Next.js 15 Requirement for Client Components)
+export default function StoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  // 1. Unwrap params using React.use() 
   const { slug } = use(params);
 
   // 2. State for Data & Loading
   const [story, setStory] = useState<StoryViewDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const { user } = useAuth();
 
   // 3. Fetch on Mount
   useEffect(() => {
@@ -50,5 +53,5 @@ export default function ClientStoryPage({ params }: { params: Promise<{ slug: st
   }
 
   // 5. Render your main UI
-  return <PageView initialData={story} />;
+  return <PageView initialData={story} user={user} />;
 }
