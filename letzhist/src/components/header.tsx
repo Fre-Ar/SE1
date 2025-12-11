@@ -6,31 +6,36 @@ import Link from 'next/link';
 import { FiSearch } from "react-icons/fi";
 import { useRouter } from 'next/navigation';
 import { UserProfile } from './data_types';
+import { useAuth } from '@/context/auth-context';
 
 // Define the props structure
 interface HeaderProps {
-  user: UserProfile | null;
   showSearch?: boolean;
 }
 
 // Header now accepts user as a prop
-export default function Header({ user, showSearch }: HeaderProps) {
-    const router = useRouter(); 
+export default function Header({ showSearch }: HeaderProps) {
+  const { user, refreshUser } = useAuth(); 
+  const router = useRouter(); 
 
-    const handleLogout = async () => {
-        try {
-            await fetch('/api/auth/logout', {
-                method: 'POST',
-                credentials: 'include',
-            });
-            // Redirect to home page - the cookie will be cleared
-            router.push('/');
-            router.refresh();
-        } catch (error) {
-            console.error('Logout failed:', error);
-            alert('Logout failed due to an error.');
-        }
-    };
+  const handleLogout = async () => {
+      try {
+          await fetch('/api/auth/logout', {
+              method: 'POST',
+              credentials: 'include',
+          });
+
+          // 1. Refresh the local auth state (updates Header instantly)
+          await refreshUser(); 
+            
+          // 2. Refresh server components (checks for protected routes)
+          router.refresh();
+          router.push('/');
+      } catch (error) {
+          console.error('Logout failed:', error);
+          alert('Logout failed due to an error.');
+      }
+  };
 
   const commonButtonStyles = (hoverColor: string) => `hidden rounded-md border border-slate-300 px-3 py-1 text-sm hover:bg-${hoverColor} sm:inline`;
 

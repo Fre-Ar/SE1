@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import AuthHeaderWrapper from "../components/AuthHeaderWrapper";
 import "./globals.css";
+import { AuthProvider } from "@/context/auth-context";
+import Header from "@/components/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthHeaderWrapper showSearch={true}/> {/*TODO: MOVE HEADER TO PAGES*/}
-        {children}
+        <AuthProvider>
+           <Header showSearch={true}/> {/*TODO: MOVE HEADER TO PAGES*/}
+           {children}
+        </AuthProvider>
       </body>
     </html>
   );

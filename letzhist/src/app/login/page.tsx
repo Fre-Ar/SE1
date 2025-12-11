@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
+import { useAuth } from "@/context/auth-context";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage]   = useState("");
 
+  const { refreshUser } = useAuth();
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -23,8 +25,10 @@ export default function LoginPage() {
     if (res.status === 302|| res.status === 0) {
         // Successful login! The server sent a redirect response.
         // We must now manually tell the client to navigate.
-        router.push('/');
+        await refreshUser();
+        
         router.refresh();
+        router.push('/');
         return;
     }
     if (res.status === 401) {
