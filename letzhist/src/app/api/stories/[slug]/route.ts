@@ -41,8 +41,6 @@ interface CommentRow {
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-
-  console.log('SLUG:', slug);
     
   try {
     // 1. Fetch the Story Container and its CURRENT PUBLISHED Revision

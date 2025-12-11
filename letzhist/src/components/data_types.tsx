@@ -24,6 +24,11 @@ export type AuthResponse = {
   token: string;
 };
 
+export interface JwtPayload {
+  userId: string;
+  exp: number;
+}
+
 // ==========================================
 // 2. USER & AUTHENTICATION
 // ==========================================
@@ -36,8 +41,11 @@ export type UserProfile = {
   email?: string; // Email might be hidden in public contexts
   role: UserRole;
   isMuted?: boolean;
-  mutedUntil?: string; // ISO Date string
-  createdAt: string;   // Helpful for "Member since..."
+  mutedUntil?: Date; 
+  createdAt: Date;  
+  lastLogin?: Date;
+  isBanned?: boolean;
+  
 };
 
 // Lightweight user ref for comments/history

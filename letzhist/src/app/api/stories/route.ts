@@ -93,8 +93,6 @@ export async function GET(req: NextRequest) {
     sql += ` LIMIT ?`;
     values.push(limit);
 
-    console.log('SQL', sql);
-    console.log('VALUES', values);
     // 6. Execution
     // TODO: Using 'any' for row type here, but ideally define an interface representing the raw SQL row
     const [rows] = await db.query<any[]>(sql, values);

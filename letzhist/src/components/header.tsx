@@ -5,10 +5,11 @@
 import Link from 'next/link';
 import { FiSearch } from "react-icons/fi";
 import { useRouter } from 'next/navigation';
+import { UserProfile } from './data_types';
 
 // Define the props structure
 interface HeaderProps {
-  user: { username: string } | null;
+  user: UserProfile | null;
   showSearch?: boolean;
 }
 

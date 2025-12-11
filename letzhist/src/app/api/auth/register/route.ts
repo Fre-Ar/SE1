@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db"; // mysql2/promise pool
+import { db } from "@/lib/db"; 
 import bcrypt from "bcryptjs";
 import jwt, { Secret } from "jsonwebtoken";
+import { ResultSetHeader } from "mysql2";
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +13,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing fields." }, { status: 400 });
     }
     // Check uniqueness
-    const [rows] = await db.query("SELECT id_pk, username, email FROM users WHERE email = ? OR username = ? LIMIT 1", [email, username]);
+    const [rows] = await db.query(
+      "SELECT id_pk, username, email FROM users WHERE email = ? OR username = ? LIMIT 1",
+      [email, username]
+    );
 
     if ((rows as any[]).length > 0) {
       const existing = (rows as any[])[0];
@@ -37,17 +41,24 @@ export async function POST(req: Request) {
     // Insert user
     const role = "contributor";
     const insertSql = "INSERT INTO users ( username, email, password_hash, role) VALUES (?, ?, ?, ?)";
-    await db.query(insertSql, [username, email, password_hash, role]);
+    
+    // We cast the result to ResultSetHeader to access 'insertId' safely
+    const [result] = await db.query<ResultSetHeader>(insertSql, [username, email, password_hash, role]);
+    
+    const userId = result.insertId; // This is the new id_pk
 
     // Create token
     const token = (jwt as any).sign(
-          { sub: username, role },
-          String(JWT_SECRET),
-          { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
-        );
+      { userId: userId.toString() },
+      String(JWT_SECRET),
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+    );
+    
     // Response
     return NextResponse.json({
-      user: { username, role },
+      user: { 
+        id: userId.toString()
+      },
       token,
     }, { status: 201 });
   } catch (err: any) {
