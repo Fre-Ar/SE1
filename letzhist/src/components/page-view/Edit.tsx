@@ -1,6 +1,6 @@
 import React from "react";
 
-type EditProps = {
+interface EditProps {
   title: string;
   body: string;
   changeMessage: string;

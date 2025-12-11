@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-           <Header showSearch={true}/> {/*TODO: MOVE HEADER TO PAGES*/}
+           <Header/> {/*TODO: MOVE HEADER TO PAGES*/}
            {children}
         </AuthProvider>
       </body>

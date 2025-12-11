@@ -5,13 +5,18 @@
   * `POST /api/auth/register`: Create a new user account.
   * `POST /api/auth/login`: Authenticate and receive a session/token.
   * `GET /api/auth/me`: specific route to retrieve the currently logged-in user's profile.
+  
+  @3 DONE!@
 
 **2. Content Management (Stories)**
 
   * `GET /api/stories`: Search and filter stories (powering the list view & timeline).
   * `GET /api/stories/:slug`: Fetch a single full story (matches `PageData`).
-  * `POST /api/stories`: Create a new story draft.
+  * `POST /api/stories/:slug`: Create a new story draft.
   * `PUT /api/stories/:slug`: Update an existing story.
+
+  @FIRST 2 DONE!@
+  !OTHER TWO LEFT TODO!
 
 **3. Interaction (Comments)**
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { RevisionLogEntry } from "@/components/data_types";
 
-type HistoryTabProps = {
+interface HistoryTabProps {
   history: RevisionLogEntry[];
   isLoading: boolean;
   currentRevId: string;

@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Comment, UserProfile } from "@/components/data_types";
 
-type DiscussionTabProps = {
+interface DiscussionTabProps {
   comments: Comment[];
   storyId: string;
   currentUser: UserProfile | null;

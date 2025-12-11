@@ -10,7 +10,7 @@ import { HistoryTab } from "./page-view/HistoryTab";
 import { DiscussionTab } from "./page-view/DiscussionTab";
 import { SidebarMetadata } from "./page-view/Sidebar";
 
-type PageViewProps = {
+interface PageViewProps {
   initialData: StoryViewDTO;
   user: UserProfile | null;
 };
