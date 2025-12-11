@@ -3,18 +3,13 @@
 'use client';
 
 import Link from 'next/link';
-import { FiSearch } from "react-icons/fi";
+import { FaSearch, FaRegPlusSquare, FaUser } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
-import { UserProfile } from './data_types';
 import { useAuth } from '@/context/auth-context';
 
-// Define the props structure
-interface HeaderProps {
-  showSearch?: boolean;
-}
 
 // Header now accepts user as a prop
-export default function Header({ showSearch }: HeaderProps) {
+export default function Header() {
   const { user, refreshUser } = useAuth(); 
   const router = useRouter(); 
 
@@ -37,7 +32,7 @@ export default function Header({ showSearch }: HeaderProps) {
       }
   };
 
-  const commonButtonStyles = (hoverColor: string) => `hidden rounded-md border border-slate-300 px-3 py-1 text-sm hover:bg-${hoverColor} sm:inline`;
+  const commonButtonStyles = (hoverColor: string) => `hidden rounded-lg font-bold px-3 py-1 text-sm hover:bg-${hoverColor} sm:inline`;
 
   return (
       <header className="border-b bg-white">
@@ -52,32 +47,33 @@ export default function Header({ showSearch }: HeaderProps) {
 
           <div className="flex items-center gap-3">
 
-            {showSearch && <div className="relative w-40 sm:w-64 text-slate-400">
-              <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
-                <FiSearch className="h-4 w-4 " />
-              </span>
-              <input
-                type="search"
-                placeholder="Search pages..."
-                className="w-full rounded-md border border-slate-300 bg-slate-50 pr-2 py-1 pl-8 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:w-64"
-              />
-            </div>}
+            <Link href="/search" className="flex items-center text-sm font-bold text-slate-400 hover:text-slate-300">
+              <FaSearch className="h-6 w-6 " />
+            </Link>
 
-            <button className={`${commonButtonStyles('slate-50')}  text-slate-700`}>
-              New page
+            <button className={`${commonButtonStyles('slate-100')}  text-slate-600`}>
+              <span className='flex items-center gap-1'>
+                <FaRegPlusSquare className="h-6 w-6 "/>
+                New page
+              </span>
             </button>
 
             {user ? (
               <>
-                <span
-              className="text-sm font-semibold text-slate-700"
+
+              <Link
+                href="/profile"
+                className={`${commonButtonStyles('slate-100')} text-slate-600`}
               >
-              {user.username} 
-              </span>
+                <span className='flex items-center gap-2'>
+                  <FaUser className="h-4 w-4 "/>
+                  {user.username} 
+                </span>
+              </Link>
                 
                 <button
                   onClick={handleLogout} 
-                  className={`${commonButtonStyles('slate-50')}  text-red-600`}
+                  className={`${commonButtonStyles('slate-100')}  text-red-600`}
                 >
                   Logout
                 </button>
@@ -85,18 +81,20 @@ export default function Header({ showSearch }: HeaderProps) {
             ) : (
               <>
                 <Link
+                  href="/register"
+                  className={`${commonButtonStyles('slate-100')} text-slate-600`}
+                >
+                  Register
+                </Link>
+
+                <Link
                   href="/login"
-                  className={`${commonButtonStyles('slate-50')} text-slate-700`}
+                  className={`${commonButtonStyles('slate-100')} text-slate-600`}
                 >
                   Log in
                 </Link>
 
-                <Link
-                  href="/register"
-                  className={`${commonButtonStyles('slate-50')} text-slate-700`}
-                >
-                  Register
-                </Link>
+                
               </>
             )}
           </div>

@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Header from '../../components/header';
-import type { StoryListItem, PaginatedResponse } from '../../components/data_types';
+import { FaSort } from "react-icons/fa";
+import { StoryViewDTO, PaginatedResponse } from '../../components/data_types';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -12,7 +12,7 @@ export default function SearchPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>(
     searchParams.get('tags')?.split(',').filter(Boolean) || []
   );
-  const [results, setResults] = useState<StoryListItem[]>([]);
+  const [results, setResults] = useState<StoryViewDTO[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [sort, setSort] = useState<string>('newest');
   const [loading, setLoading] = useState(false);
@@ -28,10 +28,10 @@ export default function SearchPage() {
       if (sort) params.append('sort', sort);
 
       const response = await fetch(`/api/stories?${params.toString()}`);
-      const data: PaginatedResponse<StoryListItem> = await response.json();
+      const data: PaginatedResponse<StoryViewDTO> = await response.json();
 
       setResults(data.data);
-      setTotal(data.meta.total);
+      setTotal(data.meta.totalItems);
 
       // Extract all unique tags from results
       const tags = new Set<string>();
@@ -65,7 +65,6 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <main className="grow px-4 py-8">
         <div className="mx-auto max-w-4xl">
           {/* Search Input */}
@@ -89,24 +88,23 @@ export default function SearchPage() {
               >
                 Search
               </button>
-            </div>
-          </div>
-
-          {/* Sort control */}
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div />
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">Sort:</label>
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="border rounded px-2 py-1"
-              >
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="title_asc">Title A–Z</option>
-                <option value="title_desc">Title Z–A</option>
-              </select>
+              
+              {/* Sort control */}
+              <div className="flex items-center text-gray-600 hover:text-gray-300">
+                <label>
+                  <FaSort className="h-4 w-4 " />
+                </label>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="px-2 py-1 appearance-none outline-none"
+                >
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="title_asc">Title A-Z</option>
+                  <option value="title_desc">Title Z-A</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -158,7 +156,7 @@ export default function SearchPage() {
             <div className="space-y-4">
               {results.map((story) => (
                 <Link
-                  key={story.id}
+                  key={story.storyId}
                   href={`/stories/${story.slug}`}
                 >
                   <div className="border rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer">
@@ -175,7 +173,7 @@ export default function SearchPage() {
                           {story.title}
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
-                          Created: {new Date(story.createdAt).toLocaleDateString()}
+                          Last Edited: {new Date(story.lastEdited).toLocaleDateString()}
                         </p>
                         {story.tags.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
