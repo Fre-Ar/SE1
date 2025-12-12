@@ -1,10 +1,13 @@
-const nextJest = require('next/jest')
-const createJestConfig = nextJest({ dir: './' })
+// jest.config.js (or .ts)
 
-/** @type {import('jest').Config} */
-const customJestConfig = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  testEnvironment: 'jsdom',
-}
-
-module.exports = createJestConfig(customJestConfig)
+module.exports = {
+  // ... other configurations
+  setupFiles: ['./jest.setup.js'],
+  moduleNameMapper: {
+    // This directs imports of next/headers and next/cache to your mocks
+    '^next/headers$': '<rootDir>/__mocks__/next/headers.ts',
+    '^next/cache$': '<rootDir>/__mocks__/next/cache.ts',
+  },
+  // Add other necessary environment configurations if using JSDOM for components
+  // testEnvironment: 'jsdom', 
+};
