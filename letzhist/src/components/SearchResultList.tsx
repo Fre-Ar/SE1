@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Story } from './data_types';
+import { formatTag, unformatTag } from '@/lib/utils';
 
 type Props = {
   items: Story[];
@@ -37,7 +38,7 @@ export default function SearchResultList({ items }: Props) {
                         key={tag}
                         className="inline-block rounded-full bg-slate-100 px-2 py-0.5 text-xs text-gray-700"
                       >
-                        {tag}
+                        {unformatTag(tag)}
                       </span>
                     ))}
                   </div>

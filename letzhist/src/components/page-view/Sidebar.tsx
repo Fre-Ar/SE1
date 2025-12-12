@@ -35,7 +35,7 @@ export const SidebarMetadata: React.FC<{ story: StoryViewDTO }> = ({ story }) =>
     </div>
 
     <div className="rounded-lg bg-blue-50 p-4 text-xs text-blue-800 border border-blue-100">
-      <p className="font-bold mb-1">About LetzHist</p>
+      <p className="font-bold mb-1">About LëtzHist</p>
       <p>This content is community-curated. View the <b>History</b> tab to see how this page evolved over time.</p>
     </div>
   </>

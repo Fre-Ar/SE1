@@ -11,7 +11,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <main className="grow flex flex-col items-center px-4 py-8">
         <div className="max-w-3xl w-full text-center">
-          <h1 className="text-3xl font-bold mb-2">Welcome to LetzHist</h1>
+          <h1 className="text-3xl font-bold mb-2">Welcome to LëtzHist</h1>
           <p className="text-slate-600 mb-6">Explore community-written local history pages. Log in to contribute or register to create your first page.</p>
 
           <div className="mt-8 text-left">
