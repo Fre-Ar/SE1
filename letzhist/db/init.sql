@@ -71,13 +71,19 @@ CREATE TABLE comment (
   story_fk INT NOT NULL,
   revision_fk INT NOT NULL,
   user_fk INT NOT NULL,
+
+  parentId_fk INT NULL,
   
   body TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL,
+
+  -- Soft Delete & Moderation
+  status ENUM('visible', 'hidden_by_mod', 'deleted_by_user') DEFAULT 'visible',
   
   FOREIGN KEY (story_fk) REFERENCES story(id_pk) ON DELETE CASCADE,
   FOREIGN KEY (revision_fk) REFERENCES storyRevision(id_pk) ON DELETE CASCADE,
-  FOREIGN KEY (user_fk) REFERENCES users(id_pk) ON DELETE CASCADE
+  FOREIGN KEY (user_fk) REFERENCES users(id_pk) ON DELETE CASCADE,
+  FOREIGN KEY (parentId_fk) REFERENCES comment(id_pk) ON DELETE SET NULL
 );
 
 -- 5) DISPUTE ------------------------------------------------------------

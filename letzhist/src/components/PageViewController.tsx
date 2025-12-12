@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { StoryViewDTO, RevisionLogEntry, UserProfile } from "@/components/data_types";
 
@@ -14,12 +14,15 @@ import { SidebarMetadata } from "./page-view/Sidebar";
 interface PageViewProps {
   initialData: StoryViewDTO;
   user: UserProfile | null;
+  refresh: () => Promise<void>;
+  isRefreshing?: boolean;
 };
 
-export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
+export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, isRefreshing }) => {
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<"article" | "discussion" | "history">("article");
+  const pendingTabRef = useRef<null | "article" | "discussion" | "history">(null);
   const [currentStory, setCurrentStory] = useState<StoryViewDTO>(initialData);
   const [isEditing, setIsEditing] = useState(false);
   
@@ -49,7 +52,18 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
     setDraftTags(initialData.tags || []); 
     setDraftTitle(initialData.title);
     setDraftSubtitle(initialData.subtitle || "");
+
+    // if a refresh asked to land on a tab, do it *after* data updates
+    if (pendingTabRef.current) {
+      setActiveTab(pendingTabRef.current);
+      pendingTabRef.current = null;
+    }
   }, [initialData]);
+
+  const refreshAndGoTo = async (tab: "article" | "discussion" | "history") => {
+    pendingTabRef.current = tab;
+    await refresh();
+  };
 
   // Fetch drafts when entering edit mode
   useEffect(() => {
@@ -264,8 +278,9 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
             {activeTab === "discussion" && (
               <DiscussionTab 
                 comments={currentStory.discussion} 
-                storyId={currentStory.storyId} 
+                storySlug={currentStory.slug} 
                 currentUser={user} // Pass user down for permission check
+                refresh={() => refreshAndGoTo("discussion")}
               />
             )}
 
@@ -290,7 +305,7 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
   );
 };
 
-// Simple internal helper
+
 const TabButton = ({ label, isActive, onClick, badge, badgeColor = "slate" }: any) => (
   <button
     onClick={onClick}

@@ -29,6 +29,7 @@ interface CommentRow {
   id_pk: number;
   story_fk: number;
   revision_fk: number;
+  parentId_fk: number;
   user_fk: number;
   body: string;
   created_at: Date;
@@ -110,7 +111,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     // 2. Fetch all Comments for this Story Container
     const commentsSql = `
       SELECT 
-        c.id_pk, c.story_fk, c.revision_fk, c.user_fk, 
+        c.id_pk, c.story_fk, c.revision_fk, c.parentId_fk, c.user_fk, 
         c.body, c.created_at, u.username
       FROM comment c
       INNER JOIN users u ON u.id_pk = c.user_fk
@@ -125,7 +126,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     const discussion: Comment[] = commentRows.map(cRow => ({
       id: cRow.id_pk.toString(),
       storyId: cRow.story_fk.toString(),
-      parentId: null, // Assuming no threading yet as per DB schema
+      parentId: cRow.parentId_fk ? cRow.parentId_fk.toString() : null,
       revisionId: cRow.revision_fk.toString(),
       author: {
         id: cRow.user_fk.toString(),

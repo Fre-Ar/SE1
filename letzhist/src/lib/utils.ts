@@ -1,7 +1,6 @@
 import jwt, { Secret } from "jsonwebtoken";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { QueryResult } from "mysql2/promise";
 
 // Helper to format tags (spaces -> underscores, lowercase)
 export const formatTag = (val: string) => val.trim().toLowerCase().replace(/\s+/g, '_');

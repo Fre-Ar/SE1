@@ -114,8 +114,8 @@ INSERT INTO comment (story_fk, revision_fk, user_fk, body, created_at) VALUES
 (1, 2, 3, 'Ned, this date is wrong! It wasn not built in 1995.', DATE_SUB(NOW(), INTERVAL 2 DAY));
 
 -- Comment on Revision 3 (The current one)
-INSERT INTO comment (story_fk, revision_fk, user_fk, body, created_at) VALUES 
-(1, 3, 4, 'Sorry! My mistake. Thanks for fixing.', NOW());
+INSERT INTO comment (story_fk, revision_fk, user_fk, parentId_fk, body, created_at) VALUES 
+(1, 3, 4, 1, 'Sorry! My mistake. Thanks for fixing.', NOW());
 
 -- ==========================================================
 -- 6. DISPUTES
