@@ -15,7 +15,7 @@ const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}
 // --- Setup Constants ---
 const MOCK_TOKEN = 'valid-update-token-12345';
 const MOCK_USER_ID = 101;
-// Payload must match the file's usage of decoded.sub
+// Payload must match the file's usage of decoded.userId
 const MOCK_TOKEN_PAYLOAD = { sub: MOCK_USER_ID }; 
 const NEW_EMAIL = 'new.email@example.com';
 const OLD_EMAIL = 'old.email@example.com';

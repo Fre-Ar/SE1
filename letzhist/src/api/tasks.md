@@ -15,8 +15,7 @@
   * `POST /api/stories`: Create a new story draft.
   * `PUT /api/stories/:slug`: Update an existing story.
 
-  @FIRST 2 DONE!@
-  !OTHER TWO LEFT TODO!
+  @ALL 4 DONE!@
 
 **3. Interaction (Comments)**
 

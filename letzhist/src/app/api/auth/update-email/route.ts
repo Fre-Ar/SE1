@@ -69,7 +69,7 @@ export async function PUT(req: NextRequest) {
 		// Check if email already exists
 		const [existingRows] = await db.query(
 			"SELECT id_pk FROM users WHERE email = ? AND id_pk != ? LIMIT 1",
-			[email, decoded.sub]
+			[email, decoded.userId]
 		);
 
 		if ((existingRows as any[]).length > 0) {
@@ -82,13 +82,13 @@ export async function PUT(req: NextRequest) {
 		// Update email
 		await db.query(
 			"UPDATE users SET email = ? WHERE id_pk = ?",
-			[email, decoded.sub]
+			[email, decoded.userId]
 		);
 
 		// Fetch updated user
 		const [rows] = await db.query(
 			"SELECT id_pk, username, email, role, is_muted, muted_until FROM users WHERE id_pk = ? LIMIT 1",
-			[decoded.sub]
+			[decoded.userId]
 		);
 
 		const users = rows as any[];

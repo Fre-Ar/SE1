@@ -6,7 +6,10 @@ INSERT INTO users (username, email, password_hash, role, is_banned, is_muted, cr
 ('AdminAlice',    'alice@letzhist.lu', 'hash_secret1', 'admin',       FALSE, FALSE, NOW()),
 ('ModBob',        'bob@letzhist.lu',   'hash_secret2', 'moderator',   FALSE, FALSE, NOW()),
 ('HistoryBuff',   'buff@uni.lu',       'hash_secret3', 'contributor', FALSE, FALSE, NOW()),
-('NewbieNed',     'ned@uni.lu',        'hash_secret4', 'contributor', FALSE, FALSE, NOW());
+('NewbieNed',     'ned@uni.lu',        'hash_secret4', 'contributor', FALSE, FALSE, NOW()),
+('Mod',           'mod@email.com',     '$2b$10$1W4QV3VUVJ0I013om2Wa6ecnJL/7Zr.wA2VdufQWui/riPmPLzu4u', 'moderator', FALSE, FALSE, NOW()),
+('Admin',         'admin@email.com',   '$2b$10$4mkzT1ODLSWDtrzPD0LoT.dHozMGG4NTgdeNAMN8GPOe08rpNBiJS', 'admin', FALSE, FALSE, NOW());  
+-- mod@email.com with pwd: 'mod'
 
 -- ==========================================================
 -- 2. STORIES (The Containers)

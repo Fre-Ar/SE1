@@ -75,7 +75,7 @@ export async function PUT(req: NextRequest) {
 		// Fetch user with password hash
 		const [rows] = await db.query(
 			"SELECT id_pk, password_hash FROM users WHERE id_pk = ? LIMIT 1",
-			[decoded.sub]
+			[decoded.userId]
 		);
 
 		const users = rows as any[];
@@ -103,7 +103,7 @@ export async function PUT(req: NextRequest) {
 		// Update password
 		await db.query(
 			"UPDATE users SET password_hash = ? WHERE id_pk = ?",
-			[passwordHash, decoded.sub]
+			[passwordHash, decoded.userId]
 		);
 
 		return NextResponse.json({

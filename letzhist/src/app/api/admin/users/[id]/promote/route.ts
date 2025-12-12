@@ -50,7 +50,7 @@ export async function POST(
     // Check admin role
     const [actorRows] = await db.query(
       "SELECT role FROM users WHERE id_pk = ? LIMIT 1",
-      [decoded.sub]
+      [decoded.userId]
     );
 
     const actors = actorRows as any[];
@@ -94,7 +94,7 @@ export async function POST(
     // Log the action
     await db.query(
       "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name) VALUES (?, ?, ?, ?, ?)",
-      [decoded.sub, "promote_user", "user", targetId, targetUser.username]
+      [decoded.userId, "promote_user", "user", targetId, targetUser.username]
     );
 
     return NextResponse.json({

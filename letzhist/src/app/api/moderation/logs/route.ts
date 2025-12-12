@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
     // Check moderator or admin role
     const [actorRows] = await db.query(
       "SELECT role FROM users WHERE id_pk = ? LIMIT 1",
-      [decoded.sub]
+      [decoded.userId]
     );
 
     const actors = actorRows as any[];

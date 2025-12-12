@@ -75,6 +75,7 @@ export const DiscussionTab: React.FC<DiscussionTabProps> = ({ comments, storyId,
               <button className="rounded-md bg-uni-blue px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700">
                 Post Comment
               </button>
+              {/* TODO: ADD POST COMMENT API CALL */}
             </div>
           </>
         )}

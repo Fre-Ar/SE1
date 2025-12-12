@@ -20,7 +20,7 @@ const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}
 // --- Setup Constants ---
 const MOCK_TOKEN = 'valid-password-update-token';
 const MOCK_USER_ID = 101;
-// Token payload must use 'sub' to match the file's usage: decoded.sub
+// Token payload must use 'sub' to match the file's usage: decoded.userId
 const MOCK_TOKEN_PAYLOAD = { sub: MOCK_USER_ID }; 
 const CURRENT_PASSWORD = 'currentpassword123';
 const NEW_PASSWORD = 'newsecurepassword456';
