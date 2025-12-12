@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth"; 
+import { getRoleFromRequest } from "@/lib/utils";
 
 
 const VALID_TARGET_TYPES: { [key: string]: string } = {
@@ -28,12 +28,17 @@ const VALID_CATEGORIES = [
 export async function POST(req: NextRequest) {
     try {
 
-        const currentUser = await getCurrentUser();
-        if (!currentUser) {
-            return NextResponse.json({ error: "Unauthorized. You must be logged in to file a dispute." }, { status: 401 });
-        }
+        const currentUser = await getRoleFromRequest(req); 
+                
+                    // 2. Check for the error object returned by the helper
+                    if (!Array.isArray(currentUser)) {
+                      return NextResponse.json(
+                        { error: currentUser.error },
+                        { status: currentUser.status }
+                      );
+                    }
         
-        const reporterId = parseInt(currentUser.id, 10);
+        const reporterId = parseInt(currentUser[0].id_pk, 10);
         
 
         const { targetId, targetType, reason, category, contextRevisionId } = await req.json();
@@ -109,8 +114,8 @@ export async function POST(req: NextRequest) {
             category: category,
             reason: reason,
             createdBy: {
-                id: currentUser.id,
-                username: currentUser.username,
+                id: currentUser[0].id_pk,
+                username: currentUser[0].username,
             }
         }, { status: 201 });
 

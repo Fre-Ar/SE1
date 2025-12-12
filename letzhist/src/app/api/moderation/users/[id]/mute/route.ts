@@ -1,25 +1,25 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth"; 
+import { getRoleFromRequest } from "@/lib/utils";
 
 
-export async function POST(
-    req: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest,{ params }: { params: { id: string } }) {
     try {
-        const currentUser = await getCurrentUser();
+        const currentUser = await getRoleFromRequest(req); 
+        
+            // 2. Check for the error object returned by the helper
+            if (!Array.isArray(currentUser)) {
+              return NextResponse.json(
+                { error: currentUser.error },
+                { status: currentUser.status }
+              );
+            }
 
-        if (!currentUser) {
-            return NextResponse.json({ error: "Unauthorized - Not logged in." }, { status: 401 });
-        }
-
-        if (currentUser.role !== 'moderator' && currentUser.role !== 'admin') {
+        if (currentUser[0].role !== 'moderator' && currentUser[0].role !== 'admin') {
             return NextResponse.json({ error: "Forbidden - insufficient role privileges" }, { status: 403 });
         }
         
-        const actorId = currentUser.id;
-
+        const actorId = currentUser[0].id_pk;
 
         const targetId = parseInt(params.id, 10);
         if (isNaN(targetId)) {

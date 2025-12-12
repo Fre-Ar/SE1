@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth"; 
+import { getRoleFromRequest } from "@/lib/utils";
 
 // Define constants for pagination
 const PAGE_SIZE = 20;
@@ -8,14 +8,18 @@ const PAGE_SIZE = 20;
 export async function GET(req: NextRequest) {
     try {
 
-        const currentUser = await getCurrentUser();
-
-        if (!currentUser) {
-            return NextResponse.json({ error: "Unauthorized - Not logged in." }, { status: 401 });
-        }
+        const currentUser = await getRoleFromRequest(req); 
         
+            // 2. Check for the error object returned by the helper
+            if (!Array.isArray(currentUser)) {
+              return NextResponse.json(
+                { error: currentUser.error },
+                { status: currentUser.status }
+              );
+            }
+    
 
-        if (currentUser.role !== 'moderator' && currentUser.role !== 'admin') {
+        if (currentUser[0].role !== 'moderator' && currentUser[0].role !== 'admin') {
             return NextResponse.json({ error: "Forbidden - insufficient role privileges" }, { status: 403 });
         }
 

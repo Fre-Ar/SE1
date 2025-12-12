@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import jwt, { Secret } from "jsonwebtoken";
+import { getRoleFromRequest } from "@/lib/utils";
 
 /**
  * POST /api/moderation/users/[id]/ban
@@ -8,53 +9,21 @@ import jwt, { Secret } from "jsonwebtoken";
  * Bans a user. Only moderators and admins can perform this action.
  * Requires: reason (optional)
  */
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest,{ params }: { params: { id: string } }) {
   try {
-    // Verify authentication
-    let token = req.cookies.get("auth_token")?.value;
-    if (!token) {
-      const authHeader = req.headers.get("authorization");
-      if (authHeader?.startsWith("Bearer ")) {
-        token = authHeader.substring(7);
-      }
-    }
+   
+    const actors = await getRoleFromRequest(req); 
 
-    if (!token) {
+    // 2. Check for the error object returned by the helper
+    if (!Array.isArray(actors)) {
       return NextResponse.json(
-        { error: "Unauthorized - no token provided" },
-        { status: 401 }
+        { error: actors.error },
+        { status: actors.status }
       );
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET as Secret | undefined;
-    if (!JWT_SECRET) {
-      console.error("JWT_SECRET not set");
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
 
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, String(JWT_SECRET));
-    } catch (err) {
-      return NextResponse.json(
-        { error: "Unauthorized - invalid token" },
-        { status: 401 }
-      );
-    }
-
-    // Check moderator or admin role
-    const [actorRows] = await db.query(
-      "SELECT role FROM users WHERE id_pk = ? LIMIT 1",
-      [decoded.userId]
-    );
-
-    const actors = actorRows as any[];
+    // 4. Check if the authenticated user has the necessary role
     if (
       actors.length === 0 ||
       (actors[0].role !== "moderator" && actors[0].role !== "admin")
@@ -102,7 +71,7 @@ export async function POST(
     // Log the action
     await db.query(
       "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
-      [decoded.userId, "ban_user", "user", targetId, targetUser.username, reason || null]
+      [actors[0].id_pk, "ban_user", "user", targetId, targetUser.username, reason || null]
     );
 
     return NextResponse.json({
