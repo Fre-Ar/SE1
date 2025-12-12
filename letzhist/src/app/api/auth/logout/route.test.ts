@@ -1,5 +1,6 @@
 // src/app/api/auth/logout/route.test.ts
-
+jest.mock('next/server');
+import { mockNextResponseJson } from '@/tests/__mocks__/server';
 import { POST } from "./route"; 
 import { mockRequest, getJsonBody } from "@/tests/utils"; 
 import { NextResponse } from "next/server"; // Import for mocking setup
@@ -52,7 +53,7 @@ describe('POST /api/auth/logout', () => {
     expect(setCookieHeader).toContain('Max-Age=0'); 
     expect(setCookieHeader).toContain('HttpOnly');
     expect(setCookieHeader).toContain('Path=/');
-    expect(setCookieHeader).toContain('SameSite=Strict');
+    expect(setCookieHeader).toContain('SameSite=strict');
     
     // Check Secure flag: In 'development' (default mock), it should NOT be present
     expect(setCookieHeader).not.toContain('Secure');
@@ -83,16 +84,24 @@ describe('POST /api/auth/logout', () => {
   });
 
 
-  // --- Test Case 3: Internal Server Error (Mocking a failure inside the handler) ---
-  it('should return 500 and log an error if an unexpected error occurs', async () => {
-    // Arrange: Spy on and temporarily replace NextResponse.json to force an error.
-    const originalJson = NextResponse.json;
+ // --- Test Case 3: Internal Server Error (The new test logic) ---
+it('should return 500 and log an error if an unexpected error occurs', async () => {
+    // Arrange: Use the mock implementation to force the first call (for the successful response) 
+    // to throw an error, which will be caught by the route's try/catch block.
     const mockError = new Error('Forced response creation failure');
     
-    // Temporarily replace NextResponse.json with a function that throws
-    (NextResponse.json as any) = jest.fn(() => {
-        throw mockError;
+    // 1. Force a response creation failure in the try block
+    mockNextResponseJson.mockImplementationOnce(() => {
+        throw mockError; 
     });
+
+    // 2. Mock the 500 error response that is created in the catch block
+    mockNextResponseJson.mockImplementationOnce((body, init) => ({
+        status: 500,
+        json: async () => body,
+        headers: new Headers(),
+        cookies: { set: jest.fn() },
+    }));
 
     const req = await mockRequest(
       'POST',
@@ -108,7 +117,6 @@ describe('POST /api/auth/logout', () => {
     expect(body).toEqual({ error: "Internal server error" });
     expect(consoleErrorSpy).toHaveBeenCalledWith("Logout error:", mockError);
 
-    // Cleanup: Restore original function
-    (NextResponse.json as any) = originalJson;
-  });
+    // Note: jest.clearAllMocks() in beforeEach handles the cleanup of mockNextResponseJson
+});
 });
