@@ -33,6 +33,7 @@ interface CommentRow {
   user_fk: number;
   body: string;
   created_at: Date;
+  status: 'visible' | 'hidden_by_mod' | 'deleted_by_user';
   username: string;
 }
 
@@ -112,7 +113,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     const commentsSql = `
       SELECT 
         c.id_pk, c.story_fk, c.revision_fk, c.parentId_fk, c.user_fk, 
-        c.body, c.created_at, u.username
+        c.body, c.created_at, c.status, u.username
       FROM comment c
       INNER JOIN users u ON u.id_pk = c.user_fk
       WHERE c.story_fk = ?
@@ -134,7 +135,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
       } as UserSummary,
       body: cRow.body,
       createdAt: new Date(cRow.created_at).toISOString(),
-      status: 'visible',
+      status: cRow.status,
     }));
 
     // Construct the StoryViewDTO
