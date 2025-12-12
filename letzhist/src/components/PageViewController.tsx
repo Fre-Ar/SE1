@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { StoryViewDTO, RevisionLogEntry, UserProfile } from "@/components/data_types";
 
 // Import Sub-components
@@ -16,6 +17,8 @@ interface PageViewProps {
 };
 
 export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
+  const router = useRouter();
+
   const [activeTab, setActiveTab] = useState<"article" | "discussion" | "history">("article");
   const [currentStory, setCurrentStory] = useState<StoryViewDTO>(initialData);
   const [isEditing, setIsEditing] = useState(false);
@@ -25,6 +28,7 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
   const [draftSubtitle, setDraftSubtitle] = useState(initialData.subtitle);
   const [draftTags, setDraftTags] = useState(initialData.tags || []);
   const [changeMessage, setChangeMessage] = useState(""); 
+  const [drafts, setDrafts] = useState<any[]>([]);
 
   const [history, setHistory] = useState<RevisionLogEntry[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -47,39 +51,120 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
     setDraftSubtitle(initialData.subtitle || "");
   }, [initialData]);
 
-  // === API Mocks ===
+  // Fetch drafts when entering edit mode
+  useEffect(() => {
+    if (isEditing && user) {
+       fetch(`/api/stories/${currentStory.slug}/drafts`)
+         .then(res => res.json())
+         .then(data => { if (Array.isArray(data)) setDrafts(data); })
+         .catch(console.error);
+    }
+  }, [isEditing, user, currentStory.slug]);
+
+  // Fetch History
   const fetchHistory = async () => {
+    // Prevent refetching if we already have data (simple cache)
     if (history.length > 0) return;
-    setIsLoadingHistory(true);
     
-    console.log(`Fetching history for story ${currentStory.storyId}...`);
-    setTimeout(() => {
-      setHistory([
-        { revisionId: "rev-3", parentId: 'rev-2', date: "2025-11-18", author: { id: "u1", username: "ArmandoF" }, changeMessage: "Fixed typos", isCurrent: true },
-        { revisionId: "rev-2", parentId: 'rev-1', date: "2025-11-15", author: { id: "u2", username: "HistoryBuff" }, changeMessage: "Added 19th century section", isCurrent: false },
-        { revisionId: "rev-1", parentId: null, date: "2025-11-10", author: { id: "u1", username: "ArmandoF" }, changeMessage: "Initial draft", isCurrent: false },
-      ]);
+    setIsLoadingHistory(true);
+    try {
+      const res = await fetch(`/api/stories/${currentStory.slug}/history`);
+      if (!res.ok) throw new Error("Failed to fetch history");
+      
+      const data = await res.json();
+      setHistory(data);
+    } catch (err) {
+      console.error(err);
+      alert("Could not load revision history.");
+    } finally {
       setIsLoadingHistory(false);
-    }, 800);
+    }
   };
 
-  const handleSaveRevision = async () => {
-    console.log("Saving new revision...", { draftTitle, changeMessage });
-    setCurrentStory((prev) => ({
-      ...prev,
-      title: draftTitle,
-      body: draftBody,
-      lastEdited: new Date().toISOString().split("T")[0],
-      revisionId: "rev-new-temp",
-    }));
-    setIsEditing(false);
-    setChangeMessage("");
-    setActiveTab("article");
+  // Handle Loading a Draft
+  const handleLoadDraft = async (draft: any) => {
+     if (!confirm("Load this draft? Unsaved changes will be lost.")) return;
+     try {
+       const res = await fetch(`/api/stories/${currentStory.slug}?revisionId=${draft.revisionId}`);
+       if (!res.ok) throw new Error("Err");
+       const data = await res.json();
+       setDraftTitle(data.title);
+       setDraftBody(data.body);
+       setDraftTags(data.tags || []);
+       setChangeMessage(draft.summary || "");
+     } catch (e) { alert("Failed to load draft content"); }
   };
 
+  // Save New Revision (PUT)
+  const handleSave = async (status: 'published' | 'draft') => {
+    if (!user) {
+      alert("You must be logged in.");
+      router.push('/login');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/stories/${currentStory.slug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: draftTitle,
+          subtitle: draftSubtitle,
+          body: draftBody,
+          tags: draftTags,
+          changeMessage: changeMessage,
+          revStatus: status,
+          authorId: user.id, 
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to save revision");
+      if (status === 'draft') alert("Draft saved.");
+      else {
+          const updated = await res.json();
+          // Update UI with new data
+          setCurrentStory(updated);
+          // Reset Edit Mode
+          setIsEditing(false);
+          setChangeMessage("");
+          setActiveTab("article");
+      }
+      
+      // Clear history cache so next click fetches fresh list
+      setHistory([]); 
+      
+    } catch (err) {
+      console.error(err);
+      alert("Failed to publish changes.");
+    }
+  };
+
+  // Load Specific Revision
   const loadRevision = async (revId: string) => {
-    console.log(`Loading specific revision: ${revId}`);
-    alert(`Logic to reload page with revision ${revId} would go here.`);
+    // If the user requests the current version they are already viewing, do nothing
+    if (revId === currentStory.revisionId) {
+        setActiveTab("article");
+        return;
+    }
+
+    const confirmLoad = confirm("Load this older version? Unsaved changes in the editor will be lost.");
+    if (!confirmLoad) return;
+
+    try {
+      const res = await fetch(`/api/stories/${currentStory.slug}?revisionId=${revId}`);
+      if (!res.ok) throw new Error("Failed to load revision");
+
+      const data = await res.json();
+      setCurrentStory(data);
+      
+      // Switch back to article view to see the content
+      setActiveTab("article");
+      
+      // Note: We do NOT clear history here, as the history list itself hasn't changed.
+    } catch (err) {
+      console.error(err);
+      alert("Could not load the requested revision.");
+    }
   };
 
   // === Render ===
@@ -160,13 +245,16 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
                   body={draftBody}
                   tags={draftTags}
                   changeMessage={changeMessage}
+                  drafts={drafts}
                   setTitle={setDraftTitle}
                   setSubtitle={setDraftSubtitle}
                   setBody={setDraftBody}
                   setTags={setDraftTags}
                   setChangeMessage={setChangeMessage}
                   onCancel={() => setIsEditing(false)}
-                  onSave={handleSaveRevision}
+                  onSave={() => handleSave('published')}
+                  onSaveDraft={() => handleSave('draft')}
+                  onLoadDraft={handleLoadDraft}
                 />
               ) : (
                 <Read story={currentStory} />

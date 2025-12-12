@@ -601,7 +601,7 @@ export default function AdminPage() {
                     {logs.map((log) => (
                       <tr key={log.id} className="border-b hover:bg-gray-50">
                         <td className="px-6 py-3 text-sm">{log.actor || 'System'}</td>
-                        <td className="px-6 py-3 text-sm font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                        <td className="px-6 py-3 text-sm font-mono  bg-gray-100  rounded">
                           {log.action}
                         </td>
                         <td className="px-6 py-3 text-sm">

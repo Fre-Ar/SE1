@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { Edit } from '@/components/page-view/Edit';
@@ -16,36 +16,66 @@ export default function CreatePage() {
   const [tags, setTags] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Simple protection (Middleware is better, but this works for client-side)
-  if (loading) return <div className="p-10 text-center">Loading...</div>;
-  if (!user) {
-    return (
-      <div className="mx-auto max-w-lg mt-10 p-6 border rounded-lg bg-white text-center shadow">
-        <h2 className="text-xl font-bold mb-2">Access Restricted</h2>
-        <p className="text-slate-600 mb-4">You must be logged in to create new history pages.</p>
-        <button onClick={() => router.push('/login')} className="text-uni-blue hover:underline">Go to Login</button>
-      </div>
-    );
-  }
+  const [existingSlug, setExistingSlug] = useState<string | null>(null);
+  const [drafts, setDrafts] = useState<any[]>([]);
 
-  const handleCreate = async () => {
-    if (!confirm("Are you sure you want to publish this story?")) return;
+  // Fetch drafts on mount
+  useEffect(() => {
+    if (user) {
+      fetch('/api/stories/drafts')
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data)) setDrafts(data);
+        })
+        .catch(err => console.error("Failed to load drafts", err));
+    }
+  }, [user]);
+
+  const loadDraft = async (draft: any) => {
+      // For new story drafts, we need to load the content. 
+      // Since we only have metadata in the list, we fetch the specific revision.
+      // We assume fetching a revision by ID works even if not published (as author).
+      // We need to know the slug to construct the URL.
+      if (!draft.slug) return;
+
+      if (!confirm("Load this draft? Current unsaved changes will be lost.")) return;
+
+      try {
+        const res = await fetch(`/api/stories/${draft.slug}?revisionId=${draft.revisionId}`);
+        if (!res.ok) throw new Error("Failed to load draft content");
+        const data = await res.json();
+        
+        setTitle(data.title);
+        setBody(data.body);
+        setTags(data.tags || []);
+        setExistingSlug(data.slug); // Set this so we PUT instead of POST
+      } catch (err) {
+        alert("Could not load draft.");
+      }
+  };
+
+  const handleSave = async (status: 'published' | 'draft') => {
+    if (status === 'published' && !confirm("Are you sure you want to publish this story?")) return;
     
-    setIsSubmitting(true);
+    if (status === 'published') setIsSubmitting(true);
+
     try {
+      const method = existingSlug ? 'PUT' : 'POST';
+      const url = existingSlug ? `/api/stories/${existingSlug}` : '/api/stories';
+
       const payload: SaveStoryPayload = {
         title: title,
         subtitle: subtitle,
         body: body,
         tags: tags,
         //leadImage?: null,
-        changeMessage: 'Initial creation',
-        revStatus: 'published',
-        authorId: user.id
+        changeMessage: status === 'draft' ? 'Saved as draft' : 'Initial creation',
+        revStatus: status,
+        authorId: user!.id
       }
 
-      const res = await fetch('/api/stories', {
-        method: 'POST',
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -56,14 +86,34 @@ export default function CreatePage() {
       }
 
       const data = await res.json();
-      router.push(`/stories/${data.slug}`);
-      router.refresh(); 
+
+      if (status === 'published') {
+         // If published, go to story
+         router.push(`/stories/${existingSlug || data.slug}`);
+         router.refresh(); 
+      } else {
+         // If draft, stay here but update context
+         alert("Draft saved successfully!");
+         if (!existingSlug) setExistingSlug(data.slug);
+         // TODO: Refresh drafts list
+      }
     } catch (error: any) {
       console.error(error);
       alert(`Error: ${error.message}`);
       setIsSubmitting(false);
     }
   };
+
+  if (loading) return <div className="p-10 text-center">Loading...</div>;
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-lg mt-10 p-6 border rounded-lg bg-white text-center shadow">
+        <h2 className="text-xl font-bold mb-2">Access Restricted</h2>
+        <p className="text-slate-600 mb-4">You must be logged in to create new history pages.</p>
+        <button onClick={() => router.push('/login')} className="text-uni-blue hover:underline">Go to Login</button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-8">
@@ -77,13 +127,17 @@ export default function CreatePage() {
             body={body}
             changeMessage=""
             tags={tags}
+            drafts={drafts}
+
             setTitle={setTitle}
             setSubtitle={setSubtitle}
             setBody={setBody}
             setChangeMessage={() => {}}
             setTags={setTags}
             onCancel={() => router.back()}
-            onSave={handleCreate}
+            onSave={() => handleSave('published')}
+            onSaveDraft={() => handleSave('draft')}
+            onLoadDraft={loadDraft}
             isCreating={true}
           />
         </div>

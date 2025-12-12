@@ -171,6 +171,13 @@ export type SaveStoryPayload = {
   authorId: string; 
 };
 
+export interface Draft {
+  revisionId?: string; // For existing story drafts
+  storyId?: number;    // For new story drafts
+  title: string;
+  date: string;
+}
+
 // ==========================================
 // 4. DISCUSSION & COMMENTS
 // ==========================================

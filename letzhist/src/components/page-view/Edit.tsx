@@ -1,5 +1,8 @@
 import React from "react";
 import TagAutocomplete from "@/components/TagAutocomplete";
+import { Draft } from "../data_types";
+import { FaSave, FaFileAlt } from "react-icons/fa";
+
 
 interface EditProps {
   title: string;
@@ -7,6 +10,8 @@ interface EditProps {
   body: string;
   changeMessage: string;
   tags: string[]; 
+
+  drafts?: Draft[]; 
 
   setTitle: (val: string) => void;
   setSubtitle: (val: string) => void;
@@ -16,6 +21,9 @@ interface EditProps {
 
   onCancel: () => void;
   onSave: () => void;
+  onSaveDraft: () => void; 
+  onLoadDraft: (d: Draft) => void; 
+
   isCreating?: boolean; // To toggle UI text
 };
 
@@ -25,6 +33,7 @@ export const Edit: React.FC<EditProps> = ({
   body,
   changeMessage,
   tags,
+  drafts = [],
   setTitle,
   setSubtitle,
   setBody,
@@ -32,9 +41,39 @@ export const Edit: React.FC<EditProps> = ({
   setTags,
   onCancel,
   onSave,
+  onSaveDraft, 
+  onLoadDraft,
   isCreating = false,
 }) => (
   <div className="space-y-4 animate-in fade-in duration-200">
+
+    {/* Draft Loader Bar */}
+    {/* TODO: MAKE THIS PRETTIER */}
+      {drafts.length > 0 && (
+        <div className="bg-slate-100 p-3 rounded-md flex items-center justify-between border border-slate-200">
+           <div className="flex items-center gap-2 text-sm text-slate-600">
+             <FaFileAlt />
+             <span className="font-semibold">Found {drafts.length} Saved Drafts:</span>
+           </div>
+           <select 
+             className="text-sm border-slate-300 rounded p-1 w-64"
+             onChange={(e) => {
+                const idx = parseInt(e.target.value);
+                if (!isNaN(idx)) onLoadDraft(drafts[idx]);
+             }}
+             defaultValue=""
+           >
+             <option value="" disabled>-- Select a draft to load --</option>
+             {drafts.map((d, i) => (
+               <option key={i} value={i}>
+                 {d.date.split('T')[0]} - {d.title}
+               </option>
+             ))}
+           </select>
+        </div>
+      )}
+
+    {/* Info Banner */}
     <div className={`rounded-md border p-4 text-sm flex items-start gap-2 ${
       isCreating ? "border-blue-200 bg-blue-50 text-blue-800" : "border-amber-200 bg-amber-50 text-amber-800"
     }`}>
@@ -108,11 +147,25 @@ export const Edit: React.FC<EditProps> = ({
       </div>
     )}
     
-    {/* Footer Controls */}
+    {/* Footer Buttons */}
     <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+      
+      {/* Cancel Button */}
       <button onClick={onCancel} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-red-600 hover:font-bold rounded">
         Cancel
       </button>
+
+      {/* Save Draft Button */}
+      <button 
+        onClick={onSaveDraft} 
+        disabled={!title.trim()}
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded"
+      >
+        <FaSave className="text-slate-400" />
+        Save Draft
+      </button>
+
+      {/* Publish Button */}
       <button 
         onClick={onSave} 
         disabled={!title.trim() || !body.trim() || (!isCreating && !changeMessage.trim())}

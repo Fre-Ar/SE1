@@ -41,8 +41,35 @@ interface CommentRow {
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  // Check for revisionId query param
+  const url = new URL(req.url);
+  const requestedRevId = url.searchParams.get("revisionId");
     
   try {
+    let revisionCondition = "";
+    const queryParams: any[] = [];
+
+    // LOGIC: If a specific revision is requested, find it.
+    // OTHERWISE, find the latest 'published' revision (Current Live).
+    if (requestedRevId) {
+      revisionCondition = `r.id_pk = ?`;
+      queryParams.push(requestedRevId);
+    } else {
+      revisionCondition = `
+        r.id_pk = (
+          SELECT id_pk FROM storyRevision r2
+          WHERE r2.story_fk = s.id_pk 
+          AND r2.revStatus = 'published'
+          ORDER BY r2.created_at DESC 
+          LIMIT 1
+        )
+      `;
+    }
+
+    // Add slug to params 
+    queryParams.push(slug);
+    
     // 1. Fetch the Story Container and its CURRENT PUBLISHED Revision
     const storySql = `
       SELECT 
@@ -58,27 +85,21 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
         u.username as authorUsername,
         GROUP_CONCAT(t.tag) as tags
       FROM story s
-      INNER JOIN storyRevision r ON r.id_pk = (
-          -- Subquery to get the latest published revision (current live version)
-          SELECT id_pk FROM storyRevision r2
-          WHERE r2.story_fk = s.id_pk 
-          AND r2.revStatus = 'published'
-          ORDER BY r2.created_at DESC 
-          LIMIT 1
-      )
+      INNER JOIN storyRevision r ON 
+        ${revisionCondition} -- Dynamic Join Condition
       INNER JOIN users u ON u.id_pk = r.author_fk
       LEFT JOIN tags t ON t.storyRevision_fk = r.id_pk
-      WHERE s.slug = ?
+      WHERE s.slug = ? 
       GROUP BY s.id_pk, r.id_pk, u.id_pk
       LIMIT 1;
     `;
-    
+
     // Use type assertion on the query result
-    const [storyRows] = await db.query(storySql, [slug]) as [StoryRevisionRow[], any];
+    const [storyRows] = await db.query(storySql, queryParams) as [StoryRevisionRow[], any];
 
     if (storyRows.length === 0) {
       return NextResponse.json(
-        { error: 'Story not found or not published' }, 
+        { error: 'Story or revision not found' }, 
         { status: 404 }
       );
     }
@@ -115,9 +136,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
       status: 'visible',
     }));
 
-    //if (storyRow.leadImage) console.log('LEAD IMAGE:', typeof storyRow.leadImage);
-
-    // Construct the StoryViewDTO (explicit assertion bypasses the compiler issue)
+    // Construct the StoryViewDTO
     const storyView: StoryViewDTO = {
       // StoryContent part
       title: storyRow.title,
@@ -125,7 +144,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
       slug: storyRow.slug,
       body: storyRow.body, 
       tags: storyRow.tags ? storyRow.tags.split(',') : [],
-      leadImage: storyRow.leadImage ? storyRow.leadImage : undefined, 
+      leadImage: storyRow.leadImage ? storyRow.leadImage : undefined,
       
       // StoryViewDTO specific fields
       storyId: storyRow.storyId.toString(),
@@ -156,7 +175,19 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const payload: SaveStoryPayload = await req.json();
-  const {authorId}  = await req.json();
+  
+  // 1. Get Author
+  const authorId = payload.authorId;
+  
+  // 2. Parse Body
+  const contentBody = payload.body;
+  const title = payload.title;
+  const subtitle = payload.subtitle || "";
+  const tags = payload.tags;
+  const leadImage = payload.leadImage ? JSON.stringify(payload.leadImage) : null;
+
+  const changeMessage = payload.changeMessage || 'Initial creation';
+  const revStatus = payload.revStatus || 'published';
 
   try {
     // 1. Find existing story container and latest revision to establish parent
@@ -176,32 +207,42 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     `;
     const [storyRows] = await db.query(findStorySql, [slug]) as [any[], any];
 
+    // Handle case where we might be updating a Draft-Only story (no published revisions yet)
+    let storyId, parentId;
     if (storyRows.length === 0) {
-      return NextResponse.json({ error: 'Story not found for update.' }, { status: 404 });
+        // Fallback: Check if story exists at all (maybe only drafts exist)
+        const [rawStory] = await db.query("SELECT id_pk FROM story WHERE slug = ?", [slug]) as [any[], any];
+        if (rawStory.length === 0) return NextResponse.json({ error: 'Story not found for update.' }, { status: 404 });
+        storyId = rawStory[0].id_pk;
+        parentId = null; // No parent if only drafts exist or first revision
+    } else {
+        storyId = storyRows[0].storyId;
+        parentId = storyRows[0].parentId;
     }
 
-    const storyId = storyRows[0].storyId;
-    const parentId = storyRows[0].parentId;
 
     // 2. Insert a new storyRevision
     const insertRevisionSql = `
       INSERT INTO storyRevision (
         story_fk, parentId_fk, author_fk, title, subtitle, slug, body, 
         leadImage, changeMessage, revStatus, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', NOW());
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());
     `;
+
     const [revisionResult] = await db.query(insertRevisionSql, [
       storyId, 
-      parentId, // Link to previous revision
+      parentId, 
       authorId, 
-      payload.title, 
-      payload.subtitle ?? null, 
-      slug, // Slug must remain consistent
-      payload.body, 
-      payload.leadImage ? JSON.stringify(payload.leadImage) : null,
-      payload.changeMessage
+      title, 
+      subtitle, 
+      slug, 
+      contentBody, 
+      leadImage,
+      changeMessage,
+      revStatus 
     ]) as [any, any];
     const revisionId = revisionResult.insertId;
+  
 
     // 3. Insert Tags linked to the new Revision ID
     if (payload.tags && payload.tags.length > 0) {
@@ -210,11 +251,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
       await db.query(insertTagsSql);
     }
 
-    // 4. Return the new DTO
-    return GET(req, { params: Promise.resolve({ slug: slug }) });
+    return NextResponse.json({ success: true, revisionId, status: revStatus });
 
   } catch (error) {
     console.error(`Error updating story with slug ${slug}:`, error);
-    return NextResponse.json({ error: 'Failed to create new story revision.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update story.' }, { status: 500 });
   }
 }

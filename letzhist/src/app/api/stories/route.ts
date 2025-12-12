@@ -208,7 +208,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ 
       success: true, 
       storyId, 
-      slug 
+      slug,
+      status: revStatus
     });
 
   } catch (error: any) {
