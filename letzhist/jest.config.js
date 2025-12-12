@@ -1,13 +1,26 @@
-// jest.config.js (or .ts)
+// jest.config.js
 
 module.exports = {
-  // ... other configurations
-  setupFiles: ['./jest.setup.js'],
+  // FIX: This section tells Jest to use babel-jest to transform both 
+  // JavaScript (.js/.jsx) and TypeScript (.ts/.tsx) files.
+  // This removes the 'as any' and 'as jest.Mock' syntax before parsing.
+  transform: {
+    '^.+\\.(ts|tsx|js|jsx)$': 'babel-jest',
+  },
+  
+  // PRESERVE: This was the fix for the previous 'expect is not defined' error
+  setupFilesAfterEnv: ['./jest.setup.js'], 
+
   moduleNameMapper: {
-    // This directs imports of next/headers and next/cache to your mocks
+    // Keep your existing module mappers
     '^next/headers$': '<rootDir>/__mocks__/next/headers.ts',
     '^next/cache$': '<rootDir>/__mocks__/next/cache.ts',
+    // Add module alias support if needed (e.g., '@/')
+    // '^@/(.*)$': '<rootDir>/src/$1',
   },
-  // Add other necessary environment configurations if using JSDOM for components
-  // testEnvironment: 'jsdom', 
+  
+  // Ensure Jest includes the TypeScript extensions when looking for modules
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+
+  // ... rest of your configurations
 };
