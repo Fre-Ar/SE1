@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { Story } from '@/components/data_types'; 
+import { SaveStoryPayload, Story } from '@/components/data_types'; 
+
 
 interface StoryRow {
   storyId: number;
@@ -12,6 +13,15 @@ interface StoryRow {
   tagList: string | null; 
   lastEdited: string;
 }
+
+// Helper: Slugify
+const generateSlug = (title: string) => {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-');
+};
 
 export async function GET(req: NextRequest) {
   try {
@@ -131,5 +141,86 @@ export async function GET(req: NextRequest) {
       { error: 'Internal Server Error' }, 
       { status: 500 }
     );
+  }
+}
+
+export async function POST(req: NextRequest) {
+
+  const connection = await db.getConnection(); 
+  try {
+    const payload: SaveStoryPayload = await req.json();
+
+    // 1. Get Author
+    const authorId = payload.authorId;
+    
+    // 2. Parse Body
+    const contentBody = payload.body;
+    const title = payload.title;
+    const subtitle = payload.subtitle || "";
+    const tags = payload.tags;
+    const leadImage = payload.leadImage ? JSON.stringify(payload.leadImage) : null;
+
+    const changeMessage = payload.changeMessage || 'Initial creation';
+    const revStatus = payload.revStatus || 'published';
+
+    if (!title || !contentBody) {
+      return NextResponse.json({ error: "Title and Body are required" }, { status: 400 });
+    }
+
+    const slug =  payload.slug || generateSlug(title);
+    if (!slug) {
+      return NextResponse.json({ error: 'Slug could not be generated from title.' }, { status: 400 });
+    }
+
+
+    // 3. TRANSACTION START
+    await connection.beginTransaction();
+
+    // A. Create Story Container
+    const [storyResult]: any = await connection.query(
+      "INSERT INTO story (slug, liveTitle, created_at) VALUES (?, ?, NOW())",
+      [slug, title]
+    );
+    const storyId = storyResult.insertId;
+
+    // B. Create First Revision
+    const [revResult]: any = await connection.query(
+      `INSERT INTO storyRevision 
+        (story_fk, parentId_fk, author_fk, title, subtitle, slug, body, leadImage, created_at, changeMessage, revStatus) 
+       VALUES (?, NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)`,
+      [storyId, authorId, title, subtitle, slug, contentBody, leadImage, changeMessage, revStatus]
+    );
+    // TODO: Add draft feature
+    const revisionId = revResult.insertId;
+
+    // C. Insert Tags
+    if (tags && Array.isArray(tags) && tags.length > 0) {
+      const tagValues = tags.map((t: string) => [revisionId, t]);
+      await connection.query(
+        "INSERT INTO tags (storyRevision_fk, tag) VALUES ?",
+        [tagValues]
+      );
+    }
+
+    // 4. TRANSACTION COMMIT
+    await connection.commit();
+
+    return NextResponse.json({ 
+      success: true, 
+      storyId, 
+      slug 
+    });
+
+  } catch (error: any) {
+    await connection.rollback();
+    console.error("Failed to create story:", error);
+    
+    // Handle Duplicate Slug
+    if (error.code === 'ER_DUP_ENTRY') {
+      return NextResponse.json({ error: "A story with this slug already exists." }, { status: 409 });
+    }
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } finally {
+    connection.release();
   }
 }

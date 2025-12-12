@@ -12,7 +12,7 @@
 
   * `GET /api/stories`: Search and filter stories (powering the list view & timeline).
   * `GET /api/stories/:slug`: Fetch a single full story (matches `PageData`).
-  * `POST /api/stories/:slug`: Create a new story draft.
+  * `POST /api/stories`: Create a new story draft.
   * `PUT /api/stories/:slug`: Update an existing story.
 
   @FIRST 2 DONE!@

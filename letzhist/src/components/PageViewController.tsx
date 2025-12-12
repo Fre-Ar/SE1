@@ -22,13 +22,15 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
   
   const [draftBody, setDraftBody] = useState(initialData.body); 
   const [draftTitle, setDraftTitle] = useState(initialData.title);
+  const [draftSubtitle, setDraftSubtitle] = useState(initialData.subtitle);
+  const [draftTags, setDraftTags] = useState(initialData.tags || []);
   const [changeMessage, setChangeMessage] = useState(""); 
 
   const [history, setHistory] = useState<RevisionLogEntry[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   // === Permission Logic ===
-  const isBanned = user?.isBanned ?? false; // Assuming schema update or custom field
+  const isBanned = user?.isBanned ?? false;
   const isMuted = user?.isMuted ?? false;
   const isMuteActive = isMuted && user?.mutedUntil 
     ? new Date(user.mutedUntil) > new Date() 
@@ -40,7 +42,9 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
   useEffect(() => {
     setCurrentStory(initialData);
     setDraftBody(initialData.body);
+    setDraftTags(initialData.tags || []); 
     setDraftTitle(initialData.title);
+    setDraftSubtitle(initialData.subtitle || "");
   }, [initialData]);
 
   // === API Mocks ===
@@ -152,10 +156,14 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user }) => {
               isEditing ? (
                 <Edit
                   title={draftTitle}
+                  subtitle={draftSubtitle}
                   body={draftBody}
+                  tags={draftTags}
                   changeMessage={changeMessage}
                   setTitle={setDraftTitle}
+                  setSubtitle={setDraftSubtitle}
                   setBody={setDraftBody}
+                  setTags={setDraftTags}
                   setChangeMessage={setChangeMessage}
                   onCancel={() => setIsEditing(false)}
                   onSave={handleSaveRevision}

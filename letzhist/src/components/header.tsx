@@ -56,7 +56,7 @@ export default function Header() {
               <>
 
               <Link
-                href="/create"
+                href="/stories/create"
                 className={`${commonButtonStyles('slate-100')} text-slate-600`}
               >
                 <span className='flex items-center gap-1'>
@@ -64,7 +64,7 @@ export default function Header() {
                   New page
                 </span>
               </Link>
-              
+
               <Link
                 href="/profile"
                 className={`${commonButtonStyles('slate-100')} text-slate-600`}

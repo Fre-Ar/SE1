@@ -167,9 +167,8 @@ export type SaveStoryPayload = {
     caption?: string;
   };
   changeMessage: string; // The commit message for the revision
-  // NOTE: In a real app, authorId would come from session/JWT, not the payload.
-  // Using a placeholder for demonstration purposes.
-  authorId: number; 
+  revStatus: 'draft' | 'published';
+  authorId: string; 
 };
 
 // ==========================================

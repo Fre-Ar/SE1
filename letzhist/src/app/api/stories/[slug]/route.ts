@@ -150,70 +150,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 }
 
 // ==========================================
-// 2. POST /api/stories (Create New Story)
-// (Note: This handler is only active if the file is named route.ts in a /api/stories/ directory)
-// ==========================================
-
-export async function POST(req: NextRequest) {
-  const payload: SaveStoryPayload = await req.json();
-  const {authorId}  = await req.json();
-  
-  // NOTE: Slug generation logic is simplified here.
-  const newSlug = payload.slug || payload.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-*|-*$/g, '');
-
-  if (!newSlug) {
-    return NextResponse.json({ error: 'Slug could not be generated from title.' }, { status: 400 });
-  }
-
-  try {
-    // 1. Insert into story container
-    const insertStorySql = `
-      INSERT INTO story (slug, liveTitle) VALUES (?, ?);
-    `;
-    const [storyResult] = await db.query(insertStorySql, [newSlug, payload.title]) as [any, any];
-    const storyId = storyResult.insertId;
-
-    // 2. Insert into storyRevision (First Revision)
-    const insertRevisionSql = `
-      INSERT INTO storyRevision (
-        story_fk, parentId_fk, author_fk, title, subtitle, slug, body, 
-        leadImage, changeMessage, revStatus, created_at
-      ) VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, 'published', NOW());
-    `;
-    const [revisionResult] = await db.query(insertRevisionSql, [
-      storyId, 
-      authorId, 
-      payload.title, 
-      payload.subtitle ?? null, 
-      newSlug, 
-      payload.body, 
-      payload.leadImage ? JSON.stringify(payload.leadImage) : null,
-      payload.changeMessage
-    ]) as [any, any];
-    const revisionId = revisionResult.insertId;
-
-    // 3. Insert Tags
-    if (payload.tags && payload.tags.length > 0) {
-      const tagValues = payload.tags.map(tag => `(${revisionId}, '${tag}')`).join(', ');
-      const insertTagsSql = `INSERT INTO tags (storyRevision_fk, tag) VALUES ${tagValues}`;
-      await db.query(insertTagsSql);
-    }
-    
-    // NOTE: In a production app, this would be wrapped in a transaction.
-
-    // 4. Return the new DTO (by running the GET logic)
-    // We assume the db object can handle a simplified query for the single story fetch
-    return GET(req, { params: Promise.resolve({ slug: newSlug }) });
-
-  } catch (error) {
-    console.error('Error creating story:', error);
-    return NextResponse.json({ error: 'Failed to create new story.' }, { status: 500 });
-  }
-}
-
-
-// ==========================================
-// 3. PUT /api/stories/:slug (Create New Revision)
+// 2. PUT /api/stories/:slug (Create New Revision)
 // ==========================================
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
