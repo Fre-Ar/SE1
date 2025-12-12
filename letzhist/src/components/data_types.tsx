@@ -104,7 +104,8 @@ export type StoryRevision = {
 // The persistent container that users actually "visit".
 export type Story = {
   id: string; // Persistent ID (e.g., 'story-555')
-  createdAt: string; // When the story was first created
+  createdAt: Date; // When the story was first created]
+  lastEdited: Date;
   
   // The Pointer:
   // This determines what is shown to the public. 

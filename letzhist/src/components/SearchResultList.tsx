@@ -7,30 +7,47 @@ type Props = {
 
 export default function SearchResultList({ items }: Props) {
   return (
-    <div className="w-full">
-      <ul className="space-y-3">
-        {items.map((item) => (
-          <li key={String(item.slug)} className="p-3 bg-white rounded shadow-sm flex items-center gap-4 hover:bg-slate-200">
-            {item.leadImage?.url ? (
-            
-              <img src={item.leadImage.url} alt={item.leadImage?.alt ?? ''} className="w-20 h-14 object-cover rounded" />
-            ) : (
-              <div className="w-20 h-14 bg-slate-100 rounded" />
-            )}
-            <div className="flex-1 ">
-              <Link
-                href={`/stories/${item.slug}`}
-                className="text-uni-blue font-semibold"
-              >
-                {item.title ?? 'Untitled'}
-              </Link>
-              <div className="text-sm text-slate-500 ">
-                {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}
+    <div className="space-y-4">
+      {items.map((story) => (
+        <div key={story.id}>
+        <Link href={`/stories/${story.slug}`}>
+          <div className="border rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer">
+            {/* Image */}
+            <div className="flex gap-4">
+              {story.leadImage && (
+                <img
+                  src={story.leadImage.url}
+                  alt={story.leadImage.alt}
+                  className="w-24 h-24 object-cover rounded"
+                />
+              )}
+
+              {/* Content */}
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-gray-800 hover:text-uni-blue">
+                  {story.title}
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Last Updated: {new Date(story.lastEdited).toLocaleDateString()}
+                </p>
+                {story.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {story.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-block rounded-full bg-slate-100 px-2 py-0.5 text-xs text-gray-700"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-          </li>
-        ))}
-      </ul>
+          </div>
+        </Link>
+        </div>
+      ))}
     </div>
   );
 }

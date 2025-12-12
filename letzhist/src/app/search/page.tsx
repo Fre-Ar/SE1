@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaSort, FaSearch } from "react-icons/fa";
-import { StoryViewDTO} from '@/components/data_types';
+import { Story} from '@/components/data_types';
 import TagAutocomplete from '@/components/TagAutocomplete';
+import SearchResultList from '@/components/SearchResultList';
 
 export default function SearchPage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function SearchPage() {
   const selectedTags = rawTags?.split(',').filter(Boolean) || [];
 
   // 2. Local State (Data)
-  const [results, setResults] = useState<StoryViewDTO[]>([]);
+  const [results, setResults] = useState<Story[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   
@@ -141,50 +142,7 @@ export default function SearchPage() {
           </div>
 
           {/* Results List */}
-          {results.length > 0 ? (
-            <div className="space-y-4">
-              {results.map((story) => (
-                <div key={story.storyId}>
-                <Link href={`/stories/${story.slug}`}>
-                  <div className="border rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer">
-                    {/* Image */}
-                    <div className="flex gap-4">
-                      {story.leadImage && (
-                        <img
-                          src={story.leadImage.url}
-                          alt={story.leadImage.alt}
-                          className="w-24 h-24 object-cover rounded"
-                        />
-                      )}
-
-                      {/* Content */}
-                      <div className="flex-1">
-                        <h2 className="text-lg font-semibold text-gray-800 hover:text-uni-blue">
-                          {story.title}
-                        </h2>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Last Updated: {new Date(story.lastEdited).toLocaleDateString()}
-                        </p>
-                        {story.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {story.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="inline-block rounded-full bg-slate-100 px-2 py-0.5 text-xs text-gray-700"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-                </div>
-              ))}
-            </div>
-          ) : (
+          {results.length > 0 ? <SearchResultList items={results}/> : (
             <div className="text-center py-12 text-gray-500">
               {loading ? (
                 <p>Searching...</p>

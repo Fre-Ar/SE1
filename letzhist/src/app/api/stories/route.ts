@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Story } from '@/components/data_types'; 
 
+interface StoryRow {
+  storyId: number;
+  storyCreatedAt: string;
+  revisionId: number;
+  title: string;
+  slug: string;
+  leadImage: string | null; 
+  tagList: string | null; 
+  lastEdited: string;
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -24,6 +34,7 @@ export async function GET(req: NextRequest) {
         r.title,
         r.slug,
         r.leadImage,
+        r.created_at as lastEdited,
         GROUP_CONCAT(t.tag) as tagList
       FROM story s
       INNER JOIN storyRevision r ON r.id_pk = (
@@ -95,12 +106,13 @@ export async function GET(req: NextRequest) {
 
     // 6. Execution
     // TODO: Using 'any' for row type here, but ideally define an interface representing the raw SQL row
-    const [rows] = await db.query<any[]>(sql, values);
+    const [rows] = await db.query(sql, values) as [StoryRow[], any];
 
     // 7. Mapping to TypeScript Type
     const stories: Story[] = rows.map((row) => ({
       id: row.storyId.toString(),
-      createdAt: new Date(row.storyCreatedAt).toISOString(),
+      createdAt: new Date(row.storyCreatedAt),
+      lastEdited: new Date(row.lastEdited),
       currentRevisionId: row.revisionId.toString(),
       
       title: row.title,

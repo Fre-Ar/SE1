@@ -51,16 +51,20 @@ export default function Header() {
               <FaSearch className="h-6 w-6 " />
             </Link>
 
-            <button className={`${commonButtonStyles('slate-100')}  text-slate-600`}>
-              <span className='flex items-center gap-1'>
-                <FaRegPlusSquare className="h-6 w-6 "/>
-                New page
-              </span>
-            </button>
 
             {user ? (
               <>
 
+              <Link
+                href="/create"
+                className={`${commonButtonStyles('slate-100')} text-slate-600`}
+              >
+                <span className='flex items-center gap-1'>
+                  <FaRegPlusSquare className="h-6 w-6 "/>
+                  New page
+                </span>
+              </Link>
+              
               <Link
                 href="/profile"
                 className={`${commonButtonStyles('slate-100')} text-slate-600`}
