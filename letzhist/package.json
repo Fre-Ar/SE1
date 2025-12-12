@@ -17,12 +17,14 @@
     "bcryptjs": "^3.0.3",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.3",
+    "net": "^1.0.2",
     "next": "^16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",
     "react-markdown": "^9.0.0",
     "remark-gfm": "^4.0.0",
+    "tls": "^0.0.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
