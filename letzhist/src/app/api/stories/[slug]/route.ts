@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-// We only need the types from data_types.tsx
 import { StoryViewDTO, UserSummary, Comment, SaveStoryPayload } from '@/components/data_types'; 
 
 // --- INTERNAL INTERFACES FOR DATABASE MAPPING ---
@@ -253,7 +252,22 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
       await db.query(insertTagsSql);
     }
 
-    return NextResponse.json({ success: true, revisionId, status: revStatus });
+    // 4. Return the new DTO by calling GET with the specific revisionId
+    // We construct a new URL with the query param to force GET to fetch this specific revision
+    const url = new URL(req.url);
+    url.searchParams.set("revisionId", revisionId.toString());
+
+    const headers = new Headers(req.headers);
+    // make sure Cookie is preserved (some code paths may drop it)
+    headers.set("cookie", req.headers.get("cookie") ?? "");
+
+    // Create a new request object with the updated URL to pass to GET
+    const getReq = new NextRequest(url, {
+      method: "GET",
+      headers,
+    });
+
+    return GET(getReq, { params });
 
   } catch (error) {
     console.error(`Error updating story with slug ${slug}:`, error);

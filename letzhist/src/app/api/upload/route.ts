@@ -117,10 +117,3 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to process the upload." }, { status: 500 });
     }
 }
-
-// Next.js config to parse FormData:
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};

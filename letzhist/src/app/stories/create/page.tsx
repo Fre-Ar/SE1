@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { Edit } from '@/components/page-view/Edit';
-import { SaveStoryPayload } from '@/components/data_types';
+import { Draft, LeadImage, SaveStoryPayload } from '@/components/data_types';
 
 export default function CreatePage() {
   const { user, loading } = useAuth();
@@ -14,10 +14,11 @@ export default function CreatePage() {
   const [subtitle, setSubtitle] = useState('');
   const [body, setBody] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+  const [leadImage, setLeadImage] = useState<LeadImage | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [existingSlug, setExistingSlug] = useState<string | null>(null);
-  const [drafts, setDrafts] = useState<any[]>([]);
+  const [drafts, setDrafts] = useState<Draft[]>([]);
 
   // Fetch drafts on mount
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function CreatePage() {
     }
   }, [user]);
 
-  const loadDraft = async (draft: any) => {
+  const loadDraft = async (draft: Draft) => {
       // For new story drafts, we need to load the content. 
       // Since we only have metadata in the list, we fetch the specific revision.
       // We assume fetching a revision by ID works even if not published (as author).
@@ -46,8 +47,10 @@ export default function CreatePage() {
         const data = await res.json();
         
         setTitle(data.title);
+        setSubtitle(data.subtitle);
         setBody(data.body);
         setTags(data.tags || []);
+        setLeadImage(data.leadImage);
         setExistingSlug(data.slug); // Set this so we PUT instead of POST
       } catch (err) {
         alert("Could not load draft.");
@@ -68,7 +71,7 @@ export default function CreatePage() {
         subtitle: subtitle,
         body: body,
         tags: tags,
-        //leadImage?: null,
+        leadImage: leadImage,
         changeMessage: status === 'draft' ? 'Saved as draft' : 'Initial creation',
         revStatus: status,
         authorId: user!.id
@@ -127,6 +130,7 @@ export default function CreatePage() {
             body={body}
             changeMessage=""
             tags={tags}
+            leadImage={leadImage}
             drafts={drafts}
 
             setTitle={setTitle}
@@ -134,6 +138,7 @@ export default function CreatePage() {
             setBody={setBody}
             setChangeMessage={() => {}}
             setTags={setTags}
+            setLeadImage={setLeadImage}
             onCancel={() => router.back()}
             onSave={() => handleSave('published')}
             onSaveDraft={() => handleSave('draft')}

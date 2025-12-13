@@ -21,11 +21,14 @@
 
   * `POST /api/stories/:slug/comments`: Add a comment to a story.
   * `DELETE /api/comments/:id`: Remove a comment (moderation/author).
+  
+  @ALL 2 DONE!@
 
 **4. Utilities**
 
   * `POST /api/upload`: Upload an image file and get a URL back (for the editor).
 
+  @Done!@
 **5. Disputes & Reporting**
 
   * `POST /api/disputes`: File a report against content or a user. Open a formal dispute regarding historical accuracy or other issues.

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { StoryViewDTO, RevisionLogEntry, UserProfile } from "@/components/data_types";
+import { StoryViewDTO, RevisionLogEntry, UserProfile, Draft, LeadImage } from "@/components/data_types";
 
 // Import Sub-components
 import { Read } from "./page-view/Read";
@@ -30,8 +30,9 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, 
   const [draftTitle, setDraftTitle] = useState(initialData.title);
   const [draftSubtitle, setDraftSubtitle] = useState(initialData.subtitle);
   const [draftTags, setDraftTags] = useState(initialData.tags || []);
+  const [draftLeadImage, setDraftLeadImage] = useState<LeadImage | undefined>(initialData.leadImage);
   const [changeMessage, setChangeMessage] = useState(""); 
-  const [drafts, setDrafts] = useState<any[]>([]);
+  const [drafts, setDrafts] = useState<Draft[]>([]);
 
   const [history, setHistory] = useState<RevisionLogEntry[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -50,6 +51,7 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, 
     setCurrentStory(initialData);
     setDraftBody(initialData.body);
     setDraftTags(initialData.tags || []); 
+    setDraftLeadImage(initialData.leadImage);
     setDraftTitle(initialData.title);
     setDraftSubtitle(initialData.subtitle || "");
 
@@ -103,8 +105,10 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, 
        if (!res.ok) throw new Error("Err");
        const data = await res.json();
        setDraftTitle(data.title);
+       setDraftSubtitle(data.subtitle);
        setDraftBody(data.body);
        setDraftTags(data.tags || []);
+       setDraftLeadImage(data.leadImage);
        setChangeMessage(draft.summary || "");
      } catch (e) { alert("Failed to load draft content"); }
   };
@@ -126,6 +130,7 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, 
           subtitle: draftSubtitle,
           body: draftBody,
           tags: draftTags,
+          leadImage: draftLeadImage,
           changeMessage: changeMessage,
           revStatus: status,
           authorId: user.id, 
@@ -202,12 +207,15 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, 
             </div>
 
             {/* EDIT BUTTON (Conditional) */}
-            {!isEditing && (
+            {!isEditing ? (
               canEdit ? (
                 <button
                   onClick={() => {
                     setDraftBody(currentStory.body);
                     setDraftTitle(currentStory.title);
+                    setDraftSubtitle(currentStory.subtitle);
+                    setDraftTags(currentStory.tags);
+                    setDraftLeadImage(currentStory.leadImage);
                     setChangeMessage("");
                     setIsEditing(true);
                     setActiveTab("article");
@@ -222,6 +230,13 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, 
                    {!user ? "Log in to edit" : "Editing disabled"}
                  </div>
               )
+            ) : (
+              <button 
+                onClick={() => setIsEditing(false)} 
+                className="rounded-md border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-red-600 hover:font-bold"
+              >
+                Cancel
+              </button>
             )}
           </div>
 
@@ -258,12 +273,14 @@ export const PageView: React.FC<PageViewProps> = ({ initialData, user, refresh, 
                   subtitle={draftSubtitle}
                   body={draftBody}
                   tags={draftTags}
+                  leadImage={draftLeadImage}
                   changeMessage={changeMessage}
                   drafts={drafts}
                   setTitle={setDraftTitle}
                   setSubtitle={setDraftSubtitle}
                   setBody={setDraftBody}
                   setTags={setDraftTags}
+                  setLeadImage={setDraftLeadImage}
                   setChangeMessage={setChangeMessage}
                   onCancel={() => setIsEditing(false)}
                   onSave={() => handleSave('published')}

@@ -21,7 +21,7 @@
 /build
 
 # misc
-.DS_Store
+.DS_Store*
 *.pem
 
 # debug
@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+/public/images/uploads/*
 
 # vercel
 .vercel

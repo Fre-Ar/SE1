@@ -73,12 +73,14 @@ export type StoryContent = {
   body: string; // The main text content
   tags: string[];
   // Metadata for the lead image (stored here to be versioned!)
-  leadImage?: {
-    url: string;
-    alt: string;
-    caption?: string;
-  };
+  leadImage?: LeadImage;
 };
+
+export interface LeadImage {
+  url: string;
+  alt: string;
+  caption?: string;
+}
 
 // 2. THE REVISION (The "Commit")
 // An immutable snapshot of the story at a point in time.
@@ -176,6 +178,7 @@ export interface Draft {
   storyId?: number;    // For new story drafts
   title: string;
   date: string;
+  slug?: string;
 }
 
 // ==========================================

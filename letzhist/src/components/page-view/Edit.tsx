@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import TagAutocomplete from "@/components/TagAutocomplete";
-import { Draft } from "../data_types";
-import { FaSave, FaFileAlt } from "react-icons/fa";
-
+import { Draft, LeadImage } from "../data_types";
+import { FaSave, FaFileAlt, FaImage, FaTrash, FaUpload, FaSpinner } from "react-icons/fa";
 
 interface EditProps {
   title: string;
@@ -10,6 +9,7 @@ interface EditProps {
   body: string;
   changeMessage: string;
   tags: string[]; 
+  leadImage?: LeadImage;
 
   drafts?: Draft[]; 
 
@@ -18,6 +18,7 @@ interface EditProps {
   setBody: (val: string) => void;
   setChangeMessage: (val: string) => void;
   setTags: (val: string[]) => void;
+  setLeadImage: (val: LeadImage | undefined) => void;
 
   onCancel: () => void;
   onSave: () => void;
@@ -28,23 +29,86 @@ interface EditProps {
 };
 
 export const Edit: React.FC<EditProps> = ({
-  title,
-  subtitle,
-  body,
-  changeMessage,
-  tags,
-  drafts = [],
-  setTitle,
-  setSubtitle,
-  setBody,
-  setChangeMessage,
-  setTags,
-  onCancel,
-  onSave,
-  onSaveDraft, 
-  onLoadDraft,
-  isCreating = false,
-}) => (
+  title, subtitle, body, changeMessage, tags, leadImage, drafts = [],
+  setTitle, setSubtitle, setBody, setChangeMessage, setTags, setLeadImage,
+  onCancel, onSave, onSaveDraft, onLoadDraft, isCreating = false,
+}) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingBody, setIsUploadingBody] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null); // For Lead Image
+  const bodyFileInputRef = useRef<HTMLInputElement>(null); // For Body Image
+
+  // --- HELPER: Generic Upload ---
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+    const data = await res.json();
+    return data.url; 
+  };
+
+  // --- HANDLER: Lead Image ---
+  const handleLeadImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setIsUploading(true);
+    try {
+      const url = await uploadFile(e.target.files[0]);
+      setLeadImage({
+        url, 
+        alt: title || "Story Cover",
+        caption: "" });
+    } catch (err) {
+      alert("Failed to upload image.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // --- HANDLER: Body Image ---
+  const handleBodyImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setIsUploadingBody(true);
+    try {
+      const file = e.target.files[0];
+      const url = await uploadFile(file);
+      
+      // Insert Markdown at Cursor Position
+      const markdown = `\n![${file.name}](${url})\n`;
+      
+      if (textareaRef.current) {
+        const start = textareaRef.current.selectionStart;
+        const end = textareaRef.current.selectionEnd;
+        const text = textareaRef.current.value;
+        
+        const newText = text.substring(0, start) + markdown + text.substring(end);
+        setBody(newText);
+        
+        // Restore focus (optional, usually good UX)
+        setTimeout(() => {
+          textareaRef.current?.focus();
+          textareaRef.current?.setSelectionRange(start + markdown.length, start + markdown.length);
+        }, 0);
+      } else {
+        setBody(body + markdown); // Fallback
+      }
+
+    } catch (err) {
+      alert("Failed to insert image.");
+    } finally {
+      setIsUploadingBody(false);
+      // Reset input so same file can be selected again if needed
+      if (bodyFileInputRef.current) bodyFileInputRef.current.value = "";
+    }
+  };
+
+  return (
   <div className="space-y-4 animate-in fade-in duration-200">
 
     {/* Draft Loader Bar */}
@@ -87,6 +151,58 @@ export const Edit: React.FC<EditProps> = ({
       </div>
     </div>
 
+    {/* Lead Image Section */}
+    <div className="rounded-lg">
+      <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Cover Image</label>
+      
+      {leadImage ? (
+        <div className="relative group overflow-hidden rounded-md border border-slate-300 bg-slate-50">
+          <img 
+            src={leadImage.url} 
+            alt="Cover Preview" 
+            className="w-full object-cover"
+          />
+          {/* Overlay Actions */}
+          <div className="absolute inset-0 bottom-8 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-white text-slate-800 px-3 py-1 rounded text-sm font-medium hover:bg-slate-200 flex items-center gap-2"
+            >
+              <FaUpload /> Change
+            </button>
+            <button 
+              onClick={() => setLeadImage(undefined)}
+              className="bg-red-600 text-white px-3 py-1 rounded text-sm font-medium hover:bg-red-700 flex items-center gap-2"
+            >
+              <FaTrash /> Remove
+            </button>
+          </div>
+          {/* Caption Input */}
+          <input 
+            value={leadImage.caption || ""}
+            onChange={(e) => setLeadImage({...leadImage, caption: e.target.value})}
+            placeholder="Add a caption for the cover image..."
+            className="w-full text-xs p-2 border-t border-slate-200 bg-slate-50 focus:outline-none"
+          />
+        </div>
+      ) : (
+        <div 
+          onClick={() => fileInputRef.current?.click()}
+          className="w-full h-32 border-2 border-dashed border-slate-300 rounded-md flex flex-col items-center justify-center text-slate-400 hover:border-uni-blue hover:text-uni-blue hover:bg-blue-50 cursor-pointer transition-colors"
+        >
+          {isUploading ? (
+            <FaSpinner className="animate-spin text-2xl" />
+          ) : (
+            <>
+              <FaImage className="text-2xl mb-1" />
+              <span className="text-sm font-medium">Click to upload cover image</span>
+            </>
+          )}
+        </div>
+      )}
+      <input type="file" ref={fileInputRef} onChange={handleLeadImageUpload} className="hidden" accept="image/*" />
+    </div>
+
     {/* Title */}
     <div>
       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Page Title</label>
@@ -125,6 +241,23 @@ export const Edit: React.FC<EditProps> = ({
     {/* Body */}  
     <div>
       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Content (Markdown)</label>
+      
+      {/* Editor Toolbar */}
+      <div className="flex items-center gap-2 p-2 bg-slate-100 border border-slate-300 border-b-0 rounded-t-md">
+          <button 
+            onClick={() => bodyFileInputRef.current?.click()}
+            className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-slate-700 hover:bg-white hover:text-uni-blue rounded transition-colors"
+            title="Insert Image"
+          >
+            {isUploadingBody ? <FaSpinner className="animate-spin" /> : <FaImage />}
+            <span>Add Image</span>
+          </button>
+          <span className="text-slate-300">|</span>
+          <span className="text-xs text-slate-400 ml-auto">Supports Markdown</span>
+      </div>
+      <input type="file" ref={bodyFileInputRef} onChange={handleBodyImageUpload} className="hidden" accept="image/*" />
+
+      {/* Text Area */}
       <textarea 
         value={body} 
         onChange={e => setBody(e.target.value)} 
@@ -175,4 +308,5 @@ export const Edit: React.FC<EditProps> = ({
       </button>
     </div>
   </div>
-);
+  );
+};
