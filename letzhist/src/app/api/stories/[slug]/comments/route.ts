@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { Comment, UserSummary, PaginatedResponse, NewCommentPayload } from '@/components/data_types'; 
-import jwt from "jsonwebtoken";
+import { Comment, NewCommentPayload } from '@/components/data_types'; 
+import { getUserIdFromRequest } from "@/lib/utils";
 
 // Internal interface matching DB row
 interface CommentRow {
@@ -14,18 +14,6 @@ interface CommentRow {
   username: string;
   parentId_fk: number | null;
   status: 'visible' | 'hidden_by_mod' | 'deleted_by_user';
-}
-
-// Helper to get Auth User ID
-function getAuthUserId(req: NextRequest): number | null {
-  const token = req.cookies.get('auth_token')?.value;
-  if (!token) return null;
-  try {
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-    return decoded.userId || decoded.sub;
-  } catch (e) {
-    return null;
-  }
 }
 
 // Helper to get Story IDs
@@ -85,13 +73,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const userId = getAuthUserId(req);
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const payload: NewCommentPayload = await req.json();
   if (!payload.body.trim()) return NextResponse.json({ error: 'Body required' }, { status: 400 });
 
   try {
+    // 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      return {
+        error: response.error,
+        status: response.status
+      };
+    }
+    const userId = response.value;
+
+    // get story version ids
     const ids = await getStoryAndRevisionIds(slug);
     if (!ids) return NextResponse.json({ error: 'Story not found' }, { status: 404 });
 

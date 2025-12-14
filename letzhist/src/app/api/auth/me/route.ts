@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import jwt from "jsonwebtoken";
+import { getUserIdFromRequest } from "@/lib/utils";
+
 
 /**
  * Interface for the raw SQL result
@@ -25,48 +26,17 @@ interface UserRow {
  */
 export async function GET(req: NextRequest) {
   try {
-    // 1. Get token from cookies
-    const token = req.cookies.get('auth_token')?.value;
-
-    if (!token) {
-      return NextResponse.json(
-        { error: "Unauthorized - no token provided" },
-        { status: 401 }
-      );
+    // 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      return {
+        error: response.error,
+        status: response.status
+      };
     }
+    const userId = response.value;
 
-    // 2. Verify Token
-    const JWT_SECRET = process.env.JWT_SECRET;
-    if (!JWT_SECRET) {
-      console.error("JWT_SECRET not set");
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
-
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, JWT_SECRET);
-    } catch (err) {
-      // Token expired or invalid
-      return NextResponse.json(
-        { error: "Unauthorized - invalid token" },
-        { status: 401 }
-      );
-    }
-
-    // 3. Extract User ID 
-    const userId = decoded.userId;
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Invalid token payload" },
-        { status: 401 }
-      );
-    }
-
-    // 4. Fetch full user data from database (Exact same columns as [userId] route)
+    // 2. Fetch full user data from database (Exact same columns as [userId] route)
     const [userRows] = await db.query(
       "SELECT id_pk, username, email, role, is_muted, muted_until, is_banned, created_at, last_login FROM users WHERE id_pk = ? LIMIT 1",
       [userId]

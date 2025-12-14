@@ -100,9 +100,9 @@ CREATE TABLE dispute (
   reporter_fk INT NOT NULL, 
   created_at TIMESTAMP DEFAULT NOW(),
   
-  resolvedBy_fk INT NULL, 
-  resolutionNotes TEXT NULL, 
-  resolvedAt TIMESTAMP NULL, 
+  resolvedBy_fk INT NULL DEFAULT NULL, 
+  resolutionNotes TEXT NULL DEFAULT NULL, 
+  resolvedAt TIMESTAMP NULL DEFAULT NULL, 
   
   FOREIGN KEY (contextRevision_fk) REFERENCES storyRevision(id_pk) ON DELETE SET NULL,
   FOREIGN KEY (reporter_fk) REFERENCES users(id_pk) ON DELETE CASCADE,

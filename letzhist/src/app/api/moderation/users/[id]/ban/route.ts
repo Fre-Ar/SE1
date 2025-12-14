@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import jwt, { Secret } from "jsonwebtoken";
 import { getRoleFromRequest } from "@/lib/utils";
 
 /**

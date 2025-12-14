@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import jwt from "jsonwebtoken";
+import { getUserIdFromRequest } from "@/lib/utils";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   try {
-    const token = req.cookies.get('auth_token')?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const JWT_SECRET = process.env.JWT_SECRET!;
-    const decoded: any = jwt.verify(token, JWT_SECRET);
-    const userId = decoded.userId || decoded.sub;
+    // 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      return {
+        error: response.error,
+        status: response.status
+      };
+    }
+    const userId = response.value;
 
     // Fetch drafts for this specific story and user
     const sql = `

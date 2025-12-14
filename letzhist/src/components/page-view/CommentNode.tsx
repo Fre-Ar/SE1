@@ -12,11 +12,12 @@ interface CommentNodeProps {
   replies: CommentNodeType[], 
   currentUser: UserProfile | null,
   onReply: (parentId: string) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
+  onReport: (comment: Comment) => void
 }
 
 
-export const CommentNode: React.FC<CommentNodeProps> = ({ comment, replies, currentUser, onReply, onDelete }) => {
+export const CommentNode: React.FC<CommentNodeProps> = ({ comment, replies, currentUser, onReply, onDelete, onReport }) => {
   const isDeleted = comment.status !== 'visible';
   const isAuthor = currentUser?.id === comment.author.id;
   const isStaff = currentUser?.role === 'admin' || currentUser?.role === 'moderator';
@@ -77,7 +78,10 @@ export const CommentNode: React.FC<CommentNodeProps> = ({ comment, replies, curr
             
             {/* Simple Report Placeholder (Logic would go to Dispute System) */}
             {!isAuthor && (
-              <button className="flex items-center gap-1 text-xs text-slate-400 hover:text-amber-600 transition-colors">
+              <button 
+                onClick={() => onReport(comment)}
+                className="flex items-center gap-1 text-xs text-slate-400 hover:text-amber-600 transition-colors"
+              >
                  <FaFlag /> Report
               </button>
             )}
@@ -95,6 +99,7 @@ export const CommentNode: React.FC<CommentNodeProps> = ({ comment, replies, curr
                  currentUser={currentUser}
                  onReply={onReply}
                  onDelete={onDelete}
+                 onReport={onReport}
                />
              ))}
           </div>

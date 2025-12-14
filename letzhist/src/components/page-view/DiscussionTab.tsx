@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { Comment, UserProfile } from "@/components/data_types";
 import { CommentNode, CommentNodeType } from "./CommentNode";
+import { ReportModal } from "./ReportModal";
 
 interface DiscussionTabProps {
   comments: Comment[];
@@ -14,6 +15,11 @@ export const DiscussionTab: React.FC<DiscussionTabProps> = ({ comments, storySlu
   const [replyTarget, setReplyTarget] = useState<string | null>(null); // ID of comment being replied to
   const [inputText, setInputText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Reporting State
+  const [isReporting, setIsReporting] = useState(false);
+  const [reportTargetComment, setReportTargetComment] = useState<Comment | null>(null);
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
   // Logic to determine if user can comment
   const isBanned = currentUser?.isBanned ?? false; 
@@ -80,8 +86,51 @@ export const DiscussionTab: React.FC<DiscussionTabProps> = ({ comments, storySlu
     }
   };
 
+  // --- REPORTING LOGIC ---
+  const handleReportClick = (comment: Comment) => {
+    setReportTargetComment(comment);
+    setIsReporting(true);
+  };
+
+  const handleReportSubmit = async (category: string, reason: string) => {
+    if (!reportTargetComment) return;
+    setIsSubmittingReport(true);
+    try {
+      const res = await fetch('/api/disputes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetId: reportTargetComment.id,
+          targetType: 'comment',
+          category,
+          reason,
+          contextRevisionId: reportTargetComment.revisionId 
+        }),
+      });
+
+      if (!res.ok) throw new Error("Report failed");
+      
+      alert("Report submitted successfully. Thank you for helping keep our community safe.");
+      setIsReporting(false);
+      setReportTargetComment(null);
+      
+    } catch (err) {
+      alert("Failed to submit report. Please try again later.");
+    } finally {
+      setIsSubmittingReport(false);
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+
+      {/* Report Modal */}
+      <ReportModal 
+        isOpen={isReporting} 
+        onClose={() => setIsReporting(false)} 
+        onSubmit={handleReportSubmit}
+        isSubmitting={isSubmittingReport}
+      />
       
       {/* Comments List */}
       <div className="min-h-[200px] mr-4">
@@ -103,6 +152,7 @@ export const DiscussionTab: React.FC<DiscussionTabProps> = ({ comments, storySlu
                  document.getElementById("comment-box")?.scrollIntoView({ behavior: 'smooth' });
               }}
               onDelete={handleDelete}
+              onReport={handleReportClick} 
             />
           ))
         )}

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import jwt, { Secret } from "jsonwebtoken";
-import { JwtPayload } from "@/components/data_types";
 
 /**
  * POST /api/auth/login
@@ -48,7 +47,6 @@ export async function POST(req: Request) {
 			{ expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
 		);
 
-		
 		const homeUrl = new URL('/', req.url);
 
 		const response = NextResponse.redirect(homeUrl, 302);
