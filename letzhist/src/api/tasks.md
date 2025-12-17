@@ -35,6 +35,7 @@
   * `GET /api/disputes`: (Mod/Admin) View all active disputes.
   * `PATCH /api/disputes/:id`: (Mod/Admin) Update status (e.g., resolve, dismiss).
 
+  @Done, but PATCH was moved to api/disputes/:id/resolve POST@
 **6. Moderation (User & Content Control)**
 
   * `POST /api/moderation/users/:id/ban`: Ban a user from the platform.
@@ -48,6 +49,8 @@
   * `POST /api/admin/ip-bans`: Block specific IP addresses.
   * `DELETE /api/admin/ip-bans/:ip`: Unblock an IP.
 
+  @PATCH done@
+  !IP bans will not be in MVP!
 **8. Version Control**
 
   * `GET /api/stories/:slug/history`: View past versions of a page.

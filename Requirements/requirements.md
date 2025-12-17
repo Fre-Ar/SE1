@@ -78,7 +78,7 @@
 - **Verify:** Role-gated UI acceptance test.
 
 **FR-12 — Approve/reject with rationale**
-- **Spec:** Moderators shall approve or reject submissions with a required rationale.
+- **Spec:** Moderators shall approve or reject dispute submissions with a required rationale.
 - **Trace:** Use Case: *Moderate*.
 - **Priority:** Must
 - **Verify:** State machine tests; rationale non-empty.

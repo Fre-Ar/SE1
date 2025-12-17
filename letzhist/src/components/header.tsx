@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FaSearch, FaRegPlusSquare, FaUser } from "react-icons/fa";
+import { FaGavel, FaSearch, FaRegPlusSquare, FaUser } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 
@@ -101,6 +101,13 @@ export default function Header() {
                 
               </>
             )}
+
+            {(user?.role == 'admin' || user?.role == 'moderator') && (
+              <Link href="/staff" className="flex items-center text-sm font-bold text-slate-400 hover:text-slate-300">
+                <FaGavel className="h-6 w-6 " />
+              </Link>
+            )}
+            
           </div>
         </div>
       </header>

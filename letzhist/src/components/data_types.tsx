@@ -234,24 +234,27 @@ export type Dispute = {
   // What is being reported?
   targetId: string; 
   targetType: TargetType;
+  context: {
+    content?: string;
+    author?: string;
+    slug?: string;
+  };
   
   // Context: If reporting a Story/Accuracy, WHICH version was the user looking at?
   // Critical for reproducing the issue.
   contextRevisionId?: string; 
   
-  title?: string; // Snapshot of the title at reporting time (for UI lists)
-  
   reason: string;
   category: ReportCategory; 
   status: DisputeStatus;
   
-  createdAt: string;
+  createdAt: Date;
   createdBy: UserSummary; // Should be mandatory (even if anon, system needs a tracking ID)
   
   // Moderator Actions
   resolvedBy?: UserSummary;
   resolutionNotes?: string;
-  resolvedAt?: string;
+  resolvedAt?: Date;
 };
 
 // ==========================================
@@ -274,30 +277,27 @@ export type AuditAction =
   // System
   | 'system.settings_change';
 
-export type AuditLog = {
+export interface AuditLog {
   id: string;
-  
-  // The "Who" (Use UserSummary or ID, not just a string username)
-  actor: UserSummary; 
-  
   // The "What"
-  action: AuditAction; 
-  
+  action: string;
   // The "Target"
-  targetId: string; 
-  targetType: TargetType;
-  
+  target: {
+    type: string;
+    id: string;
+    name: string;
+  };
+  // The "Why" 
+  reason: string;
   // The "When"
   timestamp: string;
-  
-  // The "Why" (FR-12/13 requires rationale)
-  rationale?: string; 
-  
-  // The "Details" (JSON blob for specifics)
-  // e.g., { oldRole: 'contributor', newRole: 'moderator' }
-  // e.g., { duration: '24h' }
-  metadata?: Record<string, any>; 
-};
+  // The "Who"
+  actor: {
+    id: string;
+    username: string;
+    role: string;
+  };
+}
 
 export type IPBan = {
   id: string;

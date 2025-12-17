@@ -1,91 +1,94 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { getRoleFromRequest } from "@/lib/utils";
+import { getUserIdFromRequest } from "@/lib/utils";
 
 /**
  * POST /api/moderation/users/[id]/ban
- *
  * Bans a user. Only moderators and admins can perform this action.
- * Requires: reason (optional)
  */
-export async function POST(req: NextRequest,{ params }: { params: { id: string } }) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  
   try {
-   
-    const actors = await getRoleFromRequest(req); 
-
-    // 2. Check for the error object returned by the helper
-    if (!Array.isArray(actors)) {
-      return NextResponse.json(
-        { error: actors.error },
-        { status: actors.status }
+    // 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      NextResponse.json(
+        { error: response.error },
+        { status: response.status }
       );
     }
+    const userId = response.value;
 
-
-    // 4. Check if the authenticated user has the necessary role
-    if (
-      actors.length === 0 ||
-      (actors[0].role !== "moderator" && actors[0].role !== "admin")
-    ) {
-      return NextResponse.json(
-        { error: "Forbidden - only moderators and admins can ban users" },
-        { status: 403 }
-      );
-    }
-
-    // Get the user to ban
-    const targetId = parseInt(params.id, 10);
-    if (isNaN(targetId)) {
-      return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
-    }
-
-    const [targetRows] = await db.query(
-      "SELECT id_pk, username, is_banned FROM users WHERE id_pk = ? LIMIT 1",
-      [targetId]
+    // Check role
+    const [actorRows] = await db.query(
+      "SELECT role, id_pk FROM users WHERE id_pk = ? LIMIT 1",
+      [userId]
     );
+    
+    const role = (actorRows as any[])[0].role;
 
-    const targets = targetRows as any[];
-    if (targets.length === 0) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (role !== 'moderator' && role !== 'admin') {
+      return NextResponse.json({ error: "Forbidden - insufficient role privileges" }, { status: 403 });
     }
 
-    const targetUser = targets[0];
+    const actorId = userId;
+    const targetId = parseInt(id, 10);
 
+    if (isNaN(targetId)) return NextResponse.json({ error: "Invalid User ID" }, { status: 400 });
+
+    // 2. Fetch Target User
+    const [rows] = await db.query(
+      "SELECT id_pk, username, role, is_banned FROM users WHERE id_pk = ? LIMIT 1",
+      [targetId]
+    ) as [any[], any];
+
+    if (rows.length === 0) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const targetUser = rows[0];
+
+    // 3. Safety Checks
+    // Prevent banning self
+    if (targetUser.id_pk === actorId) {
+      return NextResponse.json({ error: "You cannot ban yourself." }, { status: 400 });
+    }
+    // Prevent banning admins (unless you are a super-admin, but usually admins are protected)
+    if (targetUser.role === 'admin') {
+      return NextResponse.json({ error: "Cannot ban an administrator." }, { status: 403 });
+    }
+    // Check if already banned
     if (targetUser.is_banned) {
-      return NextResponse.json(
-        { error: "User is already banned" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "User is already banned." }, { status: 409 });
     }
 
-    // Parse request body
+    // 4. Parse Reason
     const body = await req.json();
     const { reason } = body;
+    
+    if (!reason || typeof reason !== 'string' || reason.trim().length < 5) {
+      return NextResponse.json({ error: "A valid reason (min 5 chars) is required." }, { status: 400 });
+    }
 
-    // Ban the user
-    await db.query("UPDATE users SET is_banned = TRUE WHERE id_pk = ?", [
-      targetId,
-    ]);
+    // 5. Execute Ban (Atomic if possible, here sequential)
+    // Update User
+    await db.query("UPDATE users SET is_banned = 1 WHERE id_pk = ?", [targetId]);
 
-    // Log the action
+    // Create Audit Log (Action: user.ban)
     await db.query(
-      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
-      [actors[0].id_pk, "ban_user", "user", targetId, targetUser.username, reason || null]
+      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
+      [actorId, "user.ban", "user", targetId, targetUser.username, reason]
     );
 
     return NextResponse.json({
-      message: `User ${targetUser.username} has been banned`,
-      user: {
-        id: targetUser.id_pk,
-        username: targetUser.username,
-        is_banned: true,
-      },
+      success: true,
+      message: `User ${targetUser.username} has been banned.`,
+      user: { id: targetId, isBanned: true }
     });
+
   } catch (err) {
-    console.error("Error banning user:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Ban API Error:", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

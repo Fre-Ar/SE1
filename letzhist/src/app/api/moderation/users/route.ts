@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { getRoleFromRequest } from "@/lib/utils";
+import { getUserIdFromRequest } from "@/lib/utils";
+import { UserProfile } from "@/components/data_types";
 
 /**
  * GET /api/moderation/users?limit=20&page=1
@@ -10,69 +11,82 @@ import { getRoleFromRequest } from "@/lib/utils";
  */
 export async function GET(req: NextRequest) {
   try {
-       const actors = await getRoleFromRequest(req); 
-   
-       // 2. Check for the error object returned by the helper
-       if (!Array.isArray(actors)) {
-         return NextResponse.json(
-           { error: actors.error },
-           { status: actors.status }
-         );
-       }
-    // 2. Check for the error object returned by the helper
-    if (
-      actors.length === 0 ||
-      (actors[0].role !== "moderator" && actors[0].role !== "admin")
-    ) {
-      return NextResponse.json(
-        { error: "Forbidden - only moderators and admins can view user list" },
-        { status: 403 }
+    // 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      NextResponse.json(
+        { error: response.error },
+        { status: response.status }
       );
     }
+    const userId = response.value;
 
-    // Parse pagination params
+    // Check role
+    const [actorRows] = await db.query(
+      "SELECT role, id_pk FROM users WHERE id_pk = ? LIMIT 1",
+      [userId]
+    );
+    
+    const role = (actorRows as any[])[0].role;
+
+    if (role !== 'moderator' && role !== 'admin') {
+      return NextResponse.json({ error: "Forbidden - insufficient role privileges" }, { status: 403 });
+    }
+
+    // 2. Parse Query Params
     const url = new URL(req.url);
-    const limitParam = url.searchParams.get("limit") ?? "20";
-    const pageParam = url.searchParams.get("page") ?? "1";
-
-    let limit = parseInt(limitParam, 10) || 20;
-    let page = parseInt(pageParam, 10) || 1;
-
-    limit = Math.max(1, Math.min(100, limit));
-    page = Math.max(1, page);
-
+    const limit = Math.max(1, Math.min(100, parseInt(url.searchParams.get("limit") || "20", 10)));
+    const page = Math.max(1, parseInt(url.searchParams.get("page") || "1", 10));
     const offset = (page - 1) * limit;
+    
+    const searchQuery = url.searchParams.get("query") || "";
+    const roleFilter = url.searchParams.get("role") || "";
 
-    // Get total count
-    const [countRows] = await db.query("SELECT COUNT(*) as total FROM users");
+    // 3. Build Filters
+    const conditions: string[] = ["1=1"]; // Base condition
+    const values: any[] = [];
+
+    if (searchQuery) {
+      conditions.push("username LIKE ?");
+      values.push(`%${searchQuery}%`);
+    }
+
+    if (roleFilter && ['contributor', 'moderator', 'admin'].includes(roleFilter)) {
+      conditions.push("role = ?");
+      values.push(roleFilter);
+    }
+
+    const whereClause = conditions.join(" AND ");
+
+    // 4. Get Total Count (for pagination)
+    const countSql = `SELECT COUNT(*) as total FROM users WHERE ${whereClause}`;
+    const [countRows] = await db.query(countSql, values);
     const totalCount = (countRows as any[])[0]?.total || 0;
 
-    // Get users
-    const [users] = await db.query(
-      `SELECT 
-        id_pk,
-        username,
-        email,
-        role,
-        is_banned,
-        is_muted,
-        muted_until,
-        created_at
+    // 5. Get Users
+    const usersSql = `
+      SELECT 
+        id_pk, username, email, role, is_banned, is_muted, muted_until, created_at, last_login
       FROM users
+      WHERE ${whereClause}
       ORDER BY created_at DESC
-      LIMIT ? OFFSET ?`,
-      [limit, offset]
-    );
+      LIMIT ? OFFSET ?
+    `;
+    // Add pagination params to values
+    const queryValues = [...values, limit, offset];
+    
+    const [users] = await db.query(usersSql, queryValues);
 
-    const formattedUsers = (users as any[]).map((user) => ({
+    const formattedUsers: UserProfile[] = (users as any[]).map((user) => ({
       id: String(user.id_pk),
       username: user.username,
       email: user.email,
       role: user.role,
-      isBanned: user.is_banned,
-      isMuted: user.is_muted,
-      mutedUntil: user.muted_until ? new Date(user.muted_until).toISOString() : null,
-      createdAt: user.created_at ? new Date(user.created_at).toISOString() : null,
+      isBanned: user.is_banned === 1,
+      isMuted: user.is_muted === 1,
+      mutedUntil: user.muted_until ? new Date(user.muted_until) : undefined,
+      createdAt: new Date(user.created_at),
+      lastLogin: user.last_login ? new Date(user.last_login) : undefined,
     }));
 
     return NextResponse.json({
@@ -84,11 +98,9 @@ export async function GET(req: NextRequest) {
         totalPages: Math.ceil(totalCount / limit),
       },
     });
+
   } catch (err) {
     console.error("Error fetching users:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

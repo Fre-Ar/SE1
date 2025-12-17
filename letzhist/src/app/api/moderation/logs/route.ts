@@ -1,95 +1,126 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { getRoleFromRequest } from "@/lib/utils";
+import { getUserIdFromRequest } from "@/lib/utils";
+import { AuditLog } from "@/components/data_types";
 
-/**
- * GET /api/moderation/logs?limit=50&page=1
- *
- * Returns audit logs for moderators and admins.
- * Only moderators and admins can access this endpoint.
- */
 export async function GET(req: NextRequest) {
   try {
-        const actors = await getRoleFromRequest(req); 
-    
-        // 2. Check for the error object returned by the helper
-        if (!Array.isArray(actors)) {
-          return NextResponse.json(
-            { error: actors.error },
-            { status: actors.status }
-          );
-        }
-    if (
-      actors.length === 0 ||
-      (actors[0].role !== "moderator" && actors[0].role !== "admin")
-    ) {
-      return NextResponse.json(
-        { error: "Forbidden - only moderators and admins can view audit logs" },
-        { status: 403 }
+    // 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      NextResponse.json(
+        { error: response.error },
+        { status: response.status }
       );
     }
+    const userId = response.value;
 
-    // Parse pagination params
+    // Check role
+    const [actorRows] = await db.query(
+      "SELECT role, id_pk FROM users WHERE id_pk = ? LIMIT 1",
+      [userId]
+    );
+    
+    const role = (actorRows as any[])[0].role;
+
+    if (role !== 'moderator' && role !== 'admin') {
+      return NextResponse.json({ error: "Forbidden - insufficient role privileges" }, { status: 403 });
+    }
+
+    // 2. Parse Query Params
     const url = new URL(req.url);
-    const limitParam = url.searchParams.get("limit") ?? "50";
-    const pageParam = url.searchParams.get("page") ?? "1";
-
-    let limit = parseInt(limitParam, 10) || 50;
-    let page = parseInt(pageParam, 10) || 1;
-
-    limit = Math.max(1, Math.min(100, limit));
-    page = Math.max(1, page);
-
+    const page = Math.max(1, parseInt(url.searchParams.get("page") || "1", 10));
+    const limit = Math.max(1, Math.min(100, parseInt(url.searchParams.get("limit") || "20", 10)));
     const offset = (page - 1) * limit;
 
-    // Get total count
-    const [countRows] = await db.query("SELECT COUNT(*) as total FROM audit_log");
+    const actionFilter = url.searchParams.get("action"); // e.g., 'user.ban'
+    const actorSearch = url.searchParams.get("actor");   // username
+    const targetType = url.searchParams.get("targetType"); // 'user', 'story', etc.
+
+    // 3. Build Query
+    const conditions: string[] = ["1=1"];
+    const values: any[] = [];
+
+    if (actionFilter) {
+      conditions.push("a.action = ?");
+      values.push(actionFilter);
+    }
+
+    if (targetType) {
+      conditions.push("a.target_type = ?");
+      values.push(targetType);
+    }
+
+    if (actorSearch) {
+      conditions.push("u.username LIKE ?");
+      values.push(`%${actorSearch}%`);
+    }
+
+    const whereClause = conditions.join(" AND ");
+
+    // 4. Count Total
+    const countSql = `
+      SELECT COUNT(*) as total 
+      FROM audit_log a
+      LEFT JOIN users u ON a.actor_fk = u.id_pk
+      WHERE ${whereClause}
+    `;
+    const [countRows] = await db.query(countSql, values);
     const totalCount = (countRows as any[])[0]?.total || 0;
 
-    // Get logs
-    const [logs] = await db.query(
-      `SELECT 
-        al.id_pk,
-        al.actor_fk,
+    // 5. Fetch Logs
+    const logsSql = `
+      SELECT 
+        a.id_pk,
+        a.action,
+        a.target_type,
+        a.target_id,
+        a.target_name,
+        a.reason,
+        a.timestamp,
+        u.id_pk as actor_id,
         u.username as actor_username,
-        al.action,
-        al.target_type,
-        al.target_id,
-        al.target_name,
-        al.reason,
-        al.timestamp
-      FROM audit_log al
-      LEFT JOIN users u ON al.actor_fk = u.id_pk
-      ORDER BY al.timestamp DESC
-      LIMIT ? OFFSET ?`,
-      [limit, offset]
-    );
+        u.role as actor_role
+      FROM audit_log a
+      LEFT JOIN users u ON a.actor_fk = u.id_pk
+      WHERE ${whereClause}
+      ORDER BY a.timestamp DESC
+      LIMIT ? OFFSET ?
+    `;
+    
+    // Append pagination values
+    const queryValues = [...values, limit, offset];
+    const [rows] = await db.query(logsSql, queryValues);
 
-    const formattedLogs = (logs as any[]).map((log) => ({
-      id: String(log.id_pk),
-      actor: log.actor_username,
-      action: log.action,
-      targetType: log.target_type,
-      targetId: log.target_id,
-      targetName: log.target_name,
-      reason: log.reason,
-      timestamp: log.timestamp ? new Date(log.timestamp).toISOString() : null,
+    const logs: AuditLog[] = (rows as any[]).map(r => ({
+      id: r.id_pk.toString(),
+      action: r.action,
+      target: {
+        type: r.target_type,
+        id: r.target_id.toString(),
+        name: r.target_name || "N/A"
+      },
+      reason: r.reason,
+      timestamp: new Date(r.timestamp).toISOString(),
+      actor: {
+        id: r.actor_id?.toString() || "0",
+        username: r.actor_username || "System",
+        role: r.actor_role || "system"
+      }
     }));
 
     return NextResponse.json({
-      data: formattedLogs,
+      data: logs,
       meta: {
         page,
         limit,
         total: totalCount,
-        totalPages: Math.ceil(totalCount / limit),
-      },
+        totalPages: Math.ceil(totalCount / limit)
+      }
     });
+
   } catch (err) {
-    console.error("Error fetching audit logs:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Audit Logs Error:", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

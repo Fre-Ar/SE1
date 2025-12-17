@@ -81,10 +81,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     // 1. Get userId from cookies
     const response = getUserIdFromRequest(req);
     if (response.error) {
-      return {
-        error: response.error,
-        status: response.status
-      };
+      NextResponse.json(
+        { error: response.error },
+        { status: response.status }
+      );
     }
     const userId = response.value;
 
