@@ -43,6 +43,10 @@ export default function Header() {
               <span className="bg-uni-blue py-2 px-1 rounded">Hist</span>
             </Link>
             <span className="text-xs text-slate-400">beta</span>
+
+            <Link href="/rules" className="text-xs font-bold text-slate-500 hover:text-uni-blue uppercase tracking-wide">
+              Rules
+            </Link>
           </div>
 
           <div className="flex items-center gap-3">
