@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { FaSort, FaSearch } from "react-icons/fa";
+import { FaSort, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Story} from '@/components/data_types';
 import TagAutocomplete from '@/components/TagAutocomplete';
 import SearchResultList from '@/components/SearchResultList';
@@ -16,6 +15,7 @@ export default function SearchPage() {
   const query = searchParams.get('q') || '';
   const sort = searchParams.get('sort') || 'newest';
   const rawTags = searchParams.get('tags');
+  const page = parseInt(searchParams.get('page') || '1', 10); 
 
   // Derive array for UI 
   const selectedTags = rawTags?.split(',').filter(Boolean) || [];
@@ -23,6 +23,7 @@ export default function SearchPage() {
   // 2. Local State (Data)
   const [results, setResults] = useState<Story[]>([]);
   const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0); 
   const [loading, setLoading] = useState(false);
   
   // 3. Local State (Inputs)
@@ -47,41 +48,52 @@ export default function SearchPage() {
       }
 
       if (sort) params.append('sort', sort);
-      // params.append('limit', '20');
+
+      params.append('page', page.toString());
+      params.append('limit', '20');
 
       const res = await fetch(`/api/stories?${params.toString()}`);
       if (res.ok) {
-        const data = await res.json();
-        setResults(data);
-        setTotal(data.length);
+        const json = await res.json();
+        setResults(json.data);
+        setTotal(json.meta.total);
+        setTotalPages(json.meta.totalPages);
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [query, rawTags, sort]);
+  }, [query, rawTags, sort, page]);
 
   // Trigger fetch when URL params change
   useEffect(() => {
-    console.log('FETCHING!');
     fetchResults();
   }, [fetchResults]);
 
     // 5. Action Handlers (Update URL)
-  const updateSearch = (newQuery: string, newTags: string[], newSort: string) => {
+  const updateSearch = (newQuery: string, newTags: string[], newSort: string, newPage: number) => {
     const params = new URLSearchParams();
     if (newQuery) params.set('q', newQuery);
     if (newTags.length > 0) params.set('tags', newTags.join(','));
     if (newSort) params.set('sort', newSort);
+    // Always set page
+    params.set('page', newPage.toString());
+
     router.push(`/search?${params.toString()}`);
   };
 
-  const handleSearchSubmit = () => updateSearch(localQuery, selectedTags, sort);
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => updateSearch(localQuery, selectedTags, e.target.value);
-  const handleAddTag = (tag: string) => !selectedTags.includes(tag) && updateSearch(localQuery, [...selectedTags, tag], sort);
-  const handleRemoveTag = (tag: string) => updateSearch(localQuery, selectedTags.filter(t => t !== tag), sort);
+  const handleSearchSubmit = () => updateSearch(localQuery, selectedTags, sort, 1); // Reset to page 1
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => updateSearch(localQuery, selectedTags, e.target.value, 1);
+  const handleAddTag = (tag: string) => !selectedTags.includes(tag) && updateSearch(localQuery, [...selectedTags, tag], sort, 1);
+  const handleRemoveTag = (tag: string) => updateSearch(localQuery, selectedTags.filter(t => t !== tag), sort, 1);
 
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      updateSearch(localQuery, selectedTags, sort, newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -140,17 +152,45 @@ export default function SearchPage() {
           <div className="mb-6 text-gray-600">
             {loading ? 'Searching...' : `Found ${total} result${total !== 1 ? 's' : ''}`}
           </div>
-
+     
           {/* Results List */}
-          {results.length > 0 ? <SearchResultList items={results}/> : (
+          {results.length > 0 ? (
+            <>
+              <SearchResultList items={results}/>
+              
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-slate-100">
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                    className="flex items-center gap-1 px-3 py-1 rounded hover:bg-slate-100 disabled:opacity-50 disabled:hover:bg-white"
+                  >
+                    <FaChevronLeft className="w-3 h-3" /> Previous
+                  </button>
+                  
+                  <span className="text-sm text-slate-600">
+                    Page <span className="font-semibold text-slate-900">{page}</span> of {totalPages}
+                  </span>
+                  
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= totalPages}
+                    className="flex items-center gap-1 px-3 py-1 rounded hover:bg-slate-100 disabled:opacity-50 disabled:hover:bg-white"
+                  >
+                     Next <FaChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
             <div className="text-center py-12 text-gray-500">
               {loading ? (
                 <p>Searching...</p>
               ) : (
-
                 <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-300">
                   <div className="text-slate-400 text-lg">No stories found matching your criteria.</div>
-                  <button onClick={() => updateSearch('', [], 'newest')} className="mt-4 text-uni-blue hover:underline">Clear Filters</button>
+                  <button onClick={() => updateSearch('', [], 'newest', 1)} className="mt-4 text-uni-blue hover:underline">Clear Filters</button>
                 </div>
               )}
             </div>

@@ -29,23 +29,15 @@ export async function GET(req: NextRequest) {
     const query = searchParams.get('query') || '';
     const sort = searchParams.get('sort') || 'newest';
     const tags = searchParams.getAll('tag'); // Supports multiple &tag=A&tag=B
-    const rawLimit = searchParams.get('limit');
-    const limit = rawLimit ? parseInt(rawLimit, 10) : 20;
 
-    // 1. Base Query
+    // Pagination Params
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const offset = (page - 1) * limit;
+
+    // 1. Base Query Joins
     // We join 'story' with 'storyRevision'.
-    // CRITICAL: We only want the *latest published* revision.
-    // We use a correlated subquery in the JOIN condition to find it.
-    let sql = `
-      SELECT 
-        s.id_pk as storyId,
-        s.created_at as storyCreatedAt,
-        r.id_pk as revisionId,
-        r.title,
-        r.slug,
-        r.leadImage,
-        r.created_at as lastEdited,
-        GROUP_CONCAT(t.tag) as tagList
+    const baseJoins = `
       FROM story s
       INNER JOIN storyRevision r ON r.id_pk = (
           SELECT id_pk FROM storyRevision r2
@@ -84,41 +76,53 @@ export async function GET(req: NextRequest) {
     }
 
     // Apply WHERE clauses
-    if (conditions.length > 0) {
-      sql += ' WHERE ' + conditions.join(' AND ');
-    }
+    const whereClause = conditions.length > 0 ? ' WHERE ' + conditions.join(' AND ') : '';
+    
+    // 4. Execute count query
+    // We count distinct stories that match the criteria
+    const countSql = `SELECT COUNT(DISTINCT s.id_pk) as total ${baseJoins} ${whereClause}`;
+    
+    // We use a copy of values for the count query because the main query will add LIMIT params
+    const [countRows] = await db.query(countSql, [...values]) as [any[], any];
+    const total = countRows[0]?.total || 0;
 
+    // 5. Execute data query
     // Grouping is required for GROUP_CONCAT to work correctly
-    sql += ` GROUP BY s.id_pk, r.id_pk `;
+    let sql = `
+      SELECT 
+        s.id_pk as storyId,
+        s.created_at as storyCreatedAt,
+        r.id_pk as revisionId,
+        r.title,
+        r.slug,
+        r.leadImage,
+        r.created_at as lastEdited,
+        GROUP_CONCAT(t.tag) as tagList
+      ${baseJoins}
+      ${whereClause}
+      GROUP BY s.id_pk, r.id_pk 
+    `;
 
-    // 4. Sorting
+    // 6. Sorting
+    // Sorting
     switch (sort) {
-      case 'title_asc':
-        sql += ` ORDER BY r.title ASC`;
-        break;
-      case 'title_desc':
-        sql += ` ORDER BY r.title DESC`;
-        break;
-      case 'oldest':
-        sql += ` ORDER BY s.created_at ASC`;
-        break;
+      case 'title_asc': sql += ` ORDER BY r.title ASC`; break;
+      case 'title_desc': sql += ` ORDER BY r.title DESC`; break;
+      case 'oldest': sql += ` ORDER BY s.created_at ASC`; break;
       case 'newest':
-      default:
-        sql += ` ORDER BY s.created_at DESC`;
-        break;
+      default: sql += ` ORDER BY s.created_at DESC`; break;
     }
     // TODO: Add more sorting options
 
-    // 5. Apply Limit
-    // We add this LAST, after the Order By
-    sql += ` LIMIT ?`;
-    values.push(limit);
+    // 7. Pagination and Limit
+    // We add this LAST, after the sorting
+    sql += ` LIMIT ? OFFSET ?`;
+    values.push(limit, offset);
 
-    // 6. Execution
-    // TODO: Using 'any' for row type here, but ideally define an interface representing the raw SQL row
+    // 8. Execution
     const [rows] = await db.query(sql, values) as [StoryRow[], any];
 
-    // 7. Mapping to TypeScript Type
+    // 8. Mapping to TypeScript Type
     const stories: Story[] = rows.map((row) => ({
       id: row.storyId.toString(),
       createdAt: new Date(row.storyCreatedAt),
@@ -133,7 +137,15 @@ export async function GET(req: NextRequest) {
       tags: row.tagList ? row.tagList.split(',') : [],
     }));
 
-    return NextResponse.json(stories);
+    return NextResponse.json({
+      data: stories,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
 
   } catch (error) {
     console.error('Error fetching stories:', error);
@@ -190,7 +202,7 @@ export async function POST(req: NextRequest) {
        VALUES (?, NULL, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)`,
       [storyId, authorId, title, subtitle, slug, contentBody, leadImage, changeMessage, revStatus]
     );
-    // TODO: Add draft feature
+
     const revisionId = revResult.insertId;
 
     // C. Insert Tags

@@ -17,8 +17,13 @@ export default function StoriesList({ searchQuery }: SearchProps) {
   useEffect(() => {
     fetch(`/api/stories${searchQuery}`)
       .then((res) => res.json())
-      .then((data) => {
-        setStories(data);
+      .then((json) => {
+        if (json.data && Array.isArray(json.data)) {
+            setStories(json.data);
+        } else {
+            console.error("Unexpected API response format", json);
+            setStories([]);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -27,8 +32,7 @@ export default function StoriesList({ searchQuery }: SearchProps) {
       });
   }, []);
   
-  
-  //if (loading) return <p>Loading stories...</p>;
+
   if (loading) {
     return (
       <div className="space-y-3">
