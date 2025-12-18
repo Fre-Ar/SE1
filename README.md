@@ -18,7 +18,6 @@ Visitors can explore curated stories by era or location, while registered contri
   - [Repo Setup](#repo-setup)
   - [✨ Features](#-features)
   - [🧱 Architecture](#-architecture)
-  - [� Architecture](#-architecture-1)
   - [🧰 Tech Stack](#-tech-stack)
   - [⚙️ Setup \& Installation](#️-setup--installation)
     - [Prerequisites](#prerequisites)
@@ -87,7 +86,6 @@ SE1/
 - **Discussion**: Threaded comments contextually linked to specific story versions.
 
 --- 
-## 🧱 Architecture
 
 ## 🧱 Architecture
 
