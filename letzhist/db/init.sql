@@ -115,7 +115,7 @@ CREATE TABLE audit_log (
   id_pk INT AUTO_INCREMENT PRIMARY KEY,
   actor_fk INT NULL,
   action VARCHAR(50) NOT NULL,
-  target_type ENUM('user','content','story') NOT NULL,
+  target_type ENUM('user','comment','story','dispute', 'media') NOT NULL,
   target_id INT,
   target_name VARCHAR(255),
   reason TEXT,

@@ -214,6 +214,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Audit Logging
+    // D. Log the Story Creation
+    // We use the 'connection' object to ensure this is part of the transaction.
+    await connection.query(
+       "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
+       [authorId, "story.create", "story", storyId, title, "Initial creation"]
+    );
+
     // 4. TRANSACTION COMMIT
     await connection.commit();
 

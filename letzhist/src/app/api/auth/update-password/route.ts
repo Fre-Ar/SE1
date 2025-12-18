@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import jwt, { Secret } from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { getUserIdFromRequest } from "@/lib/utils";
 
 /**
  * PUT /api/auth/update-password
@@ -10,43 +11,16 @@ import bcrypt from "bcrypt";
  */
 export async function PUT(req: NextRequest) {
 	try {
-		// Get token from cookies or Authorization header
-		let token = req.cookies.get('auth_token')?.value;
-
-		if (!token) {
-			const authHeader = req.headers.get('authorization');
-			if (authHeader?.startsWith('Bearer ')) {
-				token = authHeader.substring(7);
-			}
-		}
-
-		if (!token) {
-			return NextResponse.json(
-				{ error: "Unauthorized - no token provided" },
-				{ status: 401 }
-			);
-		}
-
-		// Verify and decode token
-		const JWT_SECRET = process.env.JWT_SECRET as Secret | undefined;
-		if (!JWT_SECRET) {
-			console.error("JWT_SECRET not set");
-			return NextResponse.json(
-				{ error: "Server configuration error" },
-				{ status: 500 }
-			);
-		}
-
-		let decoded: any;
-		try {
-			decoded = jwt.verify(token, String(JWT_SECRET));
-		} catch (err) {
-			return NextResponse.json(
-				{ error: "Unauthorized - invalid token" },
-				{ status: 401 }
-			);
-		}
-
+		// 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      NextResponse.json(
+        { error: response.error },
+        { status: response.status }
+      );
+    }
+    const userId = response.value;
+		
 		// Parse request body
 		const body = await req.json();
 		const { currentPassword, newPassword } = body;
@@ -75,7 +49,7 @@ export async function PUT(req: NextRequest) {
 		// Fetch user with password hash
 		const [rows] = await db.query(
 			"SELECT id_pk, password_hash FROM users WHERE id_pk = ? LIMIT 1",
-			[decoded.userId]
+			[userId]
 		);
 
 		const users = rows as any[];
@@ -103,7 +77,13 @@ export async function PUT(req: NextRequest) {
 		// Update password
 		await db.query(
 			"UPDATE users SET password_hash = ? WHERE id_pk = ?",
-			[passwordHash, decoded.userId]
+			[passwordHash, userId]
+		);
+
+		// Audit Logging
+		await db.query(
+			"INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
+			[user.id_pk, "user.update_password", "user", user.id_pk, user.username, "User updated their password"]
 		);
 
 		return NextResponse.json({

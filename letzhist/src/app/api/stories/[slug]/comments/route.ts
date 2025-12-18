@@ -98,12 +98,27 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
       INSERT INTO comment (story_fk, revision_fk, user_fk, body, parentId_fk, created_at, status)
       VALUES (?, ?, ?, ?, ?, NOW(), 'visible')
     `, [ids.storyId, ids.revisionId, userId, payload.body, parentId]);
+    
+    const newCommentId = res.insertId;
+
+    // Audit Logging
+    await db.query(
+      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
+      [
+        userId, 
+        "comment.create", 
+        "comment", 
+        newCommentId, 
+        `Comment on ${slug}`, 
+        `User posted a comment`
+      ]
+    );
 
     // Return the new comment object
     const [newRows] = await db.query(`
       SELECT c.*, u.username FROM comment c 
       JOIN users u ON u.id_pk = c.user_fk 
-      WHERE c.id_pk = ?`, [res.insertId]) as [any[], any];
+      WHERE c.id_pk = ?`, [newCommentId]) as [any[], any];
     
     const row = newRows[0];
     const newComment: Comment = {

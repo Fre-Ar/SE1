@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import jwt, { Secret } from "jsonwebtoken";
+import { getUserIdFromRequest } from "@/lib/utils";
 
 /**
  * PUT /api/auth/update-email
@@ -9,42 +9,15 @@ import jwt, { Secret } from "jsonwebtoken";
  */
 export async function PUT(req: NextRequest) {
 	try {
-		// Get token from cookies or Authorization header
-		let token = req.cookies.get('auth_token')?.value;
-
-		if (!token) {
-			const authHeader = req.headers.get('authorization');
-			if (authHeader?.startsWith('Bearer ')) {
-				token = authHeader.substring(7);
-			}
-		}
-
-		if (!token) {
-			return NextResponse.json(
-				{ error: "Unauthorized - no token provided" },
-				{ status: 401 }
-			);
-		}
-
-		// Verify and decode token
-		const JWT_SECRET = process.env.JWT_SECRET as Secret | undefined;
-		if (!JWT_SECRET) {
-			console.error("JWT_SECRET not set");
-			return NextResponse.json(
-				{ error: "Server configuration error" },
-				{ status: 500 }
-			);
-		}
-
-		let decoded: any;
-		try {
-			decoded = jwt.verify(token, String(JWT_SECRET));
-		} catch (err) {
-			return NextResponse.json(
-				{ error: "Unauthorized - invalid token" },
-				{ status: 401 }
-			);
-		}
+		// 1. Get userId from cookies
+    const response = getUserIdFromRequest(req);
+    if (response.error) {
+      NextResponse.json(
+        { error: response.error },
+        { status: response.status }
+      );
+    }
+    const userId = response.value;
 
 		// Parse request body
 		const body = await req.json();
@@ -69,7 +42,7 @@ export async function PUT(req: NextRequest) {
 		// Check if email already exists
 		const [existingRows] = await db.query(
 			"SELECT id_pk FROM users WHERE email = ? AND id_pk != ? LIMIT 1",
-			[email, decoded.userId]
+			[email, userId]
 		);
 
 		if ((existingRows as any[]).length > 0) {
@@ -82,13 +55,13 @@ export async function PUT(req: NextRequest) {
 		// Update email
 		await db.query(
 			"UPDATE users SET email = ? WHERE id_pk = ?",
-			[email, decoded.userId]
+			[email, userId]
 		);
 
 		// Fetch updated user
 		const [rows] = await db.query(
 			"SELECT id_pk, username, email, role, is_muted, muted_until FROM users WHERE id_pk = ? LIMIT 1",
-			[decoded.userId]
+			[userId]
 		);
 
 		const users = rows as any[];
@@ -100,6 +73,12 @@ export async function PUT(req: NextRequest) {
 		}
 
 		const user = users[0];
+
+		// Audit Logging
+		await db.query(
+			"INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
+			[user.id_pk, "user.update_email", "user", user.id_pk, user.username, "User updated their email address"]
+		);
 
 		return NextResponse.json({
 			message: "Email updated successfully",

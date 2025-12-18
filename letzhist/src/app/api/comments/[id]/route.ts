@@ -19,7 +19,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     // 2. Fetch Comment & User Role
     const [rows] = await db.query(`
-      SELECT c.user_fk, u.role 
+      SELECT c.user_fk, u.role, SUBSTRING(c.body, 1, 50) as snippet
       FROM comment c
       CROSS JOIN users u 
       WHERE c.id_pk = ? AND u.id_pk = ?
@@ -30,7 +30,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    const { user_fk: authorId, role: userRole } = rows[0];
+    const { user_fk: authorId, role: userRole, snippet } = rows[0];
 
     // 3. Permission Check
     // Allowed if: User is Author OR User is Moderator/Admin
@@ -45,10 +45,17 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     // If Admin/Mod -> 'hidden_by_mod'
     // If Author -> 'deleted_by_user'
     const newStatus = isStaff && !isAuthor ? 'hidden_by_mod' : 'deleted_by_user';
+    const actionType = isStaff && !isAuthor ? 'comment.hide' : 'comment.delete';
 
     await db.query(
       "UPDATE comment SET status = ? WHERE id_pk = ?",
       [newStatus, commentId]
+    );
+
+    // Audit Logging
+    await db.query(
+      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
+      [userId, actionType, 'comment', commentId, `Comment: ${snippet}...`, `Status changed to ${newStatus}`]
     );
 
     return NextResponse.json({ success: true, status: newStatus });

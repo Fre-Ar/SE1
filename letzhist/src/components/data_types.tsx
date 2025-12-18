@@ -262,17 +262,36 @@ export type Dispute = {
 // ==========================================
 
 export type AuditAction = 
+  // Contributor actions
+  | 'user.register'
+  | 'user.login'
+  | 'user.update_email'
+  | 'user.update_password'
+  | 'story.create'
+  | 'story.update'
+  | 'dispute.create'
+  | 'comment.create'
+  | 'file.upload'
+
   // User Management
   | 'user.ban' 
   | 'user.unban' 
   | 'user.mute' 
   | 'user.promote' 
+  | 'user.change_role'
   
   // Content Moderation
   | 'story.lock' 
   | 'story.unlock' 
   | 'story.revert' 
-  | 'comment.hide' 
+  | 'comment.hide'    // mod deleted the comment as part of moderation
+  | 'comment.delete'  // user deleted the comment themselves
+
+  | 'dispute.open'
+  | 'dispute.under_review'
+  | 'dispute.resolved'
+  | 'dispute.dismissed'
+  
   
   // System
   | 'system.settings_change';

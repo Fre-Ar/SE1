@@ -37,6 +37,17 @@ export async function POST( req: NextRequest, { params }: { params: Promise<{ id
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
+    // Fecth dispute context (Needed for Audit Log)
+    const [disputeRows] = await db.query(
+      "SELECT target_id, target_type, category FROM dispute WHERE id_pk = ? LIMIT 1", 
+      [disputeId]
+    ) as [any[], any];
+
+    if (disputeRows.length === 0) {
+       return NextResponse.json({ error: "Dispute not found" }, { status: 404 });
+    }
+    const disputeCtx = disputeRows[0];
+
     // 3. Logic
     let sql = "";
     const values: any[] = [];
@@ -65,6 +76,23 @@ export async function POST( req: NextRequest, { params }: { params: Promise<{ id
     }
 
   await db.query(sql, values);
+
+  // Audit Logging
+  // Map internal targetType to Audit Log ENUM
+  const isStory = disputeCtx.targetType === 'story' || disputeCtx.targetType === 'revision'
+  const auditTargetType = isStory ? 'story' : disputeCtx.targetType
+
+  await db.query(
+    "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
+    [
+      userId, 
+      `dispute.${status}`, // e.g., dispute.resolved, dispute.dismissed
+      auditTargetType, 
+      disputeCtx.target_id, 
+      `Dispute #${disputeId}`, 
+      `Resolution: ${status}. Notes: ${notes || "N/A"}`
+    ]
+  );
 
   return NextResponse.json({ success: true, status });
 

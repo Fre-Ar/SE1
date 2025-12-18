@@ -209,6 +209,22 @@ export async function POST(req: NextRequest) {
       userId
     ]);
 
+    // Audit logging
+    const isStory = targetType === 'story' || targetType === 'revision'
+    const auditTargetType = isStory ? 'story' : targetType
+
+    await db.query(
+      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
+      [
+        userId, 
+        "dispute.create", 
+        auditTargetType, 
+        targetId, 
+        `Dispute #${result.insertId}`, 
+        `Category: ${category} - ${reason}`
+      ]
+    );
+
     return NextResponse.json({ 
       success: true, 
       disputeId: result.insertId 

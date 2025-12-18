@@ -91,10 +91,11 @@ export async function POST(
       targetId,
     ]);
 
+    // Audit Logging
     // Log the action
     await db.query(
       "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name) VALUES (?, ?, ?, ?, ?)",
-      [decoded.userId, "promote_user", "user", targetId, targetUser.username]
+      [decoded.userId, "user.promote" , "user", targetId, targetUser.username]
     );
 
     return NextResponse.json({

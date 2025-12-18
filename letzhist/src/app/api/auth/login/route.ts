@@ -34,6 +34,13 @@ export async function POST(req: Request) {
 			return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 		}
 
+		// Audit Logging
+		// Log the login event
+		await db.query(
+				"INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
+				[user.id_pk, "user.login", "user", user.id_pk, user.username, "User logged in"]
+		);
+
 		// Ensure JWT secret is set
 		const JWT_SECRET = process.env.JWT_SECRET as Secret | undefined;
 		if (!JWT_SECRET) {

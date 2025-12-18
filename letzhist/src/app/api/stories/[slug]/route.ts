@@ -246,11 +246,24 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   
 
     // 3. Insert Tags linked to the new Revision ID
-    if (payload.tags && payload.tags.length > 0) {
-      const tagValues = payload.tags.map(tag => `(${revisionId}, '${tag}')`).join(', ');
+    if (tags && tags.length > 0) {
+      const tagValues = tags.map(tag => `(${revisionId}, '${tag}')`).join(', ');
       const insertTagsSql = `INSERT INTO tags (storyRevision_fk, tag) VALUES ${tagValues}`;
       await db.query(insertTagsSql);
     }
+
+    // Audit logging
+    await db.query(
+      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
+      [
+        authorId, 
+        "story.update", 
+        "story", 
+        storyId, 
+        title, 
+        `New revision #${revisionId} created. Message: ${changeMessage}`
+      ]
+    );
 
     // 4. Return the new DTO by calling GET with the specific revisionId
     // We construct a new URL with the query param to force GET to fetch this specific revision

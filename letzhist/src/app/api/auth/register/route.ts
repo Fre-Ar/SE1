@@ -47,6 +47,13 @@ export async function POST(req: Request) {
     
     const userId = result.insertId; // This is the new id_pk
 
+    // Audit Logging
+    // Log the registration event
+    await db.query(
+      "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason) VALUES (?, ?, ?, ?, ?, ?)",
+      [userId, "user.register", "user", userId, username, "New user registration"]
+    );
+
     // Create token
     const token = (jwt as any).sign(
       { userId: userId.toString() },

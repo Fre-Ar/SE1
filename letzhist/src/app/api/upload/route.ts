@@ -1,11 +1,10 @@
-// app/api/upload/route.ts
-
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { writeFile, access } from 'fs/promises';
 import { constants } from 'fs';
 import path from 'path';
-// NOTE: You must install this package: npm install @azure/storage-blob
 import { BlobServiceClient, BlockBlobClient } from "@azure/storage-blob";
+import { getUserIdFromRequest } from "@/lib/utils";
+import { db } from "@/lib/db";
 
 // ==========================================
 // 1. CONFIGURATION
@@ -84,11 +83,24 @@ async function saveToAzureBlob(buffer: Buffer, fileName: string, contentType: st
 // 3. HANDLER (The Abstraction Layer)
 // ==========================================
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     // Determine the storage provider based on environment variables
     const isProduction = process.env.NODE_ENV === 'production';
     const storageProvider = isProduction ? 'azure' : 'local';
     try {
+        // 1. Get userId from cookies
+        const response = getUserIdFromRequest(request);
+        if (response.error) {
+        NextResponse.json(
+            { error: response.error },
+            { status: response.status }
+        );
+        }
+        const userId = response.value;
+
+        // Note: If uploads are allowed for guests, userId remains null. 
+        // If strict auth is required, we would return 401 here.
+
         const formData = await request.formData();
         const file = formData.get('file') as File | null;
 
@@ -107,6 +119,22 @@ export async function POST(request: Request) {
         } else {
             console.log("Using Local Filesystem Storage...");
             publicUrl = await saveToLocal(buffer, file.name);
+        }
+
+        // Audit Logging
+        if (userId) {
+            // We use target_id = 0 because files don't have a DB ID
+            await db.query(
+                "INSERT INTO audit_log (actor_fk, action, target_type, target_id, target_name, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
+                [
+                    userId, 
+                    "file.upload", 
+                    "media", 
+                    0, 
+                    file.name, 
+                    `Uploaded to ${storageProvider}. URL: ${publicUrl}`
+                ]
+            );
         }
 
         // Return the required success response

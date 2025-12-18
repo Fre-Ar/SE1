@@ -110,6 +110,7 @@ export const AuditTab = () => {
             <option value="user">User</option>
             <option value="story">Story</option>
             <option value="comment">Comment</option>
+            <option value="dispute">Dispute</option>
           </select>
         </div>
 
