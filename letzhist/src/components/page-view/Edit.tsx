@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import TagAutocomplete from "@/components/TagAutocomplete";
 import { Draft, LeadImage } from "../data_types";
-import { FaSave, FaFileAlt, FaImage, FaTrash, FaUpload, FaSpinner } from "react-icons/fa";
+import { FaSave, FaFileAlt, FaImage, FaTrash, FaUpload, FaSpinner, FaBook } from "react-icons/fa";
 
 interface EditProps {
   title: string;
@@ -28,6 +28,9 @@ interface EditProps {
   isCreating?: boolean; // To toggle UI text
 };
 
+// Standard Markdown delimiter for separating content from references
+const REF_SEPARATOR = "\n\n## References\n";
+
 export const Edit: React.FC<EditProps> = ({
   title, subtitle, body, changeMessage, tags, leadImage, drafts = [],
   setTitle, setSubtitle, setBody, setChangeMessage, setTags, setLeadImage,
@@ -38,6 +41,24 @@ export const Edit: React.FC<EditProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null); // For Lead Image
   const bodyFileInputRef = useRef<HTMLInputElement>(null); // For Body Image
+
+  // --- DERIVE CONTENT & REFERENCES FROM BODY ---
+  // We split the single storage string into two UI fields
+  const parts = body.split(REF_SEPARATOR);
+  const mainContent = parts[0]; 
+  // If the separator exists multiple times (rare edge case), join the rest back
+  const referencesContent = parts.length > 1 ? parts.slice(1).join(REF_SEPARATOR) : "";
+
+  // --- WRAPPER SETTERS ---
+  const setMainContent = (newContent: string) => {
+    // Reconstruct the full body: Content + Separator + Refs
+    setBody(newContent + REF_SEPARATOR + referencesContent);
+  };
+
+  const setReferencesContent = (newRefs: string) => {
+    // Reconstruct the full body: Content + Separator + New Refs
+    setBody(mainContent + REF_SEPARATOR + newRefs);
+  };
 
   // --- HELPER: Generic Upload ---
   const uploadFile = async (file: File): Promise<string> => {
@@ -86,9 +107,9 @@ export const Edit: React.FC<EditProps> = ({
         const start = textareaRef.current.selectionStart;
         const end = textareaRef.current.selectionEnd;
         const text = textareaRef.current.value;
-        
-        const newText = text.substring(0, start) + markdown + text.substring(end);
-        setBody(newText);
+        // TODO: see what's up with this unused text
+        const newText = mainContent.substring(0, start) + markdown + mainContent.substring(end);
+        setMainContent(newText);
         
         // Restore focus (optional, usually good UX)
         setTimeout(() => {
@@ -96,7 +117,7 @@ export const Edit: React.FC<EditProps> = ({
           textareaRef.current?.setSelectionRange(start + markdown.length, start + markdown.length);
         }, 0);
       } else {
-        setBody(body + markdown); // Fallback
+        setMainContent(mainContent + markdown); // Fallback
       }
 
     } catch (err) {
@@ -259,12 +280,30 @@ export const Edit: React.FC<EditProps> = ({
 
       {/* Text Area */}
       <textarea 
-        value={body} 
-        onChange={e => setBody(e.target.value)} 
+        value={mainContent} 
+        onChange={e => setMainContent(e.target.value)} 
         rows={15}
         className="bg-slate-50 w-full font-mono text-sm p-3 border border-slate-300 rounded focus:border-uni-blue outline-none leading-relaxed"
       />
       <p className="text-xs text-slate-400 mt-1 text-right">Markdown supported.</p>
+    </div>
+
+    {/* References (FR-19) */}
+    <div className="bg-amber-50/50 p-4 rounded border border-amber-100">
+       <div className="flex items-center gap-2 mb-2">
+         <FaBook className="text-amber-600"/>
+         <label className="text-sm font-bold text-slate-700 uppercase">References <span className="text-red-500">*</span></label>
+       </div>
+       <p className="text-xs text-slate-500 mb-2">
+         Please list your sources (books, archives, websites). This is required to maintain historical accuracy.
+       </p>
+       <textarea
+          value={referencesContent}
+          onChange={e => setReferencesContent(e.target.value)}
+          rows={4}
+          placeholder="- Smith, J. (1999). History of Lux...\n- National Archives, Document #123\n- www.history.lu/article"
+          className="w-full text-sm p-2 border border-slate-300 rounded focus:border-amber-400 outline-none font-mono bg-white"
+       />
     </div>
     
     {/* Change Message (Only for Edit) */}
@@ -301,7 +340,12 @@ export const Edit: React.FC<EditProps> = ({
       {/* Publish Button */}
       <button 
         onClick={onSave} 
-        disabled={!title.trim() || !body.trim() || (!isCreating && !changeMessage.trim())}
+        disabled={
+          !title.trim() || 
+          !mainContent.trim() || 
+          !referencesContent.trim() || 
+          (!isCreating && !changeMessage.trim())
+        }
         className="px-4 py-2 text-sm font-medium text-white bg-uni-blue hover:bg-blue-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isCreating ? "Publish Page" : "Publish Changes"}
