@@ -9,7 +9,7 @@ Visitors can explore curated stories by era or location, while registered contri
 - Kylian Kinnen
 - Barak Landsman 
 - Grzegorz Piotrowski
-- Vasile 
+- Vasile Miron
 
 ## 📋 Table of Contents
 - [🏛️ Local History Documentation Site](#️-local-history-documentation-site)
@@ -23,6 +23,8 @@ Visitors can explore curated stories by era or location, while registered contri
   - [⚙️ Setup \& Installation](#️-setup--installation)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
+      - [Install Node.js, Next.js and React](#install-nodejs-nextjs-and-react)
+    - [Run Database locally](#run-database-locally)
   - [🚀 Usage](#-usage)
   - [🗄️ Database Schema (Simplified)](#️-database-schema-simplified)
   - [🤝 Contributing](#-contributing)
@@ -47,19 +49,25 @@ This project aims to balance openness with accuracy and respect for local herita
 ## Repo Setup
 ```
 SE1/
-├─ archive/                      # Old drafts and deprecated docs (read-only).
-├─ lecture_notes/                # Course notes (non-deliverable).
-├─ Requirements/                 # Deliverable 1.
-│  ├─ sequence_diagrams/         # UML sequence diagrams. One file per use case.
-│  ├─ templates/                 # Reusable templates (for sequence diagrams).
-│  ├─ use_case_diagrams/         # Actor-viewpoint UML use-case diagrams (one per primary actor).
-│  └─ user_story_mappings/       # Use Case -> User Story (MVP, R1, optionally R2)
-├─ requirements.md               # Project Requirements.
-├─ use_cases.md                  # Textual descriptions of use-cases
-├─ CONTRIBUTING.md               # Contributing guidelines
-├─ README.md                     # You are here. Overview, structure, how to build (WIP).
-├─ tasks.kanban                  # Backlog board.
-└─ topic.md                      # Project topic description.
+├─ archive/
+├─ lecture_notes/
+├─ Requirements/
+│  ├─ sequence_diagrams/
+│  ├─ templates/
+│  ├─ use_case_diagrams/
+│  └─ user_story_mappings/
+├─ letzhist/
+│  ├─ db/
+│  ├─ db_data/
+│  ├─ public/
+│  └─ src/
+├─ requirements.md
+├─ use_cases.md
+├─ CONTRIBUTING.md
+├─ README.md
+├─ tasks.kanban
+└─ topic.md
+
 ```
 ---
 ## ✨ Features
@@ -90,17 +98,69 @@ Additional features:
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
-TODO
+- Git (>= 2.20)  
+  - Verify: `git --version`
 
+- Node.js (LTS, e.g. 18+) and npm  
+  - Verify: `node -v` and `npm -v`
+
+- Docker (required)  
+  - Install: https://docs.docker.com/get-docker/  
+  - Verify: `docker --version` and `docker run hello-world`
+
+- Docker Compose (v2+) or Docker Compose plugin  
+  - Verify: `docker compose version` (or `docker-compose --version`)
+
+- A code editor (recommended: VS Code) with useful extensions (Prettier, ESLint, Tailwind CSS Intellisense)
+
+- Optional but helpful: Yarn or pnpm if you prefer alternative package managers
 ### Installation
 ```bash
 # Clone repository
 git clone https://github.com/Fre-Ar/SE1.git
 ```
+
+#### Install Node.js, Next.js and React
+Install Node.js as per this guide (run the commands in terminal): https://nodejs.org/en/download
+
+Verify the installation by running: 
+```bash
+node -v
+npm -v
+```
+
+Cd to the project folder.
+Run 
+```bash
+cd letzhist
+```
+
+Install all 
+```bash
+npm install
+```
+
+
+### Run Database locally
+
+Navigate to ROOT directory:
+```bash
+cd letzhist
+```
+
+To start the DB run:
+```bash
+docker compose -f docker-compose.yml up -d
+```
+
+To stop the DB run:
+```bash
+docker compose -f docker-compose.yml down
+```
 ---
 ## 🚀 Usage
-
-**TODO**
+- cd to `letzhist`
+- Run `npm run dev`
 
 ---
 
