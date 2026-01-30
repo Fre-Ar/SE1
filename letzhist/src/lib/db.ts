@@ -1,9 +1,8 @@
 import mysql from "mysql2/promise";
 
 /**
- * MySQL connection pool for your Docker-hosted LetzHist database.
- * 
- * Works in Next.js App Router server components and route handlers.
+ * MySQL connection pool for a Docker-hosted LetzHist database.
+ * * Works in Next.js App Router server components and route handlers.
  */
 export const db = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
@@ -12,4 +11,7 @@ export const db = mysql.createPool({
   password: process.env.DB_PASSWORD || "letzpass",
   database: process.env.DB_NAME || "letz_hist_db",
   connectionLimit: 10,
+  ssl: process.env.DB_SSL === "true" ? {
+      rejectUnauthorized: false // Required for Azure Flexible Server default certificates
+  } : undefined,
 });
