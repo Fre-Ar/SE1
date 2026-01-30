@@ -3,7 +3,7 @@
 A community-driven platform for collecting and sharing local historical stories, photos, and documents.  
 Visitors can explore curated stories by era or location, while registered contributors can submit and moderate content to preserve regional heritage.
 
-You can access the live website [here](letzhist-app-evarfcafgbcvachd.francecentral-01.azurewebsites.net)!
+You can access the live website [here](https://letzhist-app-evarfcafgbcvachd.francecentral-01.azurewebsites.net/)!
 
 ---
 **Project Developers**  
