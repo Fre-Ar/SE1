@@ -161,7 +161,7 @@ export const UsersTab = () => {
                          <FaVolumeMute />
                        </button>
                     )}
-                    {!u.isBanned && (
+                    {!u.isBanned && !(currentUser?.role === 'moderator' && u.role === 'admin') && (
                        <button onClick={() => { setActionTargetUser(u); setActionType('ban'); }} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Ban">
                          <FaBan />
                        </button>
