@@ -10,6 +10,7 @@ INSERT INTO users (username, email, password_hash, role, is_banned, is_muted, cr
 ('Mod',           'mod@email.com',     '$2b$10$1W4QV3VUVJ0I013om2Wa6ecnJL/7Zr.wA2VdufQWui/riPmPLzu4u', 'moderator', FALSE, FALSE, NOW()),
 ('Admin',         'admin@email.com',   '$2b$10$4mkzT1ODLSWDtrzPD0LoT.dHozMGG4NTgdeNAMN8GPOe08rpNBiJS', 'admin', FALSE, FALSE, NOW());  
 -- mod@email.com with pwd: 'mod'
+-- admin@email.com with pwd: 'admin'
 
 -- ==========================================================
 -- 2. STORIES (The Containers)
