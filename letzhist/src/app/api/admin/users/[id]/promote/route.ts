@@ -9,7 +9,7 @@ import jwt, { Secret } from "jsonwebtoken";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify authentication
@@ -62,7 +62,8 @@ export async function POST(
     }
 
     // Get the user to promote
-    const targetId = parseInt(params.id, 10);
+    const { id: paramsId } = await params;
+    const targetId = parseInt(paramsId, 10);
     if (isNaN(targetId)) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
     }

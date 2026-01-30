@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaSort, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Story} from '@/components/data_types';
 import TagAutocomplete from '@/components/TagAutocomplete';
 import SearchResultList from '@/components/SearchResultList';
 
-export default function SearchPage() {
+function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -198,5 +198,14 @@ export default function SearchPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+// Export the wrapper as the default
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20">Loading search...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }
