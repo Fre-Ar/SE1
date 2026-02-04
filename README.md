@@ -66,6 +66,7 @@ SE1/
 ├─ requirements.md # Functional & Non-Functional Requirements
 ├─ use_cases.md
 ├─ CONTRIBUTING.md
+├─ Presentation_slides.pptx
 ├─ README.md
 ├─ tasks.kanban
 └─ topic.md
